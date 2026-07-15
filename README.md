@@ -4,30 +4,65 @@ Six-page consultancy website for Proxara Policy Limited. Next.js 16 (App Router)
 
 Every piece of content — page copy, service pillars, audiences, the About story, site settings, and the entire **Thinking** section — lives in Sanity and is editable without a developer.
 
-## First-time backend setup (no Sanity project connected yet)
+## Step 0 — Sign up for Sanity (free)
 
-The repo ships as a **sample backend**: all schemas and a seed script with full placeholder content are ready, but no Sanity project is connected. Create one under your own account (gmwangi3174@gmail.com):
+Sanity is the content backend (CMS). The free plan is enough for this site (2 non-admin users, generous API quota, no card required).
+
+1. Go to **[sanity.io](https://www.sanity.io)** → **Get started**.
+2. Sign up with **Google**, **GitHub**, or **email + password**. Use the email address that should *own* the content (whoever signs up here is the project admin).
+3. When asked to create a project during onboarding, you can **skip it** — the commands below create the project properly from the terminal.
+
+You never need to touch Sanity's own dashboard for day-to-day editing: content is edited in the Studio built into this site at `/studio`. The dashboard at [sanity.io/manage](https://www.sanity.io/manage) is only for admin work (members, CORS, webhooks, tokens).
+
+## Step 1 — Connect this repo to your Sanity account
+
+Run everything below **from this project folder** (commands will fail with "No file found" if you run them from elsewhere):
 
 ```bash
-npx sanity login                       # sign in with gmwangi3174@gmail.com
+cd "C:\Users\gmwan\dev\Mwenda Kilema Portfolio\proxara-policy"   # adjust to wherever the repo lives
+npm install
+```
+
+Log in with the account you created in Step 0 (opens a browser window):
+
+```bash
+npx sanity login
+```
+
+Create the project and its dataset:
+
+```bash
 npx sanity projects create "Proxara Policy" --dataset production --dataset-visibility public --json -y
 ```
 
-Copy the `projectId` from the output into `.env.local` (`NEXT_PUBLIC_SANITY_PROJECT_ID`), then:
+The output prints a `projectId` (e.g. `"projectId": "ab12cd34"`). Copy `.env.example` to `.env.local` if it doesn't exist yet, and paste that ID into it:
 
-```bash
-npx sanity cors add http://localhost:3000 --credentials   # let the embedded Studio talk to the API
-npx sanity exec scripts/seed.ts --with-user-token         # load all sample content
+```env
+NEXT_PUBLIC_SANITY_PROJECT_ID="ab12cd34"
+NEXT_PUBLIC_SANITY_DATASET="production"
 ```
 
-## Development
+Then allow the embedded Studio to talk to the API, and load the sample content:
 
 ```bash
-npm install
-npm run dev          # site at http://localhost:3000, Studio at /studio
+npx sanity cors add http://localhost:3000 --credentials
+npx sanity exec scripts/seed.ts --with-user-token
 ```
 
-Environment variables: copy `.env.example` to `.env.local` and fill in the project ID from the setup above (dataset: `production`).
+You should see: `✔ Seed complete: tags, pillars, audiences, testimonial, all pages, 3 external articles, 2 essays.`
+
+## Step 2 — Run it
+
+```bash
+npm run dev
+```
+
+- Site: **http://localhost:3000** — every page renders the seeded sample content.
+- Content editor (Studio): **http://localhost:3000/studio** — log in with the same Sanity account. Edit any document, press **Publish**, refresh the site.
+
+If the Studio shows a "Connect this Studio / Add CORS origin" screen instead of a login, the CORS command in Step 1 didn't run — run it again from the project folder.
+
+## Day-to-day development
 
 After changing any schema in `src/sanity/schemaTypes/`:
 
@@ -48,6 +83,49 @@ npx sanity exec scripts/seed.ts --with-user-token
 - **Contact form** (`/api/contact`): sends email via Resend to the address in Site Settings. Without `RESEND_API_KEY` it logs the enquiry server-side and still succeeds, so the site works before Resend is configured. Fires a GA4 `generate_lead` event on success.
 - **Analytics**: paste a GA4 Measurement ID into Site Settings in the Studio — no code change needed.
 - **SEO**: every page and essay has an SEO tab in the Studio (meta title, description, share image). `sitemap.xml` and `robots.txt` are generated automatically; essays emit Article JSON-LD.
+
+## Transferring the site to a new owner / another Sanity account
+
+Two situations, two paths:
+
+### Option A — keep the same project, change who controls it (recommended)
+
+Nothing in the code changes; the project ID stays the same.
+
+1. The new owner signs up at sanity.io (Step 0 above).
+2. Current admin goes to [sanity.io/manage](https://www.sanity.io/manage) → project → **Members** → invite the new owner's email as **Administrator**.
+3. Once they accept, they can remove the old account from Members (or demote it). To move the project into the new owner's organisation/billing: project → **Settings** → **General** → *Transfer to organization*.
+4. Nothing else changes — env vars, deploys, webhooks, and the Studio keep working. To give the client edit-only access, invite them as **Editor** instead of Administrator.
+
+### Option B — move the content to a brand-new project (new account, clean break)
+
+Use this if the new owner must have the data under a project they created themselves.
+
+1. New owner completes **Step 0 + Step 1** above (login, `projects create`, put the new `projectId` in `.env.local`, `cors add`).
+2. Copy the content across. Either **re-seed** (`npx sanity exec scripts/seed.ts --with-user-token`) if placeholder content is fine, or **export/import the real data** from the old project:
+
+   ```bash
+   # while logged into the OLD account (or as a member of the old project)
+   npx sanity dataset export production backup.tar.gz
+
+   # after switching .env.local to the new project (and logging into the new account)
+   npx sanity dataset import backup.tar.gz production
+   ```
+
+3. Redo the project-level settings on the new project — these do NOT transfer:
+   - **CORS origins**: `npx sanity cors add http://localhost:3000 --credentials` and the production origin (e.g. `https://proxarapolicy.com`).
+   - **Revalidation webhook** (see Architecture below) with the deploy's `SANITY_REVALIDATE_SECRET`.
+   - **Members**: invite editors again.
+   - **API tokens**: any tokens (e.g. for CI) must be recreated under the new project.
+4. Update `NEXT_PUBLIC_SANITY_PROJECT_ID` wherever it is set: `.env.local` locally **and** the environment variables in Vercel (then redeploy).
+5. Optionally delete the old project at sanity.io/manage → Settings → General → *Delete project* (irreversible).
+
+### If the deployment (Vercel) or domains also change hands
+
+- Vercel: project → Settings → **Transfer** to the new owner's Vercel account/team; or the new owner imports the GitHub repo fresh and re-enters the env vars from `.env.example`.
+- GitHub repo: Settings → **Transfer ownership**.
+- Domains: update the registrar account or repoint DNS to the new Vercel project; keep `proxarapolicy.co.ke` as a 301 redirect to `proxarapolicy.com`.
+- Resend / GA4: API keys and Measurement IDs are account-bound — the new owner creates their own and updates `RESEND_API_KEY` (Vercel) and the GA4 ID (Studio → Site Settings).
 
 ## Launch checklist (handover)
 
