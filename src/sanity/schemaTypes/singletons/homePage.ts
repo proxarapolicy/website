@@ -1,0 +1,86 @@
+import { defineArrayMember, defineField, defineType } from "sanity";
+
+export const homePageType = defineType({
+  name: "homePage",
+  title: "Home",
+  type: "document",
+  groups: [
+    { name: "hero", title: "Hero" },
+    { name: "sections", title: "Sections" },
+    { name: "seo", title: "SEO" },
+  ],
+  fields: [
+    defineField({
+      name: "heroHeading",
+      title: "Hero heading",
+      type: "text",
+      rows: 3,
+      group: "hero",
+      description: "The positioning statement. Must land with authority in under five seconds.",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "heroKicker",
+      title: "Hero kicker",
+      type: "string",
+      group: "hero",
+      description: "Small line above the heading, e.g. “Technology & AI Policy Advisory”.",
+    }),
+    defineField({
+      name: "heroCtaLabel",
+      title: "Hero CTA label",
+      type: "string",
+      group: "hero",
+      initialValue: "Let’s Talk",
+    }),
+    defineField({
+      name: "credibilityHeading",
+      title: "Credibility strip heading",
+      type: "string",
+      group: "sections",
+      description: "E.g. “Experience drawn from”.",
+    }),
+    defineField({
+      name: "credibilityItems",
+      title: "Credibility references",
+      type: "array",
+      group: "sections",
+      of: [defineArrayMember({ type: "string" })],
+      description: "Named organisations, e.g. TikTok, Google, Office of the President of Kenya.",
+    }),
+    defineField({
+      name: "pillarsHeading",
+      title: "Service pillars heading",
+      type: "string",
+      group: "sections",
+      initialValue: "What we do",
+    }),
+    defineField({
+      name: "pillarsIntro",
+      title: "Service pillars intro",
+      type: "text",
+      rows: 2,
+      group: "sections",
+    }),
+    defineField({
+      name: "testimonials",
+      title: "Social proof",
+      type: "array",
+      group: "sections",
+      of: [defineArrayMember({ type: "reference", to: [{ type: "testimonial" }] })],
+      description: "One or two testimonials or pull quotes.",
+    }),
+    defineField({
+      name: "thinkingHeading",
+      title: "Latest thinking heading",
+      type: "string",
+      group: "sections",
+      initialValue: "Latest thinking",
+      description: "The three most recent articles are pulled in automatically.",
+    }),
+    defineField({ name: "seo", title: "SEO", type: "seo", group: "seo" }),
+  ],
+  preview: {
+    prepare: () => ({ title: "Home" }),
+  },
+});
