@@ -4,6 +4,22 @@ Six-page consultancy website for Proxara Policy Limited. Next.js 16 (App Router)
 
 Every piece of content — page copy, service pillars, audiences, the About story, site settings, and the entire **Thinking** section — lives in Sanity and is editable without a developer.
 
+## First-time backend setup (no Sanity project connected yet)
+
+The repo ships as a **sample backend**: all schemas and a seed script with full placeholder content are ready, but no Sanity project is connected. Create one under your own account (gmwangi3174@gmail.com):
+
+```bash
+npx sanity login                       # sign in with gmwangi3174@gmail.com
+npx sanity projects create "Proxara Policy" --dataset production --dataset-visibility public --json -y
+```
+
+Copy the `projectId` from the output into `.env.local` (`NEXT_PUBLIC_SANITY_PROJECT_ID`), then:
+
+```bash
+npx sanity cors add http://localhost:3000 --credentials   # let the embedded Studio talk to the API
+npx sanity exec scripts/seed.ts --with-user-token         # load all sample content
+```
+
 ## Development
 
 ```bash
@@ -11,7 +27,7 @@ npm install
 npm run dev          # site at http://localhost:3000, Studio at /studio
 ```
 
-Environment variables: copy `.env.example` to `.env.local`. The Sanity project is `fkk09tn8`, dataset `production`.
+Environment variables: copy `.env.example` to `.env.local` and fill in the project ID from the setup above (dataset: `production`).
 
 After changing any schema in `src/sanity/schemaTypes/`:
 
@@ -28,7 +44,7 @@ npx sanity exec scripts/seed.ts --with-user-token
 ## Architecture
 
 - **Pages** (`src/app/(site)/`): all React Server Components, statically cached. Data comes through `sanityFetch` (`src/sanity/lib/client.ts`) with cache tags.
-- **Instant content updates**: create a webhook in [sanity.io/manage](https://www.sanity.io/manage/project/fkk09tn8) → API → Webhooks pointing at `https://proxarapolicy.com/api/revalidate?secret=<SANITY_REVALIDATE_SECRET>` (events: create, update, delete). Edits go live in seconds without a rebuild.
+- **Instant content updates**: create a webhook in [sanity.io/manage](https://www.sanity.io/manage) (your project) → API → Webhooks pointing at `https://proxarapolicy.com/api/revalidate?secret=<SANITY_REVALIDATE_SECRET>` (events: create, update, delete). Edits go live in seconds without a rebuild.
 - **Contact form** (`/api/contact`): sends email via Resend to the address in Site Settings. Without `RESEND_API_KEY` it logs the enquiry server-side and still succeeds, so the site works before Resend is configured. Fires a GA4 `generate_lead` event on success.
 - **Analytics**: paste a GA4 Measurement ID into Site Settings in the Studio — no code change needed.
 - **SEO**: every page and essay has an SEO tab in the Studio (meta title, description, share image). `sitemap.xml` and `robots.txt` are generated automatically; essays emit Article JSON-LD.
