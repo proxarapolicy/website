@@ -55,7 +55,7 @@ export default async function WhatWeDoPage() {
               key={pillar._id}
               className="grid gap-4 border-b border-border py-12 md:grid-cols-[8rem_1fr] md:gap-10 md:py-16"
             >
-              <p className="font-serif text-3xl text-gold md:text-4xl">
+              <p className="font-serif text-3xl text-gold-deep md:text-4xl">
                 {String(i + 1).padStart(2, "0")}
               </p>
               <div>

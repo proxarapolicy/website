@@ -100,7 +100,7 @@ export default async function ThinkingPage({
                   >
                     <div className="text-sm text-muted-foreground">
                       <p>{formatDate(item.publishedAt)}</p>
-                      <p className="mt-1 font-medium text-gold">
+                      <p className="mt-1 font-medium text-gold-deep">
                         {isPost ? "Essay" : item.publication}
                       </p>
                     </div>

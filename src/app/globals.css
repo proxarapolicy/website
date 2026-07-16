@@ -79,6 +79,8 @@
   --navy: oklch(0.25 0.045 255);
   --navy-deep: oklch(0.21 0.04 255);
   --gold: oklch(0.66 0.1 85);
+  /* Darker gold for small text on white — meets WCAG 4.5:1; use --gold on navy */
+  --gold-deep: oklch(0.51 0.1 85);
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -127,6 +129,7 @@
   --color-navy: var(--navy);
   --color-navy-deep: var(--navy-deep);
   --color-gold: var(--gold);
+  --color-gold-deep: var(--gold-deep);
 }
 
 @layer base {

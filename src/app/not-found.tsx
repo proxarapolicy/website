@@ -29,7 +29,7 @@ export default async function NotFound() {
       {settings ? <SiteHeader settings={settings} /> : null}
       <main className="flex flex-1 items-center">
         <div className="mx-auto max-w-6xl px-5 py-24 md:px-8 md:py-36">
-          <p className="text-sm font-medium uppercase tracking-[0.2em] text-gold">
+          <p className="text-sm font-medium uppercase tracking-[0.2em] text-gold-deep">
             404
           </p>
           <h1 className="mt-4 max-w-2xl font-serif text-4xl leading-tight text-navy md:text-5xl">

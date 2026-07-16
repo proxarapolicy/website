@@ -66,7 +66,7 @@ export default async function WhoWeWorkWithPage() {
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-xs font-medium uppercase tracking-[0.2em] text-gold">
+                  <dt className="text-xs font-medium uppercase tracking-[0.2em] text-gold-deep">
                     Proxara’s offer
                   </dt>
                   <dd className="mt-2 leading-relaxed text-foreground/90">
