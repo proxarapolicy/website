@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Sanity Studio build output (`sanity build` / `sanity deploy`). Linting
+    // these bundles runs the Node heap out of memory.
+    "dist/**",
+    ".sanity/**",
   ]),
 ]);
 

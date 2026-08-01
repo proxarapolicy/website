@@ -36,6 +36,10 @@ yarn-error.log*
 # variables a deployment needs. Never put real values in it.
 !.env.example
 
+# sanity studio build output (`sanity build` / `sanity deploy`)
+/dist
+/.sanity
+
 # vercel
 .vercel
 

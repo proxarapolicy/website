@@ -17,6 +17,7 @@ const SINGLETON_TYPES = new Set([
   "whatWeDoPage",
   "whoWeWorkWithPage",
   "aboutPage",
+  "thinkingPage",
   "contactPage",
 ]);
 
