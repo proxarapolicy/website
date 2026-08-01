@@ -16,8 +16,16 @@ declare global {
 
 export function ContactForm({
   successMessage,
+  enquiryTypeLabel,
+  enquiryTypes,
+  messageLabel,
+  submitLabel,
 }: {
   successMessage?: string | null;
+  enquiryTypeLabel?: string | null;
+  enquiryTypes?: string[] | null;
+  messageLabel?: string | null;
+  submitLabel?: string | null;
 }) {
   const [status, setStatus] = React.useState<"idle" | "sending" | "sent">(
     "idle"
@@ -89,13 +97,38 @@ export function ContactForm({
           <Input id="email" name="email" type="email" required autoComplete="email" />
         </div>
 
+        {enquiryTypes?.length ? (
+          <div className="space-y-2">
+            <Label htmlFor="enquiryType">
+              {enquiryTypeLabel ?? "What can we help with?"}
+            </Label>
+            {/* Native select: no extra dependency, no extra client JS. */}
+            <select
+              id="enquiryType"
+              name="enquiryType"
+              required
+              defaultValue=""
+              className="h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-base transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm"
+            >
+              <option value="" disabled>
+                Select one…
+              </option>
+              {enquiryTypes.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : null}
+
         <div className="space-y-2">
-          <Label htmlFor="message">What do you need? (briefly)</Label>
+          <Label htmlFor="message">{messageLabel ?? "Message"}</Label>
           <Textarea id="message" name="message" required rows={5} />
         </div>
 
         <Button type="submit" size="lg" disabled={status === "sending"}>
-          {status === "sending" ? "Sending…" : "Send enquiry"}
+          {status === "sending" ? "Sending…" : submitLabel ?? "Send"}
         </Button>
       </form>
     </>

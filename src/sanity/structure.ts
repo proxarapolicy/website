@@ -24,6 +24,7 @@ export const structure: StructureResolver = (S) =>
               singleton(S, "whatWeDoPage", "What We Do"),
               singleton(S, "whoWeWorkWithPage", "Who We Work With"),
               singleton(S, "aboutPage", "About"),
+              singleton(S, "thinkingPage", "Thinking"),
               singleton(S, "contactPage", "Contact"),
             ])
         ),

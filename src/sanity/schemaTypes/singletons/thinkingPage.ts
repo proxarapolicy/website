@@ -1,15 +1,15 @@
 import { defineField, defineType } from "sanity";
 
-export const whoWeWorkWithPageType = defineType({
-  name: "whoWeWorkWithPage",
-  title: "Who We Work With",
+export const thinkingPageType = defineType({
+  name: "thinkingPage",
+  title: "Thinking",
   type: "document",
   fields: [
     defineField({
       name: "title",
       title: "Page title",
       type: "string",
-      initialValue: "Who We Work With",
+      initialValue: "Thinking",
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -19,21 +19,16 @@ export const whoWeWorkWithPageType = defineType({
       rows: 3,
     }),
     defineField({
-      name: "stagesHeading",
-      title: "Company stages heading",
+      name: "emptyState",
+      title: "Empty state",
       type: "string",
-      initialValue: "Working with companies at different stages",
-    }),
-    defineField({
-      name: "stagesBody",
-      title: "Company stages body",
-      type: "text",
-      rows: 5,
-      description: "Renders as a full-width band after the audience grid.",
+      description:
+        "Shown when no pieces are published, or when a topic filter returns nothing.",
+      initialValue: "No pieces under this topic yet.",
     }),
     defineField({
       name: "closingBody",
-      title: "Closing note",
+      title: "Closing CTA body",
       type: "text",
       rows: 3,
     }),
@@ -46,6 +41,6 @@ export const whoWeWorkWithPageType = defineType({
     defineField({ name: "seo", title: "SEO", type: "seo" }),
   ],
   preview: {
-    prepare: () => ({ title: "Who We Work With" }),
+    prepare: () => ({ title: "Thinking" }),
   },
 });

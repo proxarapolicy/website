@@ -13,18 +13,26 @@ export const audienceType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "body",
+      title: "Description",
+      type: "text",
+      rows: 5,
+      description:
+        "A single flowing paragraph. Use this or the challenge/offer pair below — if this is filled, it wins.",
+    }),
+    defineField({
       name: "challenge",
       title: "Their challenge",
       type: "text",
       rows: 3,
-      validation: (rule) => rule.required(),
+      description: "Only used when Description is empty.",
     }),
     defineField({
       name: "offer",
       title: "Proxara’s offer",
       type: "text",
       rows: 3,
-      validation: (rule) => rule.required(),
+      description: "Only used when Description is empty.",
     }),
     defineField({
       name: "order",
@@ -41,6 +49,6 @@ export const audienceType = defineType({
     },
   ],
   preview: {
-    select: { title: "name", subtitle: "challenge" },
+    select: { title: "name", subtitle: "body" },
   },
 });

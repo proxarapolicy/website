@@ -51,7 +51,18 @@ export default async function ContactPage() {
                 {page.formHeading}
               </h2>
             ) : null}
-            <ContactForm successMessage={page?.successMessage} />
+            <ContactForm
+              successMessage={page?.successMessage}
+              enquiryTypeLabel={page?.enquiryTypeLabel}
+              enquiryTypes={page?.enquiryTypes}
+              messageLabel={page?.messageLabel}
+              submitLabel={page?.submitLabel}
+            />
+            {page?.responseNote ? (
+              <p className="mt-6 text-sm text-muted-foreground">
+                {page.responseNote}
+              </p>
+            ) : null}
           </div>
         </div>
 

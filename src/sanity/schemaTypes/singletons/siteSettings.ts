@@ -13,14 +13,6 @@ export const siteSettingsType = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: "positioningStatement",
-      title: "Positioning statement",
-      type: "text",
-      rows: 3,
-      description: "The one-sentence firm positioning used across the site.",
-      validation: (rule) => rule.required(),
-    }),
-    defineField({
       name: "contactEmail",
       title: "Contact email",
       type: "string",

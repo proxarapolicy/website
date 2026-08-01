@@ -7,7 +7,6 @@ const SEO_FIELDS = /* groq */ `
 export const SITE_SETTINGS_QUERY = defineQuery(`
   *[_type == "siteSettings"][0]{
     wordmark,
-    positioningStatement,
     contactEmail,
     linkedinUrl,
     location,
@@ -24,12 +23,22 @@ export const HOME_PAGE_QUERY = defineQuery(`
   *[_type == "homePage"][0]{
     heroKicker,
     heroHeading,
+    heroSubline,
     heroCtaLabel,
+    positioningBody,
     credibilityHeading,
     credibilityItems,
+    aboutTeaserBody,
+    aboutCtaLabel,
     pillarsHeading,
     pillarsIntro,
+    pillarsCtaLabel,
+    audienceHeading,
+    audienceBody,
+    audienceCtaLabel,
     thinkingHeading,
+    thinkingIntro,
+    thinkingCtaLabel,
     "testimonials": testimonials[]->{ _id, quote, attribution, source },
     ${SEO_FIELDS}
   }
@@ -43,36 +52,54 @@ export const PILLARS_QUERY = defineQuery(`
 
 export const AUDIENCES_QUERY = defineQuery(`
   *[_type == "audience"] | order(order asc){
-    _id, name, challenge, offer, order
+    _id, name, body, challenge, offer, order
   }
 `);
 
 export const WHAT_WE_DO_QUERY = defineQuery(`
   *[_type == "whatWeDoPage"][0]{
-    title, intro, howWeWorkHeading, howWeWorkBody, ${SEO_FIELDS}
+    title, intro,
+    viewpointHeading, viewpointBody,
+    howWeWorkHeading, howWeWorkBody,
+    closingBody, closingCtaLabel,
+    ${SEO_FIELDS}
   }
 `);
 
 export const WHO_WE_WORK_WITH_QUERY = defineQuery(`
   *[_type == "whoWeWorkWithPage"][0]{
-    title, intro, ${SEO_FIELDS}
+    title, intro,
+    stagesHeading, stagesBody,
+    closingBody, closingCtaLabel,
+    ${SEO_FIELDS}
   }
 `);
 
 export const ABOUT_PAGE_QUERY = defineQuery(`
   *[_type == "aboutPage"][0]{
-    title, name, role,
+    title, intro, name, role,
     headshot{ ..., "alt": alt },
     story,
     highlightsHeading, highlights,
     civicHeading, civicBody,
+    closingBody, closingCtaLabel,
     ${SEO_FIELDS}
+  }
+`);
+
+export const THINKING_PAGE_QUERY = defineQuery(`
+  *[_type == "thinkingPage"][0]{
+    title, intro, emptyState, closingBody, closingCtaLabel, ${SEO_FIELDS}
   }
 `);
 
 export const CONTACT_PAGE_QUERY = defineQuery(`
   *[_type == "contactPage"][0]{
-    title, intro, formHeading, successMessage, ${SEO_FIELDS}
+    title, intro, formHeading,
+    enquiryTypeLabel, enquiryTypes,
+    messageLabel, submitLabel,
+    successMessage, responseNote,
+    ${SEO_FIELDS}
   }
 `);
 

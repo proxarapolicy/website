@@ -28,10 +28,10 @@ export type ExternalArticle = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title: string;
-  publication: string;
-  publishedAt: string;
-  url: string;
+  title?: string;
+  publication?: string;
+  publishedAt?: string;
+  url?: string;
   tags?: Array<
     {
       _key: string;
@@ -45,16 +45,16 @@ export type Post = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title: string;
-  slug: Slug;
-  excerpt: string;
-  publishedAt: string;
+  title?: string;
+  slug?: Slug;
+  excerpt?: string;
+  publishedAt?: string;
   tags?: Array<
     {
       _key: string;
     } & TagReference
   >;
-  body: BlockContent;
+  body?: BlockContent;
   seo?: Seo;
 };
 
@@ -99,7 +99,7 @@ export type BlockContent = Array<{
 
 export type Slug = {
   _type: "slug";
-  current: string;
+  current?: string;
   source?: string;
 };
 
@@ -109,8 +109,8 @@ export type Tag = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title: string;
-  slug: Slug;
+  title?: string;
+  slug?: Slug;
 };
 
 export type Testimonial = {
@@ -119,7 +119,7 @@ export type Testimonial = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  quote: string;
+  quote?: string;
   attribution?: string;
   source?: string;
 };
@@ -130,10 +130,11 @@ export type Audience = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  name: string;
-  challenge: string;
-  offer: string;
-  order: number;
+  name?: string;
+  body?: string;
+  challenge?: string;
+  offer?: string;
+  order?: number;
 };
 
 export type Pillar = {
@@ -142,11 +143,11 @@ export type Pillar = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title: string;
-  slug: Slug;
-  oneLiner: string;
+  title?: string;
+  slug?: Slug;
+  oneLiner?: string;
   description?: string;
-  order: number;
+  order?: number;
 };
 
 export type ContactPage = {
@@ -155,10 +156,29 @@ export type ContactPage = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title: string;
+  title?: string;
   intro?: string;
   formHeading?: string;
+  enquiryTypeLabel?: string;
+  enquiryTypes?: Array<string>;
+  messageLabel?: string;
+  submitLabel?: string;
   successMessage?: string;
+  responseNote?: string;
+  seo?: Seo;
+};
+
+export type ThinkingPage = {
+  _id: string;
+  _type: "thinkingPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  intro?: string;
+  emptyState?: string;
+  closingBody?: string;
+  closingCtaLabel?: string;
   seo?: Seo;
 };
 
@@ -168,7 +188,8 @@ export type AboutPage = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title: string;
+  title?: string;
+  intro?: string;
   name?: string;
   role?: string;
   headshot?: {
@@ -184,23 +205,25 @@ export type AboutPage = {
   highlights?: Array<string>;
   civicHeading?: string;
   civicBody?: string;
+  closingBody?: string;
+  closingCtaLabel?: string;
   seo?: Seo;
 };
 
 export type SanityImageCrop = {
   _type: "sanity.imageCrop";
-  top: number;
-  bottom: number;
-  left: number;
-  right: number;
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
 };
 
 export type SanityImageHotspot = {
   _type: "sanity.imageHotspot";
-  x: number;
-  y: number;
-  height: number;
-  width: number;
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
 };
 
 export type WhoWeWorkWithPage = {
@@ -209,8 +232,12 @@ export type WhoWeWorkWithPage = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title: string;
+  title?: string;
   intro?: string;
+  stagesHeading?: string;
+  stagesBody?: string;
+  closingBody?: string;
+  closingCtaLabel?: string;
   seo?: Seo;
 };
 
@@ -220,10 +247,14 @@ export type WhatWeDoPage = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title: string;
+  title?: string;
   intro?: string;
+  viewpointHeading?: string;
+  viewpointBody?: BlockContent;
   howWeWorkHeading?: string;
   howWeWorkBody?: BlockContent;
+  closingBody?: string;
+  closingCtaLabel?: string;
   seo?: Seo;
 };
 
@@ -240,19 +271,29 @@ export type HomePage = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  heroHeading: string;
+  heroHeading?: string;
   heroKicker?: string;
+  heroSubline?: string;
   heroCtaLabel?: string;
+  positioningBody?: BlockContent;
   credibilityHeading?: string;
   credibilityItems?: Array<string>;
   pillarsHeading?: string;
   pillarsIntro?: string;
+  pillarsCtaLabel?: string;
+  audienceHeading?: string;
+  audienceBody?: string;
+  audienceCtaLabel?: string;
+  aboutTeaserBody?: string;
+  aboutCtaLabel?: string;
   testimonials?: Array<
     {
       _key: string;
     } & TestimonialReference
   >;
   thinkingHeading?: string;
+  thinkingIntro?: string;
+  thinkingCtaLabel?: string;
   seo?: Seo;
 };
 
@@ -262,14 +303,13 @@ export type SiteSettings = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  wordmark: string;
-  positioningStatement: string;
-  contactEmail: string;
+  wordmark?: string;
+  contactEmail?: string;
   linkedinUrl?: string;
   location?: string;
   navItems?: Array<{
-    label: string;
-    href: string;
+    label?: string;
+    href?: string;
     _type: "navItem";
     _key: string;
   }>;
@@ -301,9 +341,9 @@ export type SanityImagePalette = {
 
 export type SanityImageDimensions = {
   _type: "sanity.imageDimensions";
-  height: number;
-  width: number;
-  aspectRatio: number;
+  height?: number;
+  width?: number;
+  aspectRatio?: number;
 };
 
 export type SanityImageMetadata = {
@@ -329,14 +369,14 @@ export type SanityFileAsset = {
   title?: string;
   description?: string;
   altText?: string;
-  sha1hash: string;
-  extension: string;
-  mimeType: string;
-  size: number;
-  assetId: string;
+  sha1hash?: string;
+  extension?: string;
+  mimeType?: string;
+  size?: number;
+  assetId?: string;
   uploadId?: string;
-  path: string;
-  url: string;
+  path?: string;
+  url?: string;
   source?: SanityAssetSourceData;
 };
 
@@ -358,14 +398,14 @@ export type SanityImageAsset = {
   title?: string;
   description?: string;
   altText?: string;
-  sha1hash: string;
-  extension: string;
-  mimeType: string;
-  size: number;
-  assetId: string;
+  sha1hash?: string;
+  extension?: string;
+  mimeType?: string;
+  size?: number;
+  assetId?: string;
   uploadId?: string;
-  path: string;
-  url: string;
+  path?: string;
+  url?: string;
   metadata?: SanityImageMetadata;
   source?: SanityAssetSourceData;
 };
@@ -390,6 +430,7 @@ export type AllSanitySchemaTypes =
   | Audience
   | Pillar
   | ContactPage
+  | ThinkingPage
   | AboutPage
   | SanityImageCrop
   | SanityImageHotspot
@@ -409,16 +450,15 @@ export type AllSanitySchemaTypes =
 
 // Source: src/sanity/lib/queries.ts
 // Variable: SITE_SETTINGS_QUERY
-// Query: *[_type == "siteSettings"][0]{    wordmark,    positioningStatement,    contactEmail,    linkedinUrl,    location,    navItems[]{ label, href },    ctaLabel,    footerCta,    footerLegal,    ga4MeasurementId,    defaultSeo { metaTitle, metaDescription, ogImage }  }
+// Query: *[_type == "siteSettings"][0]{    wordmark,    contactEmail,    linkedinUrl,    location,    navItems[]{ label, href },    ctaLabel,    footerCta,    footerLegal,    ga4MeasurementId,    defaultSeo { metaTitle, metaDescription, ogImage }  }
 export type SITE_SETTINGS_QUERY_RESULT = {
-  wordmark: string;
-  positioningStatement: string;
-  contactEmail: string;
+  wordmark: string | null;
+  contactEmail: string | null;
   linkedinUrl: string | null;
   location: string | null;
   navItems: Array<{
-    label: string;
-    href: string;
+    label: string | null;
+    href: string | null;
   }> | null;
   ctaLabel: string | null;
   footerCta: string | null;
@@ -439,19 +479,29 @@ export type SITE_SETTINGS_QUERY_RESULT = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: HOME_PAGE_QUERY
-// Query: *[_type == "homePage"][0]{    heroKicker,    heroHeading,    heroCtaLabel,    credibilityHeading,    credibilityItems,    pillarsHeading,    pillarsIntro,    thinkingHeading,    "testimonials": testimonials[]->{ _id, quote, attribution, source },      seo { metaTitle, metaDescription, ogImage }  }
+// Query: *[_type == "homePage"][0]{    heroKicker,    heroHeading,    heroSubline,    heroCtaLabel,    positioningBody,    credibilityHeading,    credibilityItems,    aboutTeaserBody,    aboutCtaLabel,    pillarsHeading,    pillarsIntro,    pillarsCtaLabel,    audienceHeading,    audienceBody,    audienceCtaLabel,    thinkingHeading,    thinkingIntro,    thinkingCtaLabel,    "testimonials": testimonials[]->{ _id, quote, attribution, source },      seo { metaTitle, metaDescription, ogImage }  }
 export type HOME_PAGE_QUERY_RESULT = {
   heroKicker: string | null;
-  heroHeading: string;
+  heroHeading: string | null;
+  heroSubline: string | null;
   heroCtaLabel: string | null;
+  positioningBody: BlockContent | null;
   credibilityHeading: string | null;
   credibilityItems: Array<string> | null;
+  aboutTeaserBody: string | null;
+  aboutCtaLabel: string | null;
   pillarsHeading: string | null;
   pillarsIntro: string | null;
+  pillarsCtaLabel: string | null;
+  audienceHeading: string | null;
+  audienceBody: string | null;
+  audienceCtaLabel: string | null;
   thinkingHeading: string | null;
+  thinkingIntro: string | null;
+  thinkingCtaLabel: string | null;
   testimonials: Array<{
     _id: string;
-    quote: string;
+    quote: string | null;
     attribution: string | null;
     source: string | null;
   }> | null;
@@ -473,32 +523,37 @@ export type HOME_PAGE_QUERY_RESULT = {
 // Query: *[_type == "pillar"] | order(order asc){    _id, title, "slug": slug.current, oneLiner, description, order  }
 export type PILLARS_QUERY_RESULT = Array<{
   _id: string;
-  title: string;
-  slug: string;
-  oneLiner: string;
+  title: string | null;
+  slug: string | null;
+  oneLiner: string | null;
   description: string | null;
-  order: number;
+  order: number | null;
 }>;
 
 // Source: src/sanity/lib/queries.ts
 // Variable: AUDIENCES_QUERY
-// Query: *[_type == "audience"] | order(order asc){    _id, name, challenge, offer, order  }
+// Query: *[_type == "audience"] | order(order asc){    _id, name, body, challenge, offer, order  }
 export type AUDIENCES_QUERY_RESULT = Array<{
   _id: string;
-  name: string;
-  challenge: string;
-  offer: string;
-  order: number;
+  name: string | null;
+  body: string | null;
+  challenge: string | null;
+  offer: string | null;
+  order: number | null;
 }>;
 
 // Source: src/sanity/lib/queries.ts
 // Variable: WHAT_WE_DO_QUERY
-// Query: *[_type == "whatWeDoPage"][0]{    title, intro, howWeWorkHeading, howWeWorkBody,   seo { metaTitle, metaDescription, ogImage }  }
+// Query: *[_type == "whatWeDoPage"][0]{    title, intro,    viewpointHeading, viewpointBody,    howWeWorkHeading, howWeWorkBody,    closingBody, closingCtaLabel,      seo { metaTitle, metaDescription, ogImage }  }
 export type WHAT_WE_DO_QUERY_RESULT = {
-  title: string;
+  title: string | null;
   intro: string | null;
+  viewpointHeading: string | null;
+  viewpointBody: BlockContent | null;
   howWeWorkHeading: string | null;
   howWeWorkBody: BlockContent | null;
+  closingBody: string | null;
+  closingCtaLabel: string | null;
   seo: {
     metaTitle: string | null;
     metaDescription: string | null;
@@ -514,10 +569,14 @@ export type WHAT_WE_DO_QUERY_RESULT = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: WHO_WE_WORK_WITH_QUERY
-// Query: *[_type == "whoWeWorkWithPage"][0]{    title, intro,   seo { metaTitle, metaDescription, ogImage }  }
+// Query: *[_type == "whoWeWorkWithPage"][0]{    title, intro,    stagesHeading, stagesBody,    closingBody, closingCtaLabel,      seo { metaTitle, metaDescription, ogImage }  }
 export type WHO_WE_WORK_WITH_QUERY_RESULT = {
-  title: string;
+  title: string | null;
   intro: string | null;
+  stagesHeading: string | null;
+  stagesBody: string | null;
+  closingBody: string | null;
+  closingCtaLabel: string | null;
   seo: {
     metaTitle: string | null;
     metaDescription: string | null;
@@ -533,9 +592,10 @@ export type WHO_WE_WORK_WITH_QUERY_RESULT = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: ABOUT_PAGE_QUERY
-// Query: *[_type == "aboutPage"][0]{    title, name, role,    headshot{ ..., "alt": alt },    story,    highlightsHeading, highlights,    civicHeading, civicBody,      seo { metaTitle, metaDescription, ogImage }  }
+// Query: *[_type == "aboutPage"][0]{    title, intro, name, role,    headshot{ ..., "alt": alt },    story,    highlightsHeading, highlights,    civicHeading, civicBody,    closingBody, closingCtaLabel,      seo { metaTitle, metaDescription, ogImage }  }
 export type ABOUT_PAGE_QUERY_RESULT = {
-  title: string;
+  title: string | null;
+  intro: string | null;
   name: string | null;
   role: string | null;
   headshot: {
@@ -551,6 +611,30 @@ export type ABOUT_PAGE_QUERY_RESULT = {
   highlights: Array<string> | null;
   civicHeading: string | null;
   civicBody: string | null;
+  closingBody: string | null;
+  closingCtaLabel: string | null;
+  seo: {
+    metaTitle: string | null;
+    metaDescription: string | null;
+    ogImage: {
+      asset?: SanityImageAssetReference;
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    } | null;
+  } | null;
+} | null;
+
+// Source: src/sanity/lib/queries.ts
+// Variable: THINKING_PAGE_QUERY
+// Query: *[_type == "thinkingPage"][0]{    title, intro, emptyState, closingBody, closingCtaLabel,   seo { metaTitle, metaDescription, ogImage }  }
+export type THINKING_PAGE_QUERY_RESULT = {
+  title: string | null;
+  intro: string | null;
+  emptyState: string | null;
+  closingBody: string | null;
+  closingCtaLabel: string | null;
   seo: {
     metaTitle: string | null;
     metaDescription: string | null;
@@ -566,12 +650,17 @@ export type ABOUT_PAGE_QUERY_RESULT = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: CONTACT_PAGE_QUERY
-// Query: *[_type == "contactPage"][0]{    title, intro, formHeading, successMessage,   seo { metaTitle, metaDescription, ogImage }  }
+// Query: *[_type == "contactPage"][0]{    title, intro, formHeading,    enquiryTypeLabel, enquiryTypes,    messageLabel, submitLabel,    successMessage, responseNote,      seo { metaTitle, metaDescription, ogImage }  }
 export type CONTACT_PAGE_QUERY_RESULT = {
-  title: string;
+  title: string | null;
   intro: string | null;
   formHeading: string | null;
+  enquiryTypeLabel: string | null;
+  enquiryTypes: Array<string> | null;
+  messageLabel: string | null;
+  submitLabel: string | null;
   successMessage: string | null;
+  responseNote: string | null;
   seo: {
     metaTitle: string | null;
     metaDescription: string | null;
@@ -592,29 +681,29 @@ export type THINKING_FEED_QUERY_RESULT = Array<
   | {
       _id: string;
       _type: "externalArticle";
-      title: string;
+      title: string | null;
       slug: null;
       excerpt: null;
-      publication: string;
-      url: string;
-      publishedAt: string;
+      publication: string | null;
+      url: string | null;
+      publishedAt: string | null;
       tags: Array<{
-        title: string;
-        slug: string;
+        title: string | null;
+        slug: string | null;
       }> | null;
     }
   | {
       _id: string;
       _type: "post";
-      title: string;
-      slug: string;
-      excerpt: string;
+      title: string | null;
+      slug: string | null;
+      excerpt: string | null;
       publication: null;
       url: null;
-      publishedAt: string;
+      publishedAt: string | null;
       tags: Array<{
-        title: string;
-        slug: string;
+        title: string | null;
+        slug: string | null;
       }> | null;
     }
 >;
@@ -626,22 +715,22 @@ export type LATEST_THINKING_QUERY_RESULT = Array<
   | {
       _id: string;
       _type: "externalArticle";
-      title: string;
+      title: string | null;
       slug: null;
       excerpt: null;
-      publication: string;
-      url: string;
-      publishedAt: string;
+      publication: string | null;
+      url: string | null;
+      publishedAt: string | null;
     }
   | {
       _id: string;
       _type: "post";
-      title: string;
-      slug: string;
-      excerpt: string;
+      title: string | null;
+      slug: string | null;
+      excerpt: string | null;
       publication: null;
       url: null;
-      publishedAt: string;
+      publishedAt: string | null;
     }
 >;
 
@@ -650,8 +739,8 @@ export type LATEST_THINKING_QUERY_RESULT = Array<
 // Query: *[_type == "tag"] | order(title asc){ _id, title, "slug": slug.current }
 export type TAGS_QUERY_RESULT = Array<{
   _id: string;
-  title: string;
-  slug: string;
+  title: string | null;
+  slug: string | null;
 }>;
 
 // Source: src/sanity/lib/queries.ts
@@ -659,14 +748,14 @@ export type TAGS_QUERY_RESULT = Array<{
 // Query: *[_type == "post" && slug.current == $slug][0]{    _id,    title,    "slug": slug.current,    excerpt,    publishedAt,    body,    "tags": tags[]->{ title, "slug": slug.current },      seo { metaTitle, metaDescription, ogImage }  }
 export type POST_QUERY_RESULT = {
   _id: string;
-  title: string;
-  slug: string;
-  excerpt: string;
-  publishedAt: string;
-  body: BlockContent;
+  title: string | null;
+  slug: string | null;
+  excerpt: string | null;
+  publishedAt: string | null;
+  body: BlockContent | null;
   tags: Array<{
-    title: string;
-    slug: string;
+    title: string | null;
+    slug: string | null;
   }> | null;
   seo: {
     metaTitle: string | null;
@@ -685,21 +774,22 @@ export type POST_QUERY_RESULT = {
 // Variable: POST_SLUGS_QUERY
 // Query: *[_type == "post" && defined(slug.current)]{ "slug": slug.current }
 export type POST_SLUGS_QUERY_RESULT = Array<{
-  slug: string;
+  slug: string | null;
 }>;
 
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '\n  *[_type == "siteSettings"][0]{\n    wordmark,\n    positioningStatement,\n    contactEmail,\n    linkedinUrl,\n    location,\n    navItems[]{ label, href },\n    ctaLabel,\n    footerCta,\n    footerLegal,\n    ga4MeasurementId,\n    defaultSeo { metaTitle, metaDescription, ogImage }\n  }\n': SITE_SETTINGS_QUERY_RESULT;
-    '\n  *[_type == "homePage"][0]{\n    heroKicker,\n    heroHeading,\n    heroCtaLabel,\n    credibilityHeading,\n    credibilityItems,\n    pillarsHeading,\n    pillarsIntro,\n    thinkingHeading,\n    "testimonials": testimonials[]->{ _id, quote, attribution, source },\n    \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': HOME_PAGE_QUERY_RESULT;
+    '\n  *[_type == "siteSettings"][0]{\n    wordmark,\n    contactEmail,\n    linkedinUrl,\n    location,\n    navItems[]{ label, href },\n    ctaLabel,\n    footerCta,\n    footerLegal,\n    ga4MeasurementId,\n    defaultSeo { metaTitle, metaDescription, ogImage }\n  }\n': SITE_SETTINGS_QUERY_RESULT;
+    '\n  *[_type == "homePage"][0]{\n    heroKicker,\n    heroHeading,\n    heroSubline,\n    heroCtaLabel,\n    positioningBody,\n    credibilityHeading,\n    credibilityItems,\n    aboutTeaserBody,\n    aboutCtaLabel,\n    pillarsHeading,\n    pillarsIntro,\n    pillarsCtaLabel,\n    audienceHeading,\n    audienceBody,\n    audienceCtaLabel,\n    thinkingHeading,\n    thinkingIntro,\n    thinkingCtaLabel,\n    "testimonials": testimonials[]->{ _id, quote, attribution, source },\n    \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': HOME_PAGE_QUERY_RESULT;
     '\n  *[_type == "pillar"] | order(order asc){\n    _id, title, "slug": slug.current, oneLiner, description, order\n  }\n': PILLARS_QUERY_RESULT;
-    '\n  *[_type == "audience"] | order(order asc){\n    _id, name, challenge, offer, order\n  }\n': AUDIENCES_QUERY_RESULT;
-    '\n  *[_type == "whatWeDoPage"][0]{\n    title, intro, howWeWorkHeading, howWeWorkBody, \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': WHAT_WE_DO_QUERY_RESULT;
-    '\n  *[_type == "whoWeWorkWithPage"][0]{\n    title, intro, \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': WHO_WE_WORK_WITH_QUERY_RESULT;
-    '\n  *[_type == "aboutPage"][0]{\n    title, name, role,\n    headshot{ ..., "alt": alt },\n    story,\n    highlightsHeading, highlights,\n    civicHeading, civicBody,\n    \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': ABOUT_PAGE_QUERY_RESULT;
-    '\n  *[_type == "contactPage"][0]{\n    title, intro, formHeading, successMessage, \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': CONTACT_PAGE_QUERY_RESULT;
+    '\n  *[_type == "audience"] | order(order asc){\n    _id, name, body, challenge, offer, order\n  }\n': AUDIENCES_QUERY_RESULT;
+    '\n  *[_type == "whatWeDoPage"][0]{\n    title, intro,\n    viewpointHeading, viewpointBody,\n    howWeWorkHeading, howWeWorkBody,\n    closingBody, closingCtaLabel,\n    \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': WHAT_WE_DO_QUERY_RESULT;
+    '\n  *[_type == "whoWeWorkWithPage"][0]{\n    title, intro,\n    stagesHeading, stagesBody,\n    closingBody, closingCtaLabel,\n    \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': WHO_WE_WORK_WITH_QUERY_RESULT;
+    '\n  *[_type == "aboutPage"][0]{\n    title, intro, name, role,\n    headshot{ ..., "alt": alt },\n    story,\n    highlightsHeading, highlights,\n    civicHeading, civicBody,\n    closingBody, closingCtaLabel,\n    \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': ABOUT_PAGE_QUERY_RESULT;
+    '\n  *[_type == "thinkingPage"][0]{\n    title, intro, emptyState, closingBody, closingCtaLabel, \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': THINKING_PAGE_QUERY_RESULT;
+    '\n  *[_type == "contactPage"][0]{\n    title, intro, formHeading,\n    enquiryTypeLabel, enquiryTypes,\n    messageLabel, submitLabel,\n    successMessage, responseNote,\n    \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': CONTACT_PAGE_QUERY_RESULT;
     '\n  *[\n    (_type == "post" || _type == "externalArticle") &&\n    ($tag == "" || $tag in tags[]->slug.current)\n  ] | order(coalesce(publishedAt, _createdAt) desc){\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    excerpt,\n    publication,\n    url,\n    publishedAt,\n    "tags": tags[]->{ title, "slug": slug.current }\n  }\n': THINKING_FEED_QUERY_RESULT;
     '\n  *[_type == "post" || _type == "externalArticle"]\n    | order(coalesce(publishedAt, _createdAt) desc)[0...3]{\n    _id,\n    _type,\n    title,\n    "slug": slug.current,\n    excerpt,\n    publication,\n    url,\n    publishedAt\n  }\n': LATEST_THINKING_QUERY_RESULT;
     '\n  *[_type == "tag"] | order(title asc){ _id, title, "slug": slug.current }\n': TAGS_QUERY_RESULT;

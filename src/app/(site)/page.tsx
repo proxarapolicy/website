@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { PortableText } from "@/components/portable-text";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { formatDate } from "@/lib/format";
@@ -17,6 +18,7 @@ import type {
   LATEST_THINKING_QUERY_RESULT,
   PILLARS_QUERY_RESULT,
 } from "@/sanity/types";
+import type { PortableTextBlock } from "@portabletext/types";
 
 async function getData() {
   const [page, pillars, latest] = await Promise.all([
@@ -42,7 +44,7 @@ export async function generateMetadata(): Promise<Metadata> {
     tags: ["sanity", "homePage"],
   });
   return seoMetadata(page?.seo ?? null, {
-    title: "Proxara Policy — Technology & AI Policy Advisory across EMEA",
+    title: "Proxara Policy — Technology & AI Policy Advisory",
     path: "/",
   });
 }
@@ -63,6 +65,11 @@ export default async function HomePage() {
           <h1 className="max-w-4xl font-serif text-4xl leading-tight md:text-6xl md:leading-[1.1]">
             {page?.heroHeading}
           </h1>
+          {page?.heroSubline ? (
+            <p className="mt-8 max-w-2xl text-lg leading-relaxed text-primary-foreground/80">
+              {page.heroSubline}
+            </p>
+          ) : null}
           <div className="mt-10">
             <Button
               size="lg"
@@ -76,6 +83,17 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Positioning statement */}
+      {page?.positioningBody?.length ? (
+        <section className="border-b border-border">
+          <div className="mx-auto max-w-3xl px-5 py-20 text-lg md:px-8 md:py-24">
+            <PortableText
+              value={page.positioningBody as unknown as PortableTextBlock[]}
+            />
+          </div>
+        </section>
+      ) : null}
 
       {/* Credibility strip */}
       {page?.credibilityItems?.length ? (
@@ -129,7 +147,45 @@ export default async function HomePage() {
             </Link>
           ))}
         </div>
+        <div className="mt-12">
+          <SectionLink href="/what-we-do">
+            {page?.pillarsCtaLabel ?? "See all services"}
+          </SectionLink>
+        </div>
       </section>
+
+      {/* Who we work with */}
+      {page?.audienceBody ? (
+        <section className="border-y border-border bg-muted">
+          <div className="mx-auto max-w-3xl px-5 py-20 md:px-8 md:py-24">
+            <h2 className="font-serif text-3xl text-navy md:text-4xl">
+              {page.audienceHeading ?? "Who we work with"}
+            </h2>
+            <p className="mt-6 text-lg leading-relaxed text-foreground/90">
+              {page.audienceBody}
+            </p>
+            <div className="mt-8">
+              <SectionLink href="/who-we-work-with">
+                {page.audienceCtaLabel ?? "Learn more"}
+              </SectionLink>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {/* About teaser */}
+      {page?.aboutTeaserBody ? (
+        <section className="mx-auto max-w-3xl px-5 py-20 md:px-8 md:py-24">
+          <p className="text-lg leading-relaxed text-foreground/90">
+            {page.aboutTeaserBody}
+          </p>
+          <div className="mt-8">
+            <SectionLink href="/about">
+              {page.aboutCtaLabel ?? "About Mwenda"}
+            </SectionLink>
+          </div>
+        </section>
+      ) : null}
 
       {/* Social proof */}
       {page?.testimonials?.length ? (
@@ -153,18 +209,22 @@ export default async function HomePage() {
 
       {/* Latest thinking */}
       <section className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
-        <div className="mb-10 flex items-end justify-between">
+        <div className="mb-10 max-w-2xl">
           <h2 className="font-serif text-3xl text-navy md:text-4xl">
             {page?.thinkingHeading ?? "Latest thinking"}
           </h2>
-          <Link
-            href="/thinking"
-            className="text-sm text-muted-foreground transition-colors hover:text-navy"
-          >
-            All thinking →
-          </Link>
+          {page?.thinkingIntro ? (
+            <p className="mt-4 leading-relaxed text-muted-foreground">
+              {page.thinkingIntro}
+            </p>
+          ) : null}
+          <div className="mt-8">
+            <SectionLink href="/thinking">
+              {page?.thinkingCtaLabel ?? "Read our latest thinking"}
+            </SectionLink>
+          </div>
         </div>
-        <Separator className="mb-2" />
+        {latest.length ? <Separator className="mb-2" /> : null}
         <ul>
           {latest.map((item) => {
             const isPost = item._type === "post";
@@ -191,5 +251,24 @@ export default async function HomePage() {
         </ul>
       </section>
     </>
+  );
+}
+
+/** Gold text link used to bridge the home page into each section page. */
+function SectionLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      className="group inline-flex items-center gap-2 font-medium text-gold-deep transition-colors hover:text-navy"
+    >
+      {children}
+      <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+    </Link>
   );
 }

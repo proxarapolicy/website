@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 
 import { sanityFetch } from "@/sanity/lib/client";
-import { SITE_SETTINGS_QUERY } from "@/sanity/lib/queries";
-import type { SITE_SETTINGS_QUERY_RESULT } from "@/sanity/types";
+import { CONTACT_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/lib/queries";
+import type {
+  CONTACT_PAGE_QUERY_RESULT,
+  SITE_SETTINGS_QUERY_RESULT,
+} from "@/sanity/types";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -10,6 +13,7 @@ type Payload = {
   name?: string;
   organisation?: string;
   email?: string;
+  enquiryType?: string;
   message?: string;
   website?: string; // honeypot
 };
@@ -31,6 +35,7 @@ export async function POST(request: Request) {
   const organisation = body.organisation?.trim();
   const email = body.email?.trim();
   const message = body.message?.trim();
+  const enquiryType = body.enquiryType?.trim();
 
   if (!name || !organisation || !email || !message) {
     return NextResponse.json(
@@ -42,10 +47,26 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid input." }, { status: 400 });
   }
 
-  const settings = await sanityFetch<SITE_SETTINGS_QUERY_RESULT>({
-    query: SITE_SETTINGS_QUERY,
-    tags: ["sanity", "siteSettings"],
-  });
+  const [settings, contactPage] = await Promise.all([
+    sanityFetch<SITE_SETTINGS_QUERY_RESULT>({
+      query: SITE_SETTINGS_QUERY,
+      tags: ["sanity", "siteSettings"],
+    }),
+    sanityFetch<CONTACT_PAGE_QUERY_RESULT>({
+      query: CONTACT_PAGE_QUERY,
+      tags: ["sanity", "contactPage"],
+    }),
+  ]);
+
+  // Only accept an enquiry type the Studio actually offers.
+  const allowedTypes = contactPage?.enquiryTypes ?? [];
+  if (allowedTypes.length && (!enquiryType || !allowedTypes.includes(enquiryType))) {
+    return NextResponse.json(
+      { error: "Please choose what we can help with." },
+      { status: 400 }
+    );
+  }
+
   const to = settings?.contactEmail;
   const apiKey = process.env.RESEND_API_KEY;
 
@@ -56,6 +77,7 @@ export async function POST(request: Request) {
       name,
       organisation,
       email,
+      enquiryType,
       message,
     });
     return NextResponse.json({ ok: true, delivered: false });
@@ -71,11 +93,14 @@ export async function POST(request: Request) {
       from: "Proxara Policy Website <onboarding@resend.dev>",
       to: [to],
       reply_to: email,
-      subject: `New enquiry from ${name} (${organisation})`,
+      subject: enquiryType
+        ? `New enquiry from ${name} (${organisation}) — ${enquiryType}`
+        : `New enquiry from ${name} (${organisation})`,
       text: [
         `Name: ${name}`,
         `Organisation: ${organisation}`,
         `Email: ${email}`,
+        ...(enquiryType ? [`Enquiry type: ${enquiryType}`] : []),
         "",
         message,
       ].join("\n"),

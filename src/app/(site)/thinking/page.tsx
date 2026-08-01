@@ -2,28 +2,35 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
+import { ClosingCta } from "@/components/site/closing-cta";
 import { formatDate } from "@/lib/format";
+import { seoMetadata } from "@/lib/seo";
 import { sanityFetch } from "@/sanity/lib/client";
-import { TAGS_QUERY, THINKING_FEED_QUERY } from "@/sanity/lib/queries";
+import {
+  TAGS_QUERY,
+  THINKING_FEED_QUERY,
+  THINKING_PAGE_QUERY,
+} from "@/sanity/lib/queries";
 import type {
   TAGS_QUERY_RESULT,
   THINKING_FEED_QUERY_RESULT,
+  THINKING_PAGE_QUERY_RESULT,
 } from "@/sanity/types";
 import { cn } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: "Thinking — Proxara Policy",
-  description:
-    "Essays and published articles on AI governance, platform policy, and technology regulation across EMEA — from Proxara Policy.",
-  alternates: { canonical: "/thinking" },
-  openGraph: {
+const getPage = () =>
+  sanityFetch<THINKING_PAGE_QUERY_RESULT>({
+    query: THINKING_PAGE_QUERY,
+    tags: ["sanity", "thinkingPage"],
+  });
+
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPage();
+  return seoMetadata(page?.seo ?? null, {
     title: "Thinking — Proxara Policy",
-    description:
-      "Essays and published articles on AI governance, platform policy, and technology regulation across EMEA.",
-    type: "website",
-    siteName: "Proxara Policy",
-  },
-};
+    path: "/thinking",
+  });
+}
 
 export default async function ThinkingPage({
   searchParams,
@@ -32,7 +39,8 @@ export default async function ThinkingPage({
 }) {
   const { tag = "" } = await searchParams;
 
-  const [items, tags] = await Promise.all([
+  const [page, items, tags] = await Promise.all([
+    getPage(),
     sanityFetch<THINKING_FEED_QUERY_RESULT>({
       query: THINKING_FEED_QUERY,
       params: { tag },
@@ -48,40 +56,45 @@ export default async function ThinkingPage({
     <>
       <section className="border-b border-border">
         <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
-          <h1 className="font-serif text-4xl text-navy md:text-5xl">Thinking</h1>
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            Essays and published articles on the politics of emerging
-            technology — AI governance, platform policy, and regulation across
-            EMEA.
-          </p>
+          <h1 className="font-serif text-4xl text-navy md:text-5xl">
+            {page?.title ?? "Thinking"}
+          </h1>
+          {page?.intro ? (
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
+              {page.intro}
+            </p>
+          ) : null}
 
-          {/* Topic filter — plain links, server-rendered, zero client JS */}
-          <nav
-            aria-label="Filter by topic"
-            className="mt-10 flex flex-wrap gap-2"
-          >
-            <FilterLink href="/thinking" active={tag === ""}>
-              All topics
-            </FilterLink>
-            {tags.map((t) =>
-              t.slug ? (
-                <FilterLink
-                  key={t._id}
-                  href={`/thinking?tag=${t.slug}`}
-                  active={tag === t.slug}
-                >
-                  {t.title}
-                </FilterLink>
-              ) : null
-            )}
-          </nav>
+          {/* Topic filter — plain links, server-rendered, zero client JS.
+              Hidden until there is something to filter. */}
+          {items.length || tag ? (
+            <nav
+              aria-label="Filter by topic"
+              className="mt-10 flex flex-wrap gap-2"
+            >
+              <FilterLink href="/thinking" active={tag === ""}>
+                All topics
+              </FilterLink>
+              {tags.map((t) =>
+                t.slug ? (
+                  <FilterLink
+                    key={t._id}
+                    href={`/thinking?tag=${t.slug}`}
+                    active={tag === t.slug}
+                  >
+                    {t.title}
+                  </FilterLink>
+                ) : null
+              )}
+            </nav>
+          ) : null}
         </div>
       </section>
 
       <section className="mx-auto max-w-6xl px-5 pb-24 md:px-8">
         {items.length === 0 ? (
           <p className="py-16 text-muted-foreground">
-            No pieces under this topic yet.
+            {page?.emptyState ?? "No pieces under this topic yet."}
           </p>
         ) : (
           <ul>
@@ -129,6 +142,8 @@ export default async function ThinkingPage({
           </ul>
         )}
       </section>
+
+      <ClosingCta body={page?.closingBody} ctaLabel={page?.closingCtaLabel} />
     </>
   );
 }

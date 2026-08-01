@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { PortableText } from "@/components/portable-text";
+import { ClosingCta } from "@/components/site/closing-cta";
 import { seoMetadata } from "@/lib/seo";
 import { sanityFetch } from "@/sanity/lib/client";
 import { PILLARS_QUERY, WHAT_WE_DO_QUERY } from "@/sanity/lib/queries";
@@ -48,6 +49,24 @@ export default async function WhatWeDoPage() {
         </div>
       </section>
 
+      {page?.viewpointBody?.length ? (
+        <section className="border-b border-border bg-muted">
+          <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
+            <div className="grid gap-8 md:grid-cols-[8rem_1fr] md:gap-10">
+              <div />
+              <div className="max-w-2xl">
+                <h2 className="mb-6 font-serif text-3xl text-navy">
+                  {page.viewpointHeading ?? "Our view on government and technology"}
+                </h2>
+                <PortableText
+                  value={page.viewpointBody as unknown as PortableTextBlock[]}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       <section className="mx-auto max-w-6xl px-5 md:px-8">
         <ol>
           {pillars.map((pillar, i) => (
@@ -88,6 +107,8 @@ export default async function WhatWeDoPage() {
           </div>
         </section>
       ) : null}
+
+      <ClosingCta body={page?.closingBody} ctaLabel={page?.closingCtaLabel} />
     </>
   );
 }

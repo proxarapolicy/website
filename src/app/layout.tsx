@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     template: "%s",
   },
   description:
-    "Proxara Policy helps governments, corporations, and multilateral institutions navigate the politics of emerging technology — across EMEA and beyond.",
+    "Proxara Policy helps governments, technology companies, and multilateral institutions navigate the politics of emerging technology.",
 };
 
 const organizationJsonLd = {
@@ -45,7 +45,7 @@ const organizationJsonLd = {
   url: siteUrl,
   founder: { "@type": "Person", name: "Mwenda Kilemi" },
   address: { "@type": "PostalAddress", addressLocality: "Nairobi", addressCountry: "KE" },
-  areaServed: "EMEA",
+  areaServed: ["Africa", "Europe"],
 };
 
 export default function RootLayout({

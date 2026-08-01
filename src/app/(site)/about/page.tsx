@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 
 import { PortableText } from "@/components/portable-text";
+import { ClosingCta } from "@/components/site/closing-cta";
 import { seoMetadata, siteUrl } from "@/lib/seo";
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
@@ -45,6 +46,16 @@ export default async function AboutPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
       />
+
+      {page?.intro ? (
+        <section className="border-b border-border">
+          <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+            <p className="max-w-3xl font-serif text-xl leading-relaxed text-navy md:text-2xl">
+              {page.intro}
+            </p>
+          </div>
+        </section>
+      ) : null}
 
       <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
         <div className="grid gap-12 md:grid-cols-[1fr_20rem] md:gap-16 lg:grid-cols-[1fr_24rem]">
@@ -129,6 +140,8 @@ export default async function AboutPage() {
           </div>
         </section>
       ) : null}
+
+      <ClosingCta body={page?.closingBody} ctaLabel={page?.closingCtaLabel} />
     </>
   );
 }

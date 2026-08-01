@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { ClosingCta } from "@/components/site/closing-cta";
 import { seoMetadata } from "@/lib/seo";
 import { sanityFetch } from "@/sanity/lib/client";
 import { AUDIENCES_QUERY, WHO_WE_WORK_WITH_QUERY } from "@/sanity/lib/queries";
@@ -56,28 +57,50 @@ export default async function WhoWeWorkWithPage() {
               <h2 className="font-serif text-2xl text-navy md:text-3xl">
                 {audience.name}
               </h2>
-              <dl className="mt-6 space-y-6">
-                <div>
-                  <dt className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                    The challenge
-                  </dt>
-                  <dd className="mt-2 leading-relaxed text-foreground/90">
-                    {audience.challenge}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs font-medium uppercase tracking-[0.2em] text-gold-deep">
-                    Proxara’s offer
-                  </dt>
-                  <dd className="mt-2 leading-relaxed text-foreground/90">
-                    {audience.offer}
-                  </dd>
-                </div>
-              </dl>
+              {audience.body ? (
+                <p className="mt-6 leading-relaxed text-foreground/90">
+                  {audience.body}
+                </p>
+              ) : (
+                <dl className="mt-6 space-y-6">
+                  <div>
+                    <dt className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                      The challenge
+                    </dt>
+                    <dd className="mt-2 leading-relaxed text-foreground/90">
+                      {audience.challenge}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs font-medium uppercase tracking-[0.2em] text-gold-deep">
+                      Proxara’s offer
+                    </dt>
+                    <dd className="mt-2 leading-relaxed text-foreground/90">
+                      {audience.offer}
+                    </dd>
+                  </div>
+                </dl>
+              )}
             </article>
           ))}
         </div>
       </section>
+
+      {/* Company stages — full-width band so it reads as an aside, not a fourth client type */}
+      {page?.stagesBody ? (
+        <section className="border-y border-border bg-muted">
+          <div className="mx-auto max-w-3xl px-5 py-16 md:px-8 md:py-20">
+            <h2 className="font-serif text-2xl text-navy md:text-3xl">
+              {page.stagesHeading ?? "Working with companies at different stages"}
+            </h2>
+            <p className="mt-6 leading-relaxed text-foreground/90">
+              {page.stagesBody}
+            </p>
+          </div>
+        </section>
+      ) : null}
+
+      <ClosingCta body={page?.closingBody} ctaLabel={page?.closingCtaLabel} />
     </>
   );
 }

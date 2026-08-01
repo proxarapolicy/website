@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git config *)",
+      "Bash(git check-ignore *)",
+      "Bash(gh auth *)",
+      "Bash(gh repo *)",
+      "Bash(gh api *)",
+      "Bash(git ls-remote *)",
+      "Bash(cd \"c:/Users/gmwan/dev/Mwenda Kilema Portfolio/proxara-policy\")",
+      "Bash(git push *)",
+      "Bash(git remote *)",
+      "Bash(git branch *)",
+      "Bash(git fetch *)",
+      "PowerShell(npm run lint 2>&1)",
+      "PowerShell(npm run build 2>&1)",
+      "PowerShell(npx sanity exec scripts/seed.ts --with-user-token 2>&1)",
+      "Bash(npx sanity *)",
+      "Bash(curl -s http://localhost:3000/about)",
+      "Bash(taskkill //PID 20988 //F)",
+      "Bash(curl -s http://localhost:3210/what-we-do)",
+      "Bash(seq 1 40)",
+      "Bash(curl -s -o /dev/null http://localhost:3210/what-we-do)",
+      "Bash(break)",
+      "Bash(sleep 1)",
+      "Bash(seq 1 60)",
+      "Bash(curl -s -o /dev/null --max-time 60 http://localhost:3210/what-we-do)",
+      "Bash(sleep 2)",
+      "Bash(echo \"=== WHAT WE DO \\(pillars\\) ===\")",
+      "Bash(grep -oE \"01 .{0,180}\")",
+      "Bash(curl -s --max-time 30 http://localhost:3210/contact)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" --max-time 60 http://localhost:3210/studio)"
+    ]
+  }
+}

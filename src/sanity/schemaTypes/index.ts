@@ -7,6 +7,7 @@ import { homePageType } from "./singletons/homePage";
 import { whatWeDoPageType } from "./singletons/whatWeDoPage";
 import { whoWeWorkWithPageType } from "./singletons/whoWeWorkWithPage";
 import { aboutPageType } from "./singletons/aboutPage";
+import { thinkingPageType } from "./singletons/thinkingPage";
 import { contactPageType } from "./singletons/contactPage";
 import { pillarType } from "./documents/pillar";
 import { audienceType } from "./documents/audience";
@@ -26,6 +27,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     whatWeDoPageType,
     whoWeWorkWithPageType,
     aboutPageType,
+    thinkingPageType,
     contactPageType,
     // collections
     pillarType,
