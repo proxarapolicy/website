@@ -38,7 +38,7 @@ export default async function WhatWeDoPage() {
     <>
       <section className="border-b border-border">
         <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
-          <h1 className="font-serif text-4xl text-navy md:text-5xl">
+          <h1 className="font-serif text-h1 tracking-display text-navy">
             {page?.title ?? "What We Do"}
           </h1>
           {page?.intro ? (
@@ -74,7 +74,7 @@ export default async function WhatWeDoPage() {
               key={pillar._id}
               className="grid gap-4 border-b border-border py-12 md:grid-cols-[8rem_1fr] md:gap-10 md:py-16"
             >
-              <p className="font-serif text-3xl text-gold-deep md:text-4xl">
+              <p className="font-serif text-h2 text-gold-deep">
                 {String(i + 1).padStart(2, "0")}
               </p>
               <div>

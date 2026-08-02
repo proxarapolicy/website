@@ -28,13 +28,24 @@ export function ContactForm({
   submitLabel?: string | null;
 }) {
   const [status, setStatus] = React.useState<"idle" | "sending" | "sent">(
-    "idle"
+    "idle",
   );
+
+  // Stamped after hydration, so a script that posts the raw HTML form never
+  // has one. The server rejects submissions with no stamp, or an implausibly
+  // fast one — see the time trap in /api/contact.
+  const startedAt = React.useRef<number | null>(null);
+  React.useEffect(() => {
+    startedAt.current = Date.now();
+  }, []);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
-    const data = Object.fromEntries(new FormData(form).entries());
+    const data = {
+      ...Object.fromEntries(new FormData(form).entries()),
+      startedAt: startedAt.current,
+    };
 
     setStatus("sending");
     try {
@@ -55,7 +66,9 @@ export function ContactForm({
     } catch (err) {
       setStatus("idle");
       toast.error(
-        err instanceof Error ? err.message : "Something went wrong. Please email us directly."
+        err instanceof Error
+          ? err.message
+          : "Something went wrong. Please email us directly.",
       );
     }
   }
@@ -78,7 +91,13 @@ export function ContactForm({
         {/* Honeypot — humans never see or fill this */}
         <div className="hidden" aria-hidden="true">
           <label htmlFor="website">Website</label>
-          <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+          <input
+            id="website"
+            name="website"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+          />
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2">
@@ -88,13 +107,24 @@ export function ContactForm({
           </div>
           <div className="space-y-2">
             <Label htmlFor="organisation">Organisation</Label>
-            <Input id="organisation" name="organisation" required autoComplete="organization" />
+            <Input
+              id="organisation"
+              name="organisation"
+              required
+              autoComplete="organization"
+            />
           </div>
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" name="email" type="email" required autoComplete="email" />
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            required
+            autoComplete="email"
+          />
         </div>
 
         {enquiryTypes?.length ? (
@@ -128,7 +158,7 @@ export function ContactForm({
         </div>
 
         <Button type="submit" size="lg" disabled={status === "sending"}>
-          {status === "sending" ? "Sending…" : submitLabel ?? "Send"}
+          {status === "sending" ? "Sending…" : (submitLabel ?? "Send")}
         </Button>
       </form>
     </>

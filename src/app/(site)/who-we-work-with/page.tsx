@@ -36,7 +36,7 @@ export default async function WhoWeWorkWithPage() {
     <>
       <section className="border-b border-border">
         <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
-          <h1 className="font-serif text-4xl text-navy md:text-5xl">
+          <h1 className="font-serif text-h1 tracking-display text-navy">
             {page?.title ?? "Who We Work With"}
           </h1>
           {page?.intro ? (
@@ -64,7 +64,7 @@ export default async function WhoWeWorkWithPage() {
               ) : (
                 <dl className="mt-6 space-y-6">
                   <div>
-                    <dt className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                    <dt className="eyebrow text-muted-foreground">
                       The challenge
                     </dt>
                     <dd className="mt-2 leading-relaxed text-foreground/90">
@@ -72,7 +72,7 @@ export default async function WhoWeWorkWithPage() {
                     </dd>
                   </div>
                   <div>
-                    <dt className="text-xs font-medium uppercase tracking-[0.2em] text-gold-deep">
+                    <dt className="eyebrow text-gold-deep">
                       Proxara’s offer
                     </dt>
                     <dd className="mt-2 leading-relaxed text-foreground/90">

@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 
+import { ViewTransition } from "react";
+
 import { ClosingCta } from "@/components/site/closing-cta";
-import { formatDate } from "@/lib/format";
+import { formatDate, yearOf } from "@/lib/format";
 import { seoMetadata } from "@/lib/seo";
 import { sanityFetch } from "@/sanity/lib/client";
 import {
@@ -56,7 +58,7 @@ export default async function ThinkingPage({
     <>
       <section className="border-b border-border">
         <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
-          <h1 className="font-serif text-4xl text-navy md:text-5xl">
+          <h1 className="font-serif text-h1 tracking-display text-navy">
             {page?.title ?? "Thinking"}
           </h1>
           {page?.intro ? (
@@ -84,7 +86,7 @@ export default async function ThinkingPage({
                   >
                     {t.title}
                   </FilterLink>
-                ) : null
+                ) : null,
               )}
             </nav>
           ) : null}
@@ -97,55 +99,89 @@ export default async function ThinkingPage({
             {page?.emptyState ?? "No pieces under this topic yet."}
           </p>
         ) : (
-          <ul>
-            {items.map((item) => {
-              const isPost = item._type === "post";
-              const href = isPost
-                ? `/thinking/${item.slug}`
-                : item.url ?? "#";
-              return (
-                <li key={item._id} className="border-b border-border">
-                  <Link
-                    href={href}
-                    target={isPost ? undefined : "_blank"}
-                    rel={isPost ? undefined : "noopener noreferrer"}
-                    className="group grid gap-2 py-10 md:grid-cols-[11rem_1fr] md:gap-10"
-                  >
-                    <div className="text-sm text-muted-foreground">
-                      <p>{formatDate(item.publishedAt)}</p>
-                      <p className="mt-1 font-medium text-gold-deep">
-                        {isPost ? "Essay" : item.publication}
-                      </p>
-                    </div>
-                    <div>
-                      <h2 className="max-w-3xl font-serif text-2xl leading-snug text-navy group-hover:underline group-hover:decoration-gold group-hover:underline-offset-4">
-                        {item.title}
-                        {!isPost ? (
-                          <ArrowUpRight className="ml-1 inline size-4 text-muted-foreground" />
-                        ) : null}
-                      </h2>
-                      {isPost && item.excerpt ? (
-                        <p className="mt-3 max-w-2xl leading-relaxed text-muted-foreground">
-                          {item.excerpt}
-                        </p>
-                      ) : null}
-                      {item.tags?.length ? (
-                        <p className="mt-3 text-xs uppercase tracking-[0.15em] text-muted-foreground">
-                          {item.tags.map((t) => t.title).join(" · ")}
-                        </p>
-                      ) : null}
-                    </div>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+          groupByYear(items).map(([year, group]) => (
+            <section key={year} aria-label={year}>
+              {/* Year rule — a 2px navy division opening each volume of the
+                  archive, the way a bound collection separates years. */}
+              <h2 className="figures-oldstyle sticky top-16 z-10 border-t-2 border-navy bg-background pb-2 pt-6 font-serif text-sm text-muted-foreground">
+                {year}
+              </h2>
+              <ul>
+                {group.map((item) => {
+                  const isPost = item._type === "post";
+                  const href = isPost
+                    ? `/thinking/${item.slug}`
+                    : (item.url ?? "#");
+                  return (
+                    <li key={item._id} className="rule-hairline">
+                      <Link
+                        href={href}
+                        target={isPost ? undefined : "_blank"}
+                        rel={isPost ? undefined : "noopener noreferrer"}
+                        className="group grid gap-2 py-10 md:grid-cols-[11rem_1fr] md:gap-10"
+                      >
+                        <div className="text-sm text-muted-foreground">
+                          <p className="figures-oldstyle">
+                            {formatDate(item.publishedAt)}
+                          </p>
+                          <p className="eyebrow mt-1 text-gold-deep">
+                            {isPost ? "Essay" : item.publication}
+                          </p>
+                        </div>
+                        <div>
+                          <ViewTransition
+                            name={
+                              isPost ? `essay-${item.slug}` : `link-${item._id}`
+                            }
+                            share="morph"
+                          >
+                            <h2 className="max-w-3xl font-serif text-2xl leading-snug text-navy underline-offset-4 group-hover:underline group-hover:decoration-gold">
+                              {item.title}
+                              {!isPost ? (
+                                <ArrowUpRight className="ml-1 inline size-4 text-muted-foreground" />
+                              ) : null}
+                            </h2>
+                          </ViewTransition>
+                          {isPost && item.excerpt ? (
+                            <p className="mt-3 max-w-2xl leading-relaxed text-muted-foreground">
+                              {item.excerpt}
+                            </p>
+                          ) : null}
+                          {item.tags?.length ? (
+                            <p className="mt-3 eyebrow text-muted-foreground">
+                              {item.tags.map((t) => t.title).join(" · ")}
+                            </p>
+                          ) : null}
+                        </div>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          ))
         )}
       </section>
 
       <ClosingCta body={page?.closingBody} ctaLabel={page?.closingCtaLabel} />
     </>
   );
+}
+
+/**
+ * Groups the feed into volumes by publication year, preserving the query's
+ * existing newest-first order both between and within years. Undated items
+ * fall into a trailing bucket rather than being dropped.
+ */
+function groupByYear(items: THINKING_FEED_QUERY_RESULT) {
+  const groups = new Map<string, THINKING_FEED_QUERY_RESULT>();
+  for (const item of items) {
+    const year = yearOf(item.publishedAt) || "—";
+    const bucket = groups.get(year);
+    if (bucket) bucket.push(item);
+    else groups.set(year, [item]);
+  }
+  return [...groups.entries()];
 }
 
 function FilterLink({
@@ -164,7 +200,7 @@ function FilterLink({
         "border px-3 py-1.5 text-sm transition-colors",
         active
           ? "border-navy bg-navy text-primary-foreground"
-          : "border-border text-muted-foreground hover:border-navy hover:text-navy"
+          : "border-border text-muted-foreground hover:border-navy hover:text-navy",
       )}
     >
       {children}

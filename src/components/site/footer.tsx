@@ -14,13 +14,13 @@ export function SiteFooter({
     <footer className="mt-auto bg-navy-deep text-primary-foreground">
       <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
         {settings?.footerCta ? (
-          <div className="mb-14 flex flex-col items-start justify-between gap-6 border-b border-primary-foreground/15 pb-14 md:flex-row md:items-center">
+          <div className="mb-14 flex flex-col items-start justify-between gap-6 border-b border-on-navy-line pb-14 md:flex-row md:items-center">
             <p className="max-w-xl font-serif text-2xl leading-snug md:text-3xl">
               {settings.footerCta}
             </p>
             <Button
               size="lg"
-              className="bg-gold text-navy-deep hover:bg-gold/90"
+              className="bg-gold-cta text-navy-deep hover:bg-gold-cta/90"
               nativeButton={false}
               render={<Link href="/contact" />}
             >
@@ -31,9 +31,11 @@ export function SiteFooter({
 
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="font-serif text-lg">{settings?.wordmark ?? "Proxara Policy"}</p>
+            <p className="font-serif text-lg">
+              {settings?.wordmark ?? "Proxara Policy"}
+            </p>
             {settings?.location ? (
-              <p className="mt-2 text-sm text-primary-foreground/70">
+              <p className="mt-2 text-sm text-on-navy-muted">
                 {settings.location}
               </p>
             ) : null}
@@ -45,15 +47,15 @@ export function SiteFooter({
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="text-sm text-primary-foreground/70 transition-colors hover:text-primary-foreground"
+                  className="text-sm text-on-navy-muted transition-colors hover:text-primary-foreground"
                 >
                   {item.label}
                 </Link>
-              ) : null
+              ) : null,
             )}
           </nav>
 
-          <div className="flex flex-col gap-1 text-sm text-primary-foreground/70 md:text-right">
+          <div className="flex flex-col gap-1 text-sm text-on-navy-muted md:text-right">
             {settings?.contactEmail ? (
               <a
                 href={`mailto:${settings.contactEmail}`}
@@ -75,7 +77,7 @@ export function SiteFooter({
           </div>
         </div>
 
-        <p className="mt-12 text-xs text-primary-foreground/50">
+        <p className="mt-12 text-xs text-on-navy-faint">
           © {year} {settings?.footerLegal ?? "Proxara Policy Limited."}
         </p>
       </div>

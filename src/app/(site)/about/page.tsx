@@ -60,11 +60,11 @@ export default async function AboutPage() {
       <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
         <div className="grid gap-12 md:grid-cols-[1fr_20rem] md:gap-16 lg:grid-cols-[1fr_24rem]">
           <div>
-            <h1 className="font-serif text-4xl text-navy md:text-5xl">
+            <h1 className="font-serif text-h1 tracking-display text-navy">
               {page?.name ?? page?.title ?? "About"}
             </h1>
             {page?.role ? (
-              <p className="mt-3 text-sm uppercase tracking-[0.2em] text-muted-foreground">
+              <p className="mt-3 eyebrow text-muted-foreground">
                 {page.role}
               </p>
             ) : null}
@@ -113,12 +113,12 @@ export default async function AboutPage() {
               {page.highlights.map((highlight, i) => (
                 <li
                   key={i}
-                  className="border-t border-primary-foreground/20 pt-5"
+                  className="border-t border-on-navy-line pt-5"
                 >
-                  <p className="text-sm text-gold">
+                  <p className="eyebrow text-gold-on-navy">
                     {String(i + 1).padStart(2, "0")}
                   </p>
-                  <p className="mt-2 leading-relaxed text-primary-foreground/90">
+                  <p className="mt-2 leading-relaxed text-on-navy-muted">
                     {highlight}
                   </p>
                 </li>

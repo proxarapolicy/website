@@ -2,6 +2,8 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Required: shadcn primitives (button, badge, input, textarea) ship `dark:` utilities.
+   Removing this variant breaks the build even though no .dark theme is ever applied. */
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -10,14 +12,6 @@
   --font-sans: var(--font-sans);
   --font-serif: var(--font-serif);
   --font-heading: var(--font-serif);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
   --color-chart-5: var(--chart-5);
   --color-chart-4: var(--chart-4);
   --color-chart-3: var(--chart-3);
@@ -39,6 +33,32 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+
+  /* Brand surfaces */
+  --color-navy: var(--navy);
+  --color-navy-deep: var(--navy-deep);
+
+  /* Gold, split by job — the token you pick enforces contrast.
+     See :root for the measured ratio of each. */
+  --color-gold: var(--gold);
+  --color-gold-cta: var(--gold-cta);
+  --color-gold-deep: var(--gold-deep);
+  --color-gold-on-navy: var(--gold-on-navy);
+
+  /* Text on navy surfaces — named steps replace opacity maths */
+  --color-on-navy-muted: var(--on-navy-muted);
+  --color-on-navy-faint: var(--on-navy-faint);
+  --color-on-navy-line: var(--on-navy-line);
+
+  /* Fluid display scale — continuous, no snap at the md breakpoint */
+  /* Lower bound matches the previous mobile size (36px) so the hero does not
+     swallow the first screen on a phone; the gain is a continuous ramp to 60px
+     instead of a jump at the md breakpoint. */
+  --text-display: clamp(2.25rem, 1.15rem + 4.7vw, 3.75rem);
+  --text-h1: clamp(2.125rem, 1.55rem + 2.4vw, 3rem);
+  --text-h2: clamp(1.75rem, 1.4rem + 1.6vw, 2.25rem);
+  --tracking-display: -0.018em;
+
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -49,87 +69,66 @@
 }
 
 :root {
-  /* Proxara Policy palette: deep navy primary, muted gold accent, white content. Flat — no gradients. */
+  /* Proxara Policy palette. Flat — no gradients, no decorative shadows.
+     Every navy/neutral sits on hue 264 so the whole page is one family;
+     gold sits on hue 84. Contrast ratios below are measured, not estimated. */
+
   --background: oklch(1 0 0);
-  --foreground: oklch(0.24 0.03 255);
+  --foreground: oklch(0.26 0.045 264); /* 15.6:1 on white */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.24 0.03 255);
+  --card-foreground: oklch(0.26 0.045 264);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.24 0.03 255);
-  --primary: oklch(0.25 0.045 255);
-  --primary-foreground: oklch(0.98 0.003 90);
-  --secondary: oklch(0.965 0.006 90);
-  --secondary-foreground: oklch(0.25 0.045 255);
-  --muted: oklch(0.965 0.006 90);
-  --muted-foreground: oklch(0.5 0.02 255);
-  --accent: oklch(0.66 0.1 85);
-  --accent-foreground: oklch(0.2 0.04 255);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.9 0.012 255);
-  --input: oklch(0.9 0.012 255);
-  --ring: oklch(0.66 0.1 85);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  --popover-foreground: oklch(0.26 0.045 264);
+
+  --primary: oklch(0.289 0.062 264);
+  --primary-foreground: oklch(
+    0.98 0.005 85
+  ); /* off-white carrying the gold hue */
+  --secondary: oklch(0.968 0.005 264);
+  --secondary-foreground: oklch(0.289 0.062 264);
+  --muted: oklch(0.968 0.005 264);
+  --muted-foreground: oklch(0.47 0.03 264); /* 6.8:1 on white */
+  --accent: oklch(0.598 0.102 84);
+  --accent-foreground: oklch(0.22 0.055 264);
+  --destructive: oklch(
+    0.52 0.17 27
+  ); /* 6.0:1 — shadcn's default red sits outside the palette */
+  --border: oklch(0.905 0.014 264);
+  --input: oklch(0.905 0.014 264);
+  --ring: oklch(0.598 0.102 84);
+
+  /* Navy → gold ramp, replacing shadcn's untouched greyscale */
+  --chart-1: oklch(0.289 0.062 264);
+  --chart-2: oklch(0.4 0.055 264);
+  --chart-3: oklch(0.52 0.045 264);
+  --chart-4: oklch(0.598 0.102 84);
+  --chart-5: oklch(0.72 0.09 85);
+
   /* Near-square corners — institutional, not app-like */
   --radius: 0.125rem;
-  /* Non-shadcn tokens used by the site shell */
-  --navy: oklch(0.25 0.045 255);
-  --navy-deep: oklch(0.21 0.04 255);
-  --gold: oklch(0.66 0.1 85);
-  /* Darker gold for small text on white — meets WCAG 4.5:1; use --gold on navy */
-  --gold-deep: oklch(0.51 0.1 85);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
+  /* --- Brand ------------------------------------------------------------ */
+  /* Exact logo mark, sampled from public/proxara-logo.png (#1B2A4A) */
+  --navy: oklch(0.289 0.062 264); /* 14.2:1 on white */
+  --navy-deep: oklch(0.22 0.055 264); /* large dark surfaces only */
 
-@theme inline {
-  --color-navy: var(--navy);
-  --color-navy-deep: var(--navy-deep);
-  --color-gold: var(--gold);
-  --color-gold-deep: var(--gold-deep);
+  /* Gold has four jobs and four tokens. Do not substitute one for another. */
+  --gold: oklch(
+    0.598 0.102 84
+  ); /* #9C7A2E logo-exact. NON-TEXT: rules, marks, ::selection */
+  --gold-cta: oklch(
+    0.685 0.105 85
+  ); /* button fills — navy-deep label on it = 6.1:1 */
+  --gold-deep: oklch(0.545 0.098 84); /* small gold text on white = 5.0:1 */
+  --gold-on-navy: oklch(
+    0.78 0.095 85
+  ); /* gold text on navy = 7.1:1 on navy-deep */
+
+  /* Text on navy. Named steps, because opacity maths hides contrast:
+     the old primary-foreground/50 computed to ~4.49:1 at 12px — a knife-edge AA miss. */
+  --on-navy-muted: oklch(0.82 0.012 264); /* 10.0:1 — nav links, meta */
+  --on-navy-faint: oklch(0.7 0.01 264); /*  6.5:1 — copyright, fine print */
+  --on-navy-line: oklch(1 0 0 / 18%); /* hairlines on navy */
 }
 
 @layer base {
@@ -147,9 +146,217 @@
   h3,
   h4 {
     @apply font-serif;
+    /* Let font-size drive the optical-size axis of Source Serif 4.
+       NB: font-variation-settings would override font-weight — if any rule
+       sets an axis explicitly it must also set "wght". */
+    font-optical-sizing: auto;
+    text-wrap: balance;
   }
   ::selection {
     background: var(--gold);
     color: var(--navy-deep);
+  }
+
+  /* Links: browser-default underline metrics are the cheapest thing on a page.
+     Sit the rule below the baseline and let it break around descenders. */
+  a {
+    text-underline-offset: 0.18em;
+    text-decoration-thickness: from-font;
+    text-decoration-skip-ink: auto;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  /* Running head / kicker, set in REAL small caps.
+     Deliberately serif: Public Sans has no `smcp`, so the eyebrow switches to
+     Source Serif 4 to reach genuine small-cap glyphs. Serif small-cap running
+     heads against a sans body is the standard institutional-report pairing —
+     and real small caps need far less tracking than letterspaced full caps. */
+  .eyebrow {
+    font-family: var(--font-serif), serif;
+    font-variant-caps: all-small-caps;
+    font-feature-settings:
+      "smcp" 1,
+      "c2sc" 1;
+    font-size: 0.8125rem;
+    font-weight: 550;
+    line-height: 1.4;
+    letter-spacing: 0.09em;
+  }
+
+  /* Acronyms in running prose. A policy site is dense with AI / OECD / GDPR,
+     and full caps punch bright holes through a text block.
+     In serif contexts this resolves to real small caps; in sans (Public Sans
+     has no smcp) the font-size/weight pair below is the designed fallback —
+     downscaling caps thins their strokes, so the weight steps up to compensate,
+     which is what stops faux small caps from looking cheap. */
+  .caps {
+    font-variant-caps: all-small-caps;
+    font-size: 0.88em;
+    font-weight: 550;
+    letter-spacing: 0.045em;
+  }
+
+  /* Long-form measure. 68ch is the upper bound of comfortable reading. */
+  .prose-measure {
+    max-width: 68ch;
+    line-height: 1.7;
+    hyphens: auto;
+    hyphenate-limit-chars: 8 4 4;
+  }
+}
+
+@layer utilities {
+  /* Rule hierarchy — a printed report uses different weights to mean different
+     things. One undifferentiated grey border everywhere is the template tell. */
+  .rule-hairline {
+    border-top-width: var(--hairline);
+    border-top-color: var(--border);
+    border-top-style: solid;
+  }
+
+  /* Source Serif 4's default figures are already lining-tabular, so alignment
+     is free. This is the opt-in to OLDSTYLE figures, whose varying heights read
+     as typeset rather than spreadsheet — for datelines and article numbers.
+     Serif only: Public Sans has no `onum`. */
+  .figures-oldstyle {
+    font-family: var(--font-serif), serif;
+    font-variant-numeric: oldstyle-nums;
+    font-feature-settings: "onum" 1;
+  }
+
+  .figures-tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+:root {
+  --hairline: 1px;
+}
+
+/* True hairlines on high-DPR screens. Uniform chunky 1px greys are a cheap
+   tell; at 2dppx a half-pixel rule resolves cleanly. */
+@media (min-resolution: 2dppx) {
+  :root {
+    --hairline: 0.5px;
+  }
+}
+
+/* --- Motion -------------------------------------------------------------
+   Exactly one effect: an essay title on the /thinking index carries its
+   position and size into the article <h1>. Scroll-reveal is deliberately
+   absent — fade-up-on-scroll is the motion equivalent of a stock photo, and
+   it would fight the performance rules besides. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 180ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* `share="morph"` on the <ViewTransition> assigns this class. The title is
+   named per-slug so only the essay actually clicked participates. */
+::view-transition-group(.morph) {
+  animation-duration: 320ms;
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* --- Print ---------------------------------------------------------------
+   Ministers and programme leads print briefs before meetings. Almost no site
+   accounts for that, and the default output — navy floods, a stuck header,
+   and links whose destinations vanish — reads as an afterthought.
+   Target: something that survives a stapler. */
+@page {
+  margin: 20mm 18mm;
+}
+
+@media print {
+  html {
+    font-size: 11pt;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Site furniture carries no meaning on paper */
+  header,
+  footer,
+  nav,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Flatten brand surfaces — a navy flood wastes toner and greys the text */
+  [class*="bg-navy"],
+  [class*="bg-muted"],
+  [class*="bg-gold"] {
+    background: transparent !important;
+    color: #000 !important;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: #000 !important;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  p,
+  li,
+  blockquote {
+    orphans: 3;
+    widows: 3;
+  }
+
+  blockquote,
+  figure,
+  ul,
+  ol {
+    break-inside: avoid;
+  }
+
+  /* Expand destinations — a printed link with no URL is a dead end.
+     Internal hrefs are relative, so qualify them. */
+  article a[href^="http"]::after {
+    content: " <" attr(href) ">";
+    font-size: 0.85em;
+    word-break: break-all;
+  }
+  article a[href^="/"]::after {
+    content: " <proxarapolicy.com" attr(href) ">";
+    font-size: 0.85em;
+  }
+
+  a {
+    color: #000 !important;
+    text-decoration: underline;
+  }
+
+  /* The measure is a screen constraint; on paper the column is the page */
+  .prose-measure {
+    max-width: none;
   }
 }

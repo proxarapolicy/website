@@ -36,7 +36,7 @@ export default async function ContactPage() {
     <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
       <div className="grid gap-14 md:grid-cols-[1fr_20rem] md:gap-20">
         <div>
-          <h1 className="font-serif text-4xl text-navy md:text-5xl">
+          <h1 className="font-serif text-h1 tracking-display text-navy">
             {page?.title ?? "Contact"}
           </h1>
           {page?.intro ? (
@@ -69,7 +69,7 @@ export default async function ContactPage() {
         <aside className="space-y-10 border-t border-border pt-10 md:border-l md:border-t-0 md:pl-10 md:pt-0">
           {settings?.linkedinUrl ? (
             <div>
-              <h2 className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+              <h2 className="eyebrow text-muted-foreground">
                 LinkedIn
               </h2>
               <a
@@ -88,7 +88,7 @@ export default async function ContactPage() {
 
           {settings?.contactEmail ? (
             <div>
-              <h2 className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+              <h2 className="eyebrow text-muted-foreground">
                 Email
               </h2>
               <a
@@ -102,7 +102,7 @@ export default async function ContactPage() {
 
           {settings?.location ? (
             <div>
-              <h2 className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
+              <h2 className="eyebrow text-muted-foreground">
                 Location
               </h2>
               <p className="mt-2 font-serif text-lg text-navy">

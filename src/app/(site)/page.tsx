@@ -3,8 +3,9 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { PortableText } from "@/components/portable-text";
+import { Mark } from "@/components/site/mark";
+import { EditorialGrid, Section } from "@/components/site/section";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { formatDate } from "@/lib/format";
 import { seoMetadata } from "@/lib/seo";
 import { sanityFetch } from "@/sanity/lib/client";
@@ -58,22 +59,20 @@ export default async function HomePage() {
       <section className="bg-navy-deep text-primary-foreground">
         <div className="mx-auto max-w-6xl px-5 py-24 md:px-8 md:py-36">
           {page?.heroKicker ? (
-            <p className="mb-6 text-sm font-medium uppercase tracking-[0.2em] text-gold">
-              {page.heroKicker}
-            </p>
+            <p className="eyebrow mb-6 text-gold-on-navy">{page.heroKicker}</p>
           ) : null}
-          <h1 className="max-w-4xl font-serif text-4xl leading-tight md:text-6xl md:leading-[1.1]">
+          <h1 className="max-w-4xl font-serif text-display leading-[1.08] tracking-display">
             {page?.heroHeading}
           </h1>
           {page?.heroSubline ? (
-            <p className="mt-8 max-w-2xl text-lg leading-relaxed text-primary-foreground/80">
+            <p className="mt-8 max-w-2xl text-lg leading-relaxed text-on-navy-muted">
               {page.heroSubline}
             </p>
           ) : null}
           <div className="mt-10">
             <Button
               size="lg"
-              className="bg-gold text-navy-deep hover:bg-gold/90"
+              className="bg-gold-cta text-navy-deep hover:bg-gold-cta/90"
               nativeButton={false}
               render={<Link href="/contact" />}
             >
@@ -100,7 +99,7 @@ export default async function HomePage() {
         <section className="border-b border-border bg-muted">
           <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-8 md:flex-row md:items-center md:gap-12 md:px-8">
             {page.credibilityHeading ? (
-              <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+              <p className="eyebrow shrink-0 text-muted-foreground">
                 {page.credibilityHeading}
               </p>
             ) : null}
@@ -118,47 +117,62 @@ export default async function HomePage() {
         </section>
       ) : null}
 
-      {/* Service pillars */}
-      <section className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
-        <div className="mb-12 max-w-2xl">
-          <h2 className="font-serif text-3xl text-navy md:text-4xl">
-            {page?.pillarsHeading ?? "What we do"}
-          </h2>
+      {/* Service pillars — set as a report contents list, not a card grid.
+          Numbers hang in the left margin; hairline rules separate rows. */}
+      <Section className="py-20 md:py-28">
+        {/* Heading left, intro right — the asymmetry is the split between the
+            two columns, so the heading still aligns with the list edge below.
+            Indenting the heading away from its own list reads as a mistake. */}
+        <EditorialGrid className="mb-12">
+          <div className="md:col-span-5">
+            {/* Structural marker, not copy — the brand diamond stands in for a
+                running head, so nothing here needs authoring in Sanity. */}
+            <Mark className="mb-5 size-3 text-navy" />
+            <h2 className="font-serif text-h2 text-navy">
+              {page?.pillarsHeading ?? "What we do"}
+            </h2>
+          </div>
           {page?.pillarsIntro ? (
-            <p className="mt-4 text-muted-foreground">{page.pillarsIntro}</p>
+            <div className="md:col-span-6 md:col-start-7 md:self-end">
+              <p className="text-muted-foreground">{page.pillarsIntro}</p>
+            </div>
           ) : null}
-        </div>
-        <div className="grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+        </EditorialGrid>
+
+        {/* 2px navy = major division; hairlines below = row separators */}
+        <ol className={pillars.length ? "border-t-2 border-navy" : undefined}>
           {pillars.map((pillar, i) => (
-            <Link
-              key={pillar._id}
-              href="/what-we-do"
-              className="group block border-t-2 border-navy pt-5 transition-colors hover:border-gold"
-            >
-              <p className="text-xs tabular-nums text-muted-foreground">
-                {String(i + 1).padStart(2, "0")}
-              </p>
-              <h3 className="mt-2 font-serif text-xl leading-snug text-navy">
-                {pillar.title}
-              </h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                {pillar.oneLiner}
-              </p>
-            </Link>
+            <li key={pillar._id} className="rule-hairline first:border-t-0">
+              <Link
+                href="/what-we-do"
+                className="group grid items-baseline gap-x-10 gap-y-2 py-7 md:grid-cols-12"
+              >
+                <span className="figures-tabular text-sm text-muted-foreground md:col-span-1">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3 className="font-serif text-xl leading-snug text-navy underline-offset-4 group-hover:underline group-hover:decoration-gold md:col-span-5">
+                  {pillar.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-muted-foreground md:col-span-6">
+                  {pillar.oneLiner}
+                </p>
+              </Link>
+            </li>
           ))}
-        </div>
+        </ol>
+
         <div className="mt-12">
           <SectionLink href="/what-we-do">
             {page?.pillarsCtaLabel ?? "See all services"}
           </SectionLink>
         </div>
-      </section>
+      </Section>
 
       {/* Who we work with */}
       {page?.audienceBody ? (
         <section className="border-y border-border bg-muted">
           <div className="mx-auto max-w-3xl px-5 py-20 md:px-8 md:py-24">
-            <h2 className="font-serif text-3xl text-navy md:text-4xl">
+            <h2 className="font-serif text-h2 text-navy">
               {page.audienceHeading ?? "Who we work with"}
             </h2>
             <p className="mt-6 text-lg leading-relaxed text-foreground/90">
@@ -208,39 +222,45 @@ export default async function HomePage() {
       ) : null}
 
       {/* Latest thinking */}
-      <section className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
-        <div className="mb-10 max-w-2xl">
-          <h2 className="font-serif text-3xl text-navy md:text-4xl">
-            {page?.thinkingHeading ?? "Latest thinking"}
-          </h2>
-          {page?.thinkingIntro ? (
-            <p className="mt-4 leading-relaxed text-muted-foreground">
-              {page.thinkingIntro}
-            </p>
-          ) : null}
-          <div className="mt-8">
-            <SectionLink href="/thinking">
-              {page?.thinkingCtaLabel ?? "Read our latest thinking"}
-            </SectionLink>
+      <Section className="py-20 md:py-28">
+        <EditorialGrid className="mb-10">
+          <div className="md:col-span-5">
+            <Mark className="mb-5 size-3 text-navy" />
+            <h2 className="font-serif text-h2 text-navy">
+              {page?.thinkingHeading ?? "Latest thinking"}
+            </h2>
           </div>
-        </div>
-        {latest.length ? <Separator className="mb-2" /> : null}
-        <ul>
+          <div className="md:col-span-6 md:col-start-7 md:self-end">
+            {page?.thinkingIntro ? (
+              <p className="leading-relaxed text-muted-foreground">
+                {page.thinkingIntro}
+              </p>
+            ) : null}
+            <div className="mt-8">
+              <SectionLink href="/thinking">
+                {page?.thinkingCtaLabel ?? "Read our latest thinking"}
+              </SectionLink>
+            </div>
+          </div>
+        </EditorialGrid>
+        {/* Guard the rule: with no items the bare 2px division reads as a
+            broken element rather than as the top of a list. */}
+        <ul className={latest.length ? "border-t-2 border-navy" : undefined}>
           {latest.map((item) => {
             const isPost = item._type === "post";
-            const href = isPost ? `/thinking/${item.slug}` : item.url ?? "#";
+            const href = isPost ? `/thinking/${item.slug}` : (item.url ?? "#");
             return (
-              <li key={item._id} className="border-b border-border">
+              <li key={item._id} className="rule-hairline first:border-t-0">
                 <Link
                   href={href}
                   target={isPost ? undefined : "_blank"}
                   rel={isPost ? undefined : "noopener noreferrer"}
                   className="group flex flex-col gap-1 py-6 md:flex-row md:items-baseline md:justify-between md:gap-8"
                 >
-                  <span className="font-serif text-xl leading-snug text-navy group-hover:underline group-hover:decoration-gold group-hover:underline-offset-4 md:max-w-3xl">
+                  <span className="font-serif text-xl leading-snug text-navy underline-offset-4 group-hover:underline group-hover:decoration-gold md:max-w-3xl">
                     {item.title}
                   </span>
-                  <span className="shrink-0 text-sm text-muted-foreground">
+                  <span className="figures-tabular shrink-0 text-sm text-muted-foreground">
                     {isPost ? "Essay" : item.publication} ·{" "}
                     {formatDate(item.publishedAt)}
                   </span>
@@ -249,7 +269,7 @@ export default async function HomePage() {
             );
           })}
         </ul>
-      </section>
+      </Section>
     </>
   );
 }
