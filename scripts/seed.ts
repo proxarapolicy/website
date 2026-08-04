@@ -221,6 +221,7 @@ async function run() {
     heroSubline:
       "From Nairobi to Brussels, we bridge the gap between how technology is built and how it is governed.",
     heroCtaLabel: "Get in touch",
+    positioningHeading: "Our position",
     positioningBody: blocks(
       "Technology regulation is no longer a niche concern for governments or a compliance afterthought for companies. It sits at the centre of trade policy, national security, elections, and economic growth. Proxara Policy was founded to help the institutions shaping this landscape, governments, platforms, and the multilateral bodies that sit between them, make sense of it and act on it with confidence.",
       "We work across five areas, drawing on direct experience inside two of the world’s largest technology platforms and close engagement with government policymaking in Kenya and beyond."
@@ -232,6 +233,7 @@ async function run() {
       "Office of the President of Kenya",
       "University of Nairobi",
     ],
+    aboutHeading: "About",
     aboutTeaserBody:
       "Proxara Policy is led by Mwenda Kilemi, who has held senior policy roles at TikTok and Google, advised Kenya’s Office of the President, and lectured at the University of Nairobi. That combination of platform-side, government-side, and academic experience is rare, and it is the foundation the firm is built on.",
     aboutCtaLabel: "About Mwenda",

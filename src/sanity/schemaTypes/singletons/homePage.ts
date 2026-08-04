@@ -42,6 +42,14 @@ export const homePageType = defineType({
       initialValue: "Get in touch",
     }),
     defineField({
+      name: "positioningHeading",
+      title: "Positioning heading",
+      type: "string",
+      group: "sections",
+      initialValue: "Our position",
+      description: "Heading above the positioning statement on the home page.",
+    }),
+    defineField({
       name: "positioningBody",
       title: "Positioning statement",
       type: "blockContent",
@@ -106,6 +114,14 @@ export const homePageType = defineType({
       group: "sections",
       initialValue: "Learn more",
       description: "Links to /who-we-work-with.",
+    }),
+    defineField({
+      name: "aboutHeading",
+      title: "About section heading",
+      type: "string",
+      group: "sections",
+      initialValue: "About",
+      description: "Heading above the about teaser on the home page.",
     }),
     defineField({
       name: "aboutTeaserBody",

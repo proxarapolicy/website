@@ -1,11 +1,13 @@
 import Link from "next/link";
 
+import { Mark } from "@/components/site/mark";
+import { SectionBand } from "@/components/site/section";
 import { Button } from "@/components/ui/button";
 
 /**
  * The closing paragraph + "Get in touch" button that ends every section page.
- * Renders nothing when the page has no closing copy, so an unfilled field
- * never leaves an empty band behind.
+ * Gold-wash (not navy-wash) so it never blends into a preceding content band.
+ * Content sits in the same centered max-w-5xl column as inner-page sections.
  */
 export function ClosingCta({
   body,
@@ -17,11 +19,17 @@ export function ClosingCta({
   if (!body) return null;
 
   return (
-    <section className="border-t border-border">
-      <div className="mx-auto flex max-w-6xl flex-col items-start gap-8 px-5 py-16 md:flex-row md:items-center md:justify-between md:px-8 md:py-20">
-        <p className="max-w-2xl font-serif text-xl leading-snug text-navy md:text-2xl">
-          {body}
-        </p>
+    <SectionBand variant="gold-wash" className="py-16 md:py-20">
+      <div className="mx-auto flex w-full max-w-5xl flex-col items-start gap-8 md:flex-row md:items-center md:justify-between md:gap-12">
+        <div className="max-w-2xl">
+          <div className="mb-5 flex items-center gap-2.5">
+            <Mark className="size-2.5 text-navy" />
+            <span className="h-px w-12 bg-gold" aria-hidden />
+          </div>
+          <p className="font-serif text-xl leading-snug text-navy md:text-2xl">
+            {body}
+          </p>
+        </div>
         <Button
           size="lg"
           nativeButton={false}
@@ -31,6 +39,6 @@ export function ClosingCta({
           {ctaLabel ?? "Get in touch"}
         </Button>
       </div>
-    </section>
+    </SectionBand>
   );
 }

@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { MobileNav } from "./mobile-nav";
+import { NavLinks } from "./nav-links";
 import type { SITE_SETTINGS_QUERY_RESULT } from "@/sanity/types";
 
 export function SiteHeader({
@@ -11,7 +12,9 @@ export function SiteHeader({
   settings: SITE_SETTINGS_QUERY_RESULT;
 }) {
   const wordmark = settings?.wordmark ?? "Proxara Policy";
-  const navItems = settings?.navItems ?? [];
+  const navItems = (settings?.navItems ?? []).flatMap((i) =>
+    i.href && i.label ? [{ label: i.label, href: i.href }] : [],
+  );
   const ctaLabel = settings?.ctaLabel;
 
   return (
@@ -31,18 +34,8 @@ export function SiteHeader({
           />
         </Link>
 
-        <nav className="hidden items-center gap-7 md:flex">
-          {navItems.map((item) =>
-            item.href ? (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-sm text-muted-foreground transition-colors hover:text-navy"
-              >
-                {item.label}
-              </Link>
-            ) : null,
-          )}
+        <nav className="hidden items-center gap-7 md:flex" aria-label="Primary">
+          <NavLinks items={navItems} />
           {ctaLabel ? (
             <Button
               size="sm"
@@ -56,9 +49,7 @@ export function SiteHeader({
 
         <MobileNav
           wordmark={wordmark}
-          items={navItems.flatMap((i) =>
-            i.href && i.label ? [{ label: i.label, href: i.href }] : [],
-          )}
+          items={navItems}
           ctaLabel={ctaLabel}
         />
       </div>

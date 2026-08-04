@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 
 import { ClosingCta } from "@/components/site/closing-cta";
+import { InsetPanel, PanelHead } from "@/components/site/inset-panel";
+import { PageBanner } from "@/components/site/page-banner";
+import { SectionBand } from "@/components/site/section";
 import { seoMetadata } from "@/lib/seo";
 import { sanityFetch } from "@/sanity/lib/client";
 import { AUDIENCES_QUERY, WHO_WE_WORK_WITH_QUERY } from "@/sanity/lib/queries";
@@ -23,6 +26,9 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
+/** Shared content column so banner, cards, and stages share one center axis. */
+const CONTENT = "mx-auto w-full max-w-5xl";
+
 export default async function WhoWeWorkWithPage() {
   const [page, audiences] = await Promise.all([
     getPage(),
@@ -34,70 +40,64 @@ export default async function WhoWeWorkWithPage() {
 
   return (
     <>
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
-          <h1 className="font-serif text-h1 tracking-display text-navy">
-            {page?.title ?? "Who We Work With"}
-          </h1>
-          {page?.intro ? (
-            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-              {page.intro}
-            </p>
-          ) : null}
-        </div>
-      </section>
+      <PageBanner
+        title={page?.title ?? "Who We Work With"}
+        intro={page?.intro}
+      />
 
-      <section className="mx-auto max-w-6xl px-5 py-8 md:px-8 md:py-12">
-        <div className="grid gap-x-12 md:grid-cols-2">
-          {audiences.map((audience) => (
-            <article
-              key={audience._id}
-              className="border-b border-border py-12 md:py-14"
-            >
-              <h2 className="font-serif text-2xl text-navy md:text-3xl">
-                {audience.name}
-              </h2>
-              {audience.body ? (
-                <p className="mt-6 leading-relaxed text-foreground/90">
-                  {audience.body}
-                </p>
-              ) : (
-                <dl className="mt-6 space-y-6">
-                  <div>
-                    <dt className="eyebrow text-muted-foreground">
-                      The challenge
-                    </dt>
-                    <dd className="mt-2 leading-relaxed text-foreground/90">
-                      {audience.challenge}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="eyebrow text-gold-deep">
-                      Proxara’s offer
-                    </dt>
-                    <dd className="mt-2 leading-relaxed text-foreground/90">
-                      {audience.offer}
-                    </dd>
-                  </div>
-                </dl>
-              )}
-            </article>
-          ))}
-        </div>
-      </section>
-
-      {/* Company stages — full-width band so it reads as an aside, not a fourth client type */}
-      {page?.stagesBody ? (
-        <section className="border-y border-border bg-muted">
-          <div className="mx-auto max-w-3xl px-5 py-16 md:px-8 md:py-20">
-            <h2 className="font-serif text-2xl text-navy md:text-3xl">
-              {page.stagesHeading ?? "Working with companies at different stages"}
-            </h2>
-            <p className="mt-6 leading-relaxed text-foreground/90">
-              {page.stagesBody}
-            </p>
+      <SectionBand variant="navy-wash" className="py-16 md:py-20">
+        <div className={CONTENT}>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+            {audiences.map((audience) => (
+              <InsetPanel
+                key={audience._id}
+                className="flex h-full flex-col bg-background"
+              >
+                <PanelHead title={audience.name ?? ""} />
+                {audience.body ? (
+                  <p className="mt-6 flex-1 leading-relaxed text-foreground/90">
+                    {audience.body}
+                  </p>
+                ) : (
+                  <dl className="mt-6 flex-1 space-y-6">
+                    <div>
+                      <dt className="eyebrow text-muted-foreground">
+                        The challenge
+                      </dt>
+                      <dd className="mt-2 leading-relaxed text-foreground/90">
+                        {audience.challenge}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="eyebrow text-gold-deep">Proxara’s offer</dt>
+                      <dd className="mt-2 leading-relaxed text-foreground/90">
+                        {audience.offer}
+                      </dd>
+                    </div>
+                  </dl>
+                )}
+              </InsetPanel>
+            ))}
           </div>
-        </section>
+        </div>
+      </SectionBand>
+
+      {page?.stagesBody ? (
+        <SectionBand variant="default" className="py-16 md:py-20">
+          <div className={CONTENT}>
+            <InsetPanel className="surface-navy-wash">
+              <PanelHead
+                title={
+                  page.stagesHeading ??
+                  "Working with companies at different stages"
+                }
+              />
+              <p className="mt-6 max-w-3xl leading-relaxed text-foreground/90">
+                {page.stagesBody}
+              </p>
+            </InsetPanel>
+          </div>
+        </SectionBand>
       ) : null}
 
       <ClosingCta body={page?.closingBody} ctaLabel={page?.closingCtaLabel} />

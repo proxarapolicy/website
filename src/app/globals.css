@@ -37,6 +37,8 @@
   /* Brand surfaces */
   --color-navy: var(--navy);
   --color-navy-deep: var(--navy-deep);
+  --color-surface-navy-wash: var(--surface-navy-wash);
+  --color-surface-gold-wash: var(--surface-gold-wash);
 
   /* Gold, split by job — the token you pick enforces contrast.
      See :root for the measured ratio of each. */
@@ -129,6 +131,14 @@
   --on-navy-muted: oklch(0.82 0.012 264); /* 10.0:1 — nav links, meta */
   --on-navy-faint: oklch(0.7 0.01 264); /*  6.5:1 — copyright, fine print */
   --on-navy-line: oklch(1 0 0 / 18%); /* hairlines on navy */
+
+  /* Section surfaces — derived from navy/gold, NOT new brand colors.
+     Deliberately stronger than --muted so bands read as editorial divisions
+     at a glance (not a near-white wash that disappears on most screens). */
+  --surface-navy-wash: oklch(0.935 0.028 264); /* clear cool navy paper */
+  --surface-gold-wash: oklch(0.945 0.04 85); /* clear warm gold paper */
+  --surface-navy-wash-foreground: var(--foreground);
+  --surface-gold-wash-foreground: var(--foreground);
 }
 
 @layer base {
@@ -208,6 +218,33 @@
     hyphens: auto;
     hyphenate-limit-chars: 8 4 4;
   }
+
+  /* Editorial prose — first graf reads as a lead; later grafs stay measured. */
+  .prose-editorial > .prose-p:first-of-type {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: var(--navy);
+  }
+
+  /* Full-bleed section bands — used by SectionBand. Color carries separation;
+     borders are optional and applied by the component variant.
+     Wash surfaces darken --muted-foreground locally so meta text stays ≥4.5:1. */
+  .surface-navy-wash {
+    background: var(--surface-navy-wash);
+    color: var(--surface-navy-wash-foreground);
+    --muted-foreground: oklch(0.4 0.035 264);
+    --border: oklch(0.86 0.02 264);
+  }
+  .surface-gold-wash {
+    background: var(--surface-gold-wash);
+    color: var(--surface-gold-wash-foreground);
+    --muted-foreground: oklch(0.4 0.04 84);
+    --border: oklch(0.88 0.03 85);
+  }
+  .surface-navy {
+    background: var(--navy-deep);
+    color: var(--primary-foreground);
+  }
 }
 
 @layer utilities {
@@ -236,6 +273,31 @@
 
 :root {
   --hairline: 1px;
+}
+
+/* Thin scrollbars — Firefox + Chromium/WebKit. Track stays quiet; thumb uses
+   a muted navy so it doesn’t fight the gold accent. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: oklch(0.55 0.04 264) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: oklch(0.55 0.04 264);
+  border-radius: 0;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--navy);
 }
 
 /* True hairlines on high-DPR screens. Uniform chunky 1px greys are a cheap
@@ -310,7 +372,11 @@
   /* Flatten brand surfaces — a navy flood wastes toner and greys the text */
   [class*="bg-navy"],
   [class*="bg-muted"],
-  [class*="bg-gold"] {
+  [class*="bg-gold"],
+  [class*="bg-surface-"],
+  .surface-navy-wash,
+  .surface-gold-wash,
+  .surface-navy {
     background: transparent !important;
     color: #000 !important;
   }

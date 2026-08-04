@@ -12,6 +12,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { MobileNavLinks } from "./nav-links";
 
 type NavItem = { label: string; href: string };
 
@@ -46,17 +47,8 @@ export function MobileNav({
             {wordmark}
           </SheetTitle>
         </SheetHeader>
-        <nav className="flex flex-col gap-1 px-4">
-          {items.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setOpen(false)}
-              className="py-2.5 text-base text-foreground hover:text-navy border-b border-border/60"
-            >
-              {item.label}
-            </Link>
-          ))}
+        <nav className="flex flex-col gap-1 px-4" aria-label="Primary">
+          <MobileNavLinks items={items} onNavigate={() => setOpen(false)} />
           {ctaLabel ? (
             <Button
               className="mt-6"

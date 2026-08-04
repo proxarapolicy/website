@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 
 import { ContactForm } from "@/components/site/contact-form";
+import { Mark } from "@/components/site/mark";
+import { PageBanner } from "@/components/site/page-banner";
+import { SectionBand } from "@/components/site/section";
 import { seoMetadata } from "@/lib/seo";
 import { sanityFetch } from "@/sanity/lib/client";
 import { CONTACT_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/lib/queries";
@@ -23,6 +26,28 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
+function ContactDetail({
+  label,
+  children,
+  note,
+}: {
+  label: string;
+  children: React.ReactNode;
+  note?: React.ReactNode;
+}) {
+  return (
+    <div className="border-t border-border pt-6 first:border-t-0 first:pt-0">
+      <p className="eyebrow text-gold-deep">{label}</p>
+      <div className="mt-2.5">{children}</div>
+      {note ? (
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          {note}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
 export default async function ContactPage() {
   const [page, settings] = await Promise.all([
     getPage(),
@@ -33,85 +58,75 @@ export default async function ContactPage() {
   ]);
 
   return (
-    <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
-      <div className="grid gap-14 md:grid-cols-[1fr_20rem] md:gap-20">
-        <div>
-          <h1 className="font-serif text-h1 tracking-display text-navy">
-            {page?.title ?? "Contact"}
-          </h1>
-          {page?.intro ? (
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              {page.intro}
-            </p>
-          ) : null}
+    <>
+      <PageBanner title={page?.title ?? "Contact"} intro={page?.intro} />
 
-          <div className="mt-12 max-w-xl">
-            {page?.formHeading ? (
-              <h2 className="mb-6 font-serif text-2xl text-navy">
-                {page.formHeading}
+      <SectionBand variant="navy-wash" className="py-16 md:py-24">
+        <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-16 xl:grid-cols-[minmax(0,1fr)_20rem] xl:gap-20">
+          <div className="border border-border border-t-2 border-t-gold bg-background px-6 py-8 md:px-10 md:py-12">
+            <div className="mb-8">
+              <div className="mb-4 flex items-center gap-2.5">
+                <Mark className="size-2.5 text-navy" />
+                <span className="h-px w-12 bg-gold" aria-hidden />
+              </div>
+              <h2 className="font-serif text-2xl tracking-display text-navy md:text-3xl">
+                {page?.formHeading ?? "Send an enquiry"}
               </h2>
-            ) : null}
+            </div>
+
             <ContactForm
               successMessage={page?.successMessage}
               enquiryTypeLabel={page?.enquiryTypeLabel}
               enquiryTypes={page?.enquiryTypes}
               messageLabel={page?.messageLabel}
               submitLabel={page?.submitLabel}
+              responseNote={page?.responseNote}
             />
-            {page?.responseNote ? (
-              <p className="mt-6 text-sm text-muted-foreground">
-                {page.responseNote}
-              </p>
-            ) : null}
           </div>
+
+          <aside className="space-y-8 lg:sticky lg:top-24">
+            <div className="mb-2 flex items-center gap-2.5 lg:mb-4">
+              <Mark className="size-2.5 text-navy" />
+              <span className="h-px w-12 bg-gold" aria-hidden />
+            </div>
+
+            {settings?.linkedinUrl ? (
+              <ContactDetail
+                label="LinkedIn"
+                note="Verify the profile before reaching out — we would."
+              >
+                <a
+                  href={settings.linkedinUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block font-serif text-lg text-navy underline decoration-gold underline-offset-4 transition-colors hover:decoration-gold-deep"
+                >
+                  {settings.linkedinUrl.replace(/^https?:\/\/(www\.)?/, "")}
+                </a>
+              </ContactDetail>
+            ) : null}
+
+            {settings?.contactEmail ? (
+              <ContactDetail label="Email">
+                <a
+                  href={`mailto:${settings.contactEmail}`}
+                  className="block font-serif text-lg text-navy underline decoration-gold underline-offset-4 transition-colors hover:decoration-gold-deep"
+                >
+                  {settings.contactEmail}
+                </a>
+              </ContactDetail>
+            ) : null}
+
+            {settings?.location ? (
+              <ContactDetail label="Location">
+                <p className="font-serif text-lg text-navy">
+                  {settings.location}
+                </p>
+              </ContactDetail>
+            ) : null}
+          </aside>
         </div>
-
-        <aside className="space-y-10 border-t border-border pt-10 md:border-l md:border-t-0 md:pl-10 md:pt-0">
-          {settings?.linkedinUrl ? (
-            <div>
-              <h2 className="eyebrow text-muted-foreground">
-                LinkedIn
-              </h2>
-              <a
-                href={settings.linkedinUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-2 block font-serif text-lg text-navy underline decoration-gold underline-offset-4"
-              >
-                {settings.linkedinUrl.replace(/^https?:\/\/(www\.)?/, "")}
-              </a>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Verify the profile before reaching out — we would.
-              </p>
-            </div>
-          ) : null}
-
-          {settings?.contactEmail ? (
-            <div>
-              <h2 className="eyebrow text-muted-foreground">
-                Email
-              </h2>
-              <a
-                href={`mailto:${settings.contactEmail}`}
-                className="mt-2 block font-serif text-lg text-navy underline decoration-gold underline-offset-4"
-              >
-                {settings.contactEmail}
-              </a>
-            </div>
-          ) : null}
-
-          {settings?.location ? (
-            <div>
-              <h2 className="eyebrow text-muted-foreground">
-                Location
-              </h2>
-              <p className="mt-2 font-serif text-lg text-navy">
-                {settings.location}
-              </p>
-            </div>
-          ) : null}
-        </aside>
-      </div>
-    </section>
+      </SectionBand>
+    </>
   );
 }

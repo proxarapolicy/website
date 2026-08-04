@@ -5,6 +5,9 @@ import { ArrowUpRight } from "lucide-react";
 import { ViewTransition } from "react";
 
 import { ClosingCta } from "@/components/site/closing-cta";
+import { Mark } from "@/components/site/mark";
+import { PageBanner } from "@/components/site/page-banner";
+import { SectionBand } from "@/components/site/section";
 import { formatDate, yearOf } from "@/lib/format";
 import { seoMetadata } from "@/lib/seo";
 import { sanityFetch } from "@/sanity/lib/client";
@@ -54,104 +57,141 @@ export default async function ThinkingPage({
     }),
   ]);
 
+  const feed = items;
+
   return (
     <>
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
-          <h1 className="font-serif text-h1 tracking-display text-navy">
-            {page?.title ?? "Thinking"}
-          </h1>
-          {page?.intro ? (
-            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-              {page.intro}
+      <PageBanner title={page?.title ?? "Thinking"} intro={page?.intro}>
+        {/* Topic filter — plain links, server-rendered, zero client JS.
+            Hidden until there is something to filter. */}
+        {feed.length || tag ? (
+          <nav
+            aria-label="Filter by topic"
+            className="flex flex-wrap gap-2"
+          >
+            <FilterLink href="/thinking" active={tag === ""}>
+              All topics
+            </FilterLink>
+            {tags.map((t) =>
+              t.slug ? (
+                <FilterLink
+                  key={t._id}
+                  href={`/thinking?tag=${t.slug}`}
+                  active={tag === t.slug}
+                >
+                  {t.title}
+                </FilterLink>
+              ) : null,
+            )}
+          </nav>
+        ) : null}
+      </PageBanner>
+
+      <SectionBand variant="default" className="pb-24 pt-4 md:pb-28">
+        {feed.length === 0 ? (
+          <div className="mx-auto max-w-xl border border-border border-t-2 border-t-gold bg-surface-navy-wash px-8 py-16 text-center md:px-12 md:py-20">
+            <Mark className="mx-auto mb-6 size-3 text-navy" />
+            <p className="font-serif text-xl leading-snug text-navy md:text-2xl">
+              {page?.emptyState ??
+                (tag
+                  ? "No pieces under this topic yet."
+                  : "Pieces will appear here as they are published.")}
             </p>
-          ) : null}
-
-          {/* Topic filter — plain links, server-rendered, zero client JS.
-              Hidden until there is something to filter. */}
-          {items.length || tag ? (
-            <nav
-              aria-label="Filter by topic"
-              className="mt-10 flex flex-wrap gap-2"
-            >
-              <FilterLink href="/thinking" active={tag === ""}>
-                All topics
-              </FilterLink>
-              {tags.map((t) =>
-                t.slug ? (
-                  <FilterLink
-                    key={t._id}
-                    href={`/thinking?tag=${t.slug}`}
-                    active={tag === t.slug}
-                  >
-                    {t.title}
-                  </FilterLink>
-                ) : null,
-              )}
-            </nav>
-          ) : null}
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-6xl px-5 pb-24 md:px-8">
-        {items.length === 0 ? (
-          <p className="py-16 text-muted-foreground">
-            {page?.emptyState ?? "No pieces under this topic yet."}
-          </p>
+            <span
+              className="mx-auto mt-6 block h-0.5 w-12 bg-gold"
+              aria-hidden
+            />
+            {tag ? (
+              <p className="mt-8">
+                <Link
+                  href="/thinking"
+                  className="inline-flex items-center gap-2 font-medium text-gold-deep underline decoration-gold underline-offset-[0.18em] transition-colors hover:text-navy hover:decoration-gold-deep"
+                >
+                  View all topics
+                </Link>
+              </p>
+            ) : null}
+          </div>
         ) : (
-          groupByYear(items).map(([year, group]) => (
-            <section key={year} aria-label={year}>
-              {/* Year rule — a 2px navy division opening each volume of the
-                  archive, the way a bound collection separates years. */}
-              <h2 className="figures-oldstyle sticky top-16 z-10 border-t-2 border-navy bg-background pb-2 pt-6 font-serif text-sm text-muted-foreground">
-                {year}
+          groupByYear(feed).map(([year, group]) => (
+            <section key={year} aria-label={year} className="mt-4 first:mt-0">
+              {/* Year volume head — sticky so the archive reads as a bound journal */}
+              <h2 className="figures-oldstyle sticky top-16 z-10 flex items-center gap-3 border-t-2 border-navy bg-background py-4 font-serif text-base text-navy">
+                <Mark className="size-2.5 shrink-0 text-navy" />
+                <span>{year}</span>
+                <span className="h-px flex-1 bg-border" aria-hidden />
               </h2>
-              <ul>
+              <ul className="mt-2 space-y-3">
                 {group.map((item) => {
                   const isPost = item._type === "post";
                   const href = isPost
                     ? `/thinking/${item.slug}`
                     : (item.url ?? "#");
                   return (
-                    <li key={item._id} className="rule-hairline">
+                    <li key={item._id}>
                       <Link
                         href={href}
                         target={isPost ? undefined : "_blank"}
                         rel={isPost ? undefined : "noopener noreferrer"}
-                        className="group grid gap-2 py-10 md:grid-cols-[11rem_1fr] md:gap-10"
+                        className="group grid gap-5 border border-border border-t-2 border-t-transparent bg-background px-5 py-7 transition-colors hover:border-t-gold hover:bg-surface-navy-wash md:grid-cols-[10.5rem_1fr] md:gap-10 md:px-7 md:py-8"
                       >
-                        <div className="text-sm text-muted-foreground">
-                          <p className="figures-oldstyle">
+                        <div className="md:border-r md:border-border md:pr-8">
+                          <p className="figures-oldstyle text-sm text-muted-foreground">
                             {formatDate(item.publishedAt)}
                           </p>
-                          <p className="eyebrow mt-1 text-gold-deep">
+                          <p className="eyebrow mt-3 text-gold-deep">
                             {isPost ? "Essay" : item.publication}
                           </p>
+                          <span
+                            className="mt-4 hidden h-0.5 w-8 bg-gold transition-all group-hover:w-12 md:block"
+                            aria-hidden
+                          />
                         </div>
-                        <div>
+
+                        <div className="min-w-0">
                           <ViewTransition
                             name={
                               isPost ? `essay-${item.slug}` : `link-${item._id}`
                             }
                             share="morph"
                           >
-                            <h2 className="max-w-3xl font-serif text-2xl leading-snug text-navy underline-offset-4 group-hover:underline group-hover:decoration-gold">
+                            <h3 className="max-w-3xl font-serif text-xl leading-snug tracking-display text-navy md:text-2xl">
                               {item.title}
                               {!isPost ? (
-                                <ArrowUpRight className="ml-1 inline size-4 text-muted-foreground" />
+                                <ArrowUpRight
+                                  className="ml-1.5 inline size-4 translate-y-[-0.1em] text-gold-deep"
+                                  aria-hidden
+                                />
                               ) : null}
-                            </h2>
+                            </h3>
                           </ViewTransition>
+
                           {isPost && item.excerpt ? (
-                            <p className="mt-3 max-w-2xl leading-relaxed text-muted-foreground">
+                            <p className="mt-3 max-w-2xl text-[0.9375rem] leading-relaxed text-muted-foreground md:text-base">
                               {item.excerpt}
                             </p>
                           ) : null}
-                          {item.tags?.length ? (
-                            <p className="mt-3 eyebrow text-muted-foreground">
-                              {item.tags.map((t) => t.title).join(" · ")}
-                            </p>
-                          ) : null}
+
+                          <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2">
+                            {item.tags?.length ? (
+                              <ul className="flex flex-wrap gap-2">
+                                {item.tags.map((t) =>
+                                  t.title ? (
+                                    <li
+                                      key={t.slug ?? t.title}
+                                      className="border border-border bg-background px-2.5 py-1 text-[0.6875rem] font-medium tracking-[0.06em] text-muted-foreground uppercase"
+                                    >
+                                      {t.title}
+                                    </li>
+                                  ) : null,
+                                )}
+                              </ul>
+                            ) : null}
+                            <span className="ml-auto inline-flex items-center gap-1.5 text-sm font-medium text-gold-deep md:opacity-0 md:transition-opacity md:group-hover:opacity-100 md:group-focus-visible:opacity-100">
+                              {isPost ? "Read essay" : "Read article"}
+                              <ArrowUpRight className="size-3.5" aria-hidden />
+                            </span>
+                          </div>
                         </div>
                       </Link>
                     </li>
@@ -161,7 +201,7 @@ export default async function ThinkingPage({
             </section>
           ))
         )}
-      </section>
+      </SectionBand>
 
       <ClosingCta body={page?.closingBody} ctaLabel={page?.closingCtaLabel} />
     </>
@@ -199,8 +239,8 @@ function FilterLink({
       className={cn(
         "border px-3 py-1.5 text-sm transition-colors",
         active
-          ? "border-navy bg-navy text-primary-foreground"
-          : "border-border text-muted-foreground hover:border-navy hover:text-navy",
+          ? "border-gold-on-navy bg-gold-cta text-navy-deep"
+          : "border-on-navy-line text-on-navy-muted hover:border-gold-on-navy hover:text-primary-foreground",
       )}
     >
       {children}

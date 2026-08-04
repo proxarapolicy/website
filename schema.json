@@ -1517,6 +1517,13 @@
         },
         "optional": true
       },
+      "positioningHeading": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
       "positioningBody": {
         "type": "objectAttribute",
         "value": {
@@ -1578,6 +1585,13 @@
         "optional": true
       },
       "audienceCtaLabel": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "aboutHeading": {
         "type": "objectAttribute",
         "value": {
           "type": "string"

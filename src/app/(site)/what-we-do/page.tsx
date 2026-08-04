@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 
 import { PortableText } from "@/components/portable-text";
 import { ClosingCta } from "@/components/site/closing-cta";
+import { InsetPanel, PanelHead } from "@/components/site/inset-panel";
+import { Mark } from "@/components/site/mark";
+import { PageBanner } from "@/components/site/page-banner";
+import { SectionBand } from "@/components/site/section";
 import { seoMetadata } from "@/lib/seo";
 import { sanityFetch } from "@/sanity/lib/client";
 import { PILLARS_QUERY, WHAT_WE_DO_QUERY } from "@/sanity/lib/queries";
@@ -36,76 +40,77 @@ export default async function WhatWeDoPage() {
 
   return (
     <>
-      <section className="border-b border-border">
-        <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
-          <h1 className="font-serif text-h1 tracking-display text-navy">
-            {page?.title ?? "What We Do"}
-          </h1>
-          {page?.intro ? (
-            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-              {page.intro}
-            </p>
-          ) : null}
-        </div>
-      </section>
+      <PageBanner
+        title={page?.title ?? "What We Do"}
+        intro={page?.intro}
+      />
 
       {page?.viewpointBody?.length ? (
-        <section className="border-b border-border bg-muted">
-          <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
-            <div className="grid gap-8 md:grid-cols-[8rem_1fr] md:gap-10">
-              <div />
-              <div className="max-w-2xl">
-                <h2 className="mb-6 font-serif text-3xl text-navy">
-                  {page.viewpointHeading ?? "Our view on government and technology"}
-                </h2>
+        <SectionBand variant="navy-wash" className="py-16 md:py-24">
+          <div className="mx-auto w-full max-w-5xl">
+            <div className="mx-auto max-w-3xl">
+              <div className="mb-5 flex items-center gap-2.5">
+                <Mark className="size-2.5 text-navy" />
+                <span className="h-px w-12 bg-gold" aria-hidden />
+              </div>
+              <h2 className="font-serif text-2xl tracking-display text-navy md:text-3xl">
+                {page.viewpointHeading ??
+                  "Our view on government and technology"}
+              </h2>
+              <span className="mt-6 block h-0.5 w-14 bg-gold" aria-hidden />
+              <div className="mt-8">
                 <PortableText
                   value={page.viewpointBody as unknown as PortableTextBlock[]}
                 />
               </div>
             </div>
           </div>
-        </section>
+        </SectionBand>
       ) : null}
 
-      <section className="mx-auto max-w-6xl px-5 md:px-8">
-        <ol>
-          {pillars.map((pillar, i) => (
-            <li
-              key={pillar._id}
-              className="grid gap-4 border-b border-border py-12 md:grid-cols-[8rem_1fr] md:gap-10 md:py-16"
-            >
-              <p className="font-serif text-h2 text-gold-deep">
-                {String(i + 1).padStart(2, "0")}
-              </p>
-              <div>
-                <h2 className="font-serif text-2xl text-navy md:text-3xl">
-                  {pillar.title}
-                </h2>
-                <p className="mt-4 max-w-2xl leading-relaxed text-foreground/90">
-                  {pillar.description ?? pillar.oneLiner}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </section>
+      {/* Services — report contents list with numbered rows */}
+      <SectionBand variant="default" className="py-16 md:py-24">
+        <div className="mx-auto w-full max-w-5xl">
+          <div className="mb-10 flex items-center gap-2.5">
+            <Mark className="size-2.5 text-navy" />
+            <span className="h-px w-12 bg-gold" aria-hidden />
+          </div>
+          <ol className={pillars.length ? "border-t-2 border-navy" : undefined}>
+            {pillars.map((pillar, i) => (
+              <li key={pillar._id} className="rule-hairline first:border-t-0">
+                <div className="grid gap-3 py-8 md:grid-cols-12 md:items-baseline md:gap-8 md:py-10">
+                  <p className="figures-oldstyle font-serif text-2xl text-gold-deep md:col-span-2 md:text-3xl">
+                    {String(i + 1).padStart(2, "0")}
+                  </p>
+                  <div className="md:col-span-10">
+                    <h3 className="font-serif text-xl text-navy md:text-2xl">
+                      {pillar.title}
+                    </h3>
+                    <p className="mt-3 max-w-2xl leading-relaxed text-foreground/90">
+                      {pillar.description ?? pillar.oneLiner}
+                    </p>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </SectionBand>
 
+      {/* How we work — bordered panel (distinct from essay + list above) */}
       {page?.howWeWorkBody ? (
-        <section className="bg-muted">
-          <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
-            <div className="grid gap-8 md:grid-cols-[8rem_1fr] md:gap-10">
-              <div />
-              <div className="max-w-2xl">
-                <h2 className="mb-6 font-serif text-3xl text-navy">
-                  {page.howWeWorkHeading ?? "How we work"}
-                </h2>
+        <SectionBand variant="navy-wash" className="py-16 md:py-20">
+          <div className="mx-auto w-full max-w-5xl">
+            <InsetPanel className="bg-background">
+              <PanelHead title={page.howWeWorkHeading ?? "How we work"} />
+              <div className="mt-6 max-w-3xl">
                 <PortableText
                   value={page.howWeWorkBody as unknown as PortableTextBlock[]}
                 />
               </div>
-            </div>
+            </InsetPanel>
           </div>
-        </section>
+        </SectionBand>
       ) : null}
 
       <ClosingCta body={page?.closingBody} ctaLabel={page?.closingCtaLabel} />

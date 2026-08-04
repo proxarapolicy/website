@@ -17,6 +17,44 @@ export function Section({
   );
 }
 
+export type SectionVariant =
+  | "default"
+  | "navy-wash"
+  | "gold-wash"
+  | "navy"
+  | "inset";
+
+const sectionVariantClass: Record<SectionVariant, string> = {
+  default: "bg-background",
+  "navy-wash": "surface-navy-wash",
+  "gold-wash": "surface-gold-wash border-t-2 border-gold",
+  navy: "surface-navy",
+  inset: "bg-background border-y border-border",
+};
+
+/**
+ * Full-bleed section band with a typed surface variant.
+ *
+ * Alternating surfaces (white / navy-wash / gold-wash / navy-deep) make
+ * editorial sections read as deliberate bands without images or gradients.
+ * Never place two consecutive bands of the same variant.
+ */
+export function SectionBand({
+  variant = "default",
+  className,
+  children,
+  ...props
+}: React.ComponentProps<"section"> & { variant?: SectionVariant }) {
+  return (
+    <section
+      className={cn(sectionVariantClass[variant], "px-5 md:px-8", className)}
+      {...props}
+    >
+      <div className="mx-auto max-w-6xl">{children}</div>
+    </section>
+  );
+}
+
 /**
  * Twelve-column editorial grid.
  *

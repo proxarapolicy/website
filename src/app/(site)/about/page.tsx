@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 
-import { PortableText } from "@/components/portable-text";
+import { LinkedProse, PortableText } from "@/components/portable-text";
 import { ClosingCta } from "@/components/site/closing-cta";
+import { Mark } from "@/components/site/mark";
+import { PageBanner } from "@/components/site/page-banner";
+import { SectionBand } from "@/components/site/section";
 import { seoMetadata, siteUrl } from "@/lib/seo";
 import { sanityFetch } from "@/sanity/lib/client";
 import { urlFor } from "@/sanity/lib/image";
@@ -47,30 +50,29 @@ export default async function AboutPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
       />
 
-      {page?.intro ? (
-        <section className="border-b border-border">
-          <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
-            <p className="max-w-3xl font-serif text-xl leading-relaxed text-navy md:text-2xl">
-              {page.intro}
-            </p>
-          </div>
-        </section>
-      ) : null}
+      <PageBanner
+        title={page?.title ?? "About"}
+        intro={page?.intro}
+      />
 
-      <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
+      <SectionBand variant="default" className="py-16 md:py-24">
         <div className="grid gap-12 md:grid-cols-[1fr_20rem] md:gap-16 lg:grid-cols-[1fr_24rem]">
           <div>
-            <h1 className="font-serif text-h1 tracking-display text-navy">
-              {page?.name ?? page?.title ?? "About"}
-            </h1>
+            <div className="mb-4 flex items-center gap-2.5">
+              <Mark className="size-2.5 text-navy" />
+              <span className="h-px w-12 bg-gold" aria-hidden />
+            </div>
+            <h2 className="font-serif text-h1 tracking-display text-navy">
+              {page?.name ?? "Mwenda Kilemi"}
+            </h2>
             {page?.role ? (
-              <p className="mt-3 eyebrow text-muted-foreground">
+              <p className="mt-4 eyebrow text-gold-deep">
                 {page.role}
               </p>
             ) : null}
 
             {page?.story ? (
-              <div className="mt-10 max-w-2xl text-[1.0625rem]">
+              <div className="mt-10">
                 <PortableText
                   value={page.story as unknown as PortableTextBlock[]}
                 />
@@ -78,7 +80,7 @@ export default async function AboutPage() {
             ) : null}
           </div>
 
-          <div>
+          <div className="md:sticky md:top-24 md:self-start">
             {page?.headshot?.asset ? (
               <Image
                 src={urlFor(page.headshot).width(800).height(1000).fit("crop").url()}
@@ -101,44 +103,46 @@ export default async function AboutPage() {
             )}
           </div>
         </div>
-      </section>
+      </SectionBand>
 
       {page?.highlights?.length ? (
-        <section className="bg-navy-deep text-primary-foreground">
-          <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
-            <h2 className="font-serif text-3xl">
-              {page.highlightsHeading ?? "Career highlights"}
-            </h2>
-            <ul className="mt-10 grid gap-x-12 gap-y-8 md:grid-cols-2">
-              {page.highlights.map((highlight, i) => (
-                <li
-                  key={i}
-                  className="border-t border-on-navy-line pt-5"
-                >
-                  <p className="eyebrow text-gold-on-navy">
-                    {String(i + 1).padStart(2, "0")}
-                  </p>
-                  <p className="mt-2 leading-relaxed text-on-navy-muted">
-                    {highlight}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
+        <SectionBand variant="navy" className="py-16 md:py-24">
+          <h2 className="font-serif text-3xl">
+            {page.highlightsHeading ?? "Career highlights"}
+          </h2>
+          <ul className="mt-10 grid gap-x-12 gap-y-8 md:grid-cols-2">
+            {page.highlights.map((highlight, i) => (
+              <li
+                key={i}
+                className="border-t border-on-navy-line pt-5"
+              >
+                <p className="eyebrow text-gold-on-navy">
+                  {String(i + 1).padStart(2, "0")}
+                </p>
+                <p className="mt-2 leading-relaxed text-on-navy-muted">
+                  {highlight}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </SectionBand>
       ) : null}
 
       {page?.civicBody ? (
-        <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
+        <SectionBand variant="navy-wash" className="py-16 md:py-24">
           <div className="max-w-2xl">
-            <h2 className="font-serif text-3xl text-navy">
+            <div className="mb-4 flex items-center gap-2.5">
+              <Mark className="size-2.5 text-navy" />
+              <span className="h-px w-12 bg-gold" aria-hidden />
+            </div>
+            <h2 className="font-serif text-2xl tracking-display text-navy md:text-3xl">
               {page.civicHeading ?? "Beyond the day job"}
             </h2>
-            <p className="mt-6 leading-relaxed text-foreground/90">
+            <LinkedProse className="mt-6 text-[1.0625rem] leading-[1.75] text-foreground/90">
               {page.civicBody}
-            </p>
+            </LinkedProse>
           </div>
-        </section>
+        </SectionBand>
       ) : null}
 
       <ClosingCta body={page?.closingBody} ctaLabel={page?.closingCtaLabel} />

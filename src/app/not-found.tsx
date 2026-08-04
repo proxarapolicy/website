@@ -12,8 +12,12 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+/**
+ * Global 404 for unmatched URLs outside `(site)` (root layout only).
+ * In-app `notFound()` under `(site)` uses `(site)/not-found.tsx` instead,
+ * so chrome is not duplicated with the site layout.
+ */
 export default async function NotFound() {
-  // The 404 page must render even if the CMS is unreachable.
   let settings: SITE_SETTINGS_QUERY_RESULT = null;
   try {
     settings = await sanityFetch<SITE_SETTINGS_QUERY_RESULT>({
@@ -29,9 +33,7 @@ export default async function NotFound() {
       {settings ? <SiteHeader settings={settings} /> : null}
       <main className="flex flex-1 items-center">
         <div className="mx-auto max-w-6xl px-5 py-24 md:px-8 md:py-36">
-          <p className="eyebrow text-gold-deep">
-            404
-          </p>
+          <p className="eyebrow text-gold-deep">404</p>
           <h1 className="mt-4 max-w-2xl font-serif text-h1 leading-[1.12] tracking-display text-navy">
             This page doesn’t exist.
           </h1>

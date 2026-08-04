@@ -22,6 +22,8 @@ export const contactPageType = defineType({
       name: "formHeading",
       title: "Form heading",
       type: "string",
+      initialValue: "Send an enquiry",
+      description: "Shown above the enquiry form on /contact.",
     }),
     defineField({
       name: "enquiryTypeLabel",

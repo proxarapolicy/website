@@ -3,8 +3,9 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { PortableText } from "@/components/portable-text";
+import { InsetPanel, PanelHead } from "@/components/site/inset-panel";
 import { Mark } from "@/components/site/mark";
-import { EditorialGrid, Section } from "@/components/site/section";
+import { EditorialGrid, SectionBand } from "@/components/site/section";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/format";
 import { seoMetadata } from "@/lib/seo";
@@ -50,83 +51,134 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
+const HERO_LINKS = [
+  { href: "/what-we-do", label: "What We Do" },
+  { href: "/who-we-work-with", label: "Who We Work With" },
+  { href: "/thinking", label: "Thinking" },
+] as const;
+
 export default async function HomePage() {
   const { page, pillars, latest } = await getData();
+  const hasTestimonials = Boolean(page?.testimonials?.length);
+  const credibilityItems = page?.credibilityItems ?? [];
 
   return (
     <>
-      {/* Hero */}
-      <section className="bg-navy-deep text-primary-foreground">
-        <div className="mx-auto max-w-6xl px-5 py-24 md:px-8 md:py-36">
-          {page?.heroKicker ? (
-            <p className="eyebrow mb-6 text-gold-on-navy">{page.heroKicker}</p>
-          ) : null}
-          <h1 className="max-w-4xl font-serif text-display leading-[1.08] tracking-display">
-            {page?.heroHeading}
-          </h1>
-          {page?.heroSubline ? (
-            <p className="mt-8 max-w-2xl text-lg leading-relaxed text-on-navy-muted">
-              {page.heroSubline}
-            </p>
-          ) : null}
-          <div className="mt-10">
-            <Button
-              size="lg"
-              className="bg-gold-cta text-navy-deep hover:bg-gold-cta/90"
-              nativeButton={false}
-              render={<Link href="/contact" />}
-            >
-              {page?.heroCtaLabel ?? "Let’s Talk"}
-              <ArrowRight className="size-4" />
-            </Button>
-          </div>
-        </div>
-      </section>
+      {/* Hero — two-column institutional masthead; brand left, substance right */}
+      <SectionBand variant="navy" className="py-20 md:py-28 lg:py-32">
+        <div className="grid items-end gap-14 lg:grid-cols-12 lg:gap-12 xl:gap-16">
+          <div className="lg:col-span-7">
+            <div className="mb-7 flex items-center gap-3">
+              <Mark className="size-3.5 text-primary-foreground" />
+              {page?.heroKicker ? (
+                <p className="eyebrow text-gold-on-navy">{page.heroKicker}</p>
+              ) : (
+                <p className="eyebrow text-gold-on-navy">Proxara Policy</p>
+              )}
+            </div>
 
-      {/* Positioning statement */}
-      {page?.positioningBody?.length ? (
-        <section className="border-b border-border">
-          <div className="mx-auto max-w-3xl px-5 py-20 text-lg md:px-8 md:py-24">
-            <PortableText
-              value={page.positioningBody as unknown as PortableTextBlock[]}
-            />
-          </div>
-        </section>
-      ) : null}
+            <h1 className="font-serif text-display leading-[1.08] tracking-display text-primary-foreground">
+              {page?.heroHeading}
+            </h1>
 
-      {/* Credibility strip */}
-      {page?.credibilityItems?.length ? (
-        <section className="border-b border-border bg-muted">
-          <div className="mx-auto flex max-w-6xl flex-col gap-4 px-5 py-8 md:flex-row md:items-center md:gap-12 md:px-8">
-            {page.credibilityHeading ? (
-              <p className="eyebrow shrink-0 text-muted-foreground">
-                {page.credibilityHeading}
+            <span className="mt-8 block h-0.5 w-16 bg-gold" aria-hidden />
+
+            {page?.heroSubline ? (
+              <p className="mt-8 max-w-xl text-lg leading-relaxed text-on-navy-muted">
+                {page.heroSubline}
               </p>
             ) : null}
-            <ul className="flex flex-wrap items-center gap-x-10 gap-y-3">
-              {page.credibilityItems.map((item) => (
-                <li
-                  key={item}
-                  className="font-serif text-lg text-navy md:text-xl"
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
+
+            <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
+              <Button
+                size="lg"
+                className="bg-gold-cta text-navy-deep hover:bg-gold-cta/90"
+                nativeButton={false}
+                render={<Link href="/contact" />}
+              >
+                {page?.heroCtaLabel ?? "Get in touch"}
+                <ArrowRight className="size-4" />
+              </Button>
+              <Link
+                href="/about"
+                className="text-sm font-medium text-gold-on-navy underline decoration-gold/40 underline-offset-[0.18em] transition-colors hover:decoration-gold"
+              >
+                {page?.aboutCtaLabel ?? "About Mwenda"}
+              </Link>
+            </div>
           </div>
-        </section>
+
+          <aside className="lg:col-span-5">
+            <div className="border border-on-navy-line border-t-2 border-t-gold bg-navy-deep/40 p-6 md:p-8">
+              {credibilityItems.length ? (
+                <>
+                  {page?.credibilityHeading ? (
+                    <p className="eyebrow text-gold-on-navy">
+                      {page.credibilityHeading}
+                    </p>
+                  ) : null}
+                  <ul className="mt-5 space-y-4">
+                    {credibilityItems.map((item) => (
+                      <li
+                        key={item}
+                        className="flex items-start gap-3 border-b border-on-navy-line pb-4 last:border-b-0 last:pb-0"
+                      >
+                        <Mark className="mt-1 size-2.5 shrink-0 text-primary-foreground" />
+                        <span className="font-serif text-base leading-snug text-primary-foreground md:text-lg">
+                          {item}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : (
+                <div className="flex justify-center py-8">
+                  <Mark className="size-16 text-on-navy-line" />
+                </div>
+              )}
+
+              <nav
+                aria-label="Explore"
+                className="mt-8 border-t border-on-navy-line pt-6"
+              >
+                <p className="eyebrow text-on-navy-faint">Explore</p>
+                <ul className="mt-4 space-y-3">
+                  {HERO_LINKS.map((link) => (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        className="group inline-flex items-center gap-2 text-sm text-on-navy-muted transition-colors hover:text-primary-foreground"
+                      >
+                        <span className="h-px w-4 bg-gold transition-all group-hover:w-6" />
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
+          </aside>
+        </div>
+      </SectionBand>
+
+      {/* Positioning — navy-wash so it does not blend into the white pillars band */}
+      {page?.positioningBody?.length ? (
+        <SectionBand variant="navy-wash" className="py-20 md:py-24">
+          <InsetPanel className="mx-auto max-w-3xl bg-background md:max-w-4xl">
+            <PanelHead title={page.positioningHeading ?? "Our position"} />
+            <div className="mt-6 text-lg">
+              <PortableText
+                value={page.positioningBody as unknown as PortableTextBlock[]}
+              />
+            </div>
+          </InsetPanel>
+        </SectionBand>
       ) : null}
 
-      {/* Service pillars — set as a report contents list, not a card grid.
-          Numbers hang in the left margin; hairline rules separate rows. */}
-      <Section className="py-20 md:py-28">
-        {/* Heading left, intro right — the asymmetry is the split between the
-            two columns, so the heading still aligns with the list edge below.
-            Indenting the heading away from its own list reads as a mistake. */}
+      {/* Service pillars — white band after navy-wash positioning */}
+      <SectionBand variant="default" className="py-20 md:py-28">
         <EditorialGrid className="mb-12">
           <div className="md:col-span-5">
-            {/* Structural marker, not copy — the brand diamond stands in for a
-                running head, so nothing here needs authoring in Sanity. */}
             <Mark className="mb-5 size-3 text-navy" />
             <h2 className="font-serif text-h2 text-navy">
               {page?.pillarsHeading ?? "What we do"}
@@ -139,7 +191,6 @@ export default async function HomePage() {
           ) : null}
         </EditorialGrid>
 
-        {/* 2px navy = major division; hairlines below = row separators */}
         <ol className={pillars.length ? "border-t-2 border-navy" : undefined}>
           {pillars.map((pillar, i) => (
             <li key={pillar._id} className="rule-hairline first:border-t-0">
@@ -166,15 +217,13 @@ export default async function HomePage() {
             {page?.pillarsCtaLabel ?? "See all services"}
           </SectionLink>
         </div>
-      </Section>
+      </SectionBand>
 
       {/* Who we work with */}
       {page?.audienceBody ? (
-        <section className="border-y border-border bg-muted">
-          <div className="mx-auto max-w-3xl px-5 py-20 md:px-8 md:py-24">
-            <h2 className="font-serif text-h2 text-navy">
-              {page.audienceHeading ?? "Who we work with"}
-            </h2>
+        <SectionBand variant="navy-wash" className="py-20 md:py-24">
+          <InsetPanel className="mx-auto max-w-3xl bg-background">
+            <PanelHead title={page.audienceHeading ?? "Who we work with"} />
             <p className="mt-6 text-lg leading-relaxed text-foreground/90">
               {page.audienceBody}
             </p>
@@ -183,30 +232,34 @@ export default async function HomePage() {
                 {page.audienceCtaLabel ?? "Learn more"}
               </SectionLink>
             </div>
-          </div>
-        </section>
+          </InsetPanel>
+        </SectionBand>
       ) : null}
 
       {/* About teaser */}
       {page?.aboutTeaserBody ? (
-        <section className="mx-auto max-w-3xl px-5 py-20 md:px-8 md:py-24">
-          <p className="text-lg leading-relaxed text-foreground/90">
-            {page.aboutTeaserBody}
-          </p>
-          <div className="mt-8">
-            <SectionLink href="/about">
-              {page.aboutCtaLabel ?? "About Mwenda"}
-            </SectionLink>
-          </div>
-        </section>
+        <SectionBand variant="default" className="py-20 md:py-24">
+          <InsetPanel className="mx-auto max-w-3xl surface-navy-wash">
+            <PanelHead title={page.aboutHeading ?? "About"} />
+            <p className="mt-6 text-lg leading-relaxed text-foreground/90 md:text-xl">
+              {page.aboutTeaserBody}
+            </p>
+            <div className="mt-8">
+              <SectionLink href="/about">
+                {page.aboutCtaLabel ?? "About Mwenda"}
+              </SectionLink>
+            </div>
+          </InsetPanel>
+        </SectionBand>
       ) : null}
 
       {/* Social proof */}
       {page?.testimonials?.length ? (
-        <section className="bg-muted">
-          <div className="mx-auto max-w-4xl px-5 py-20 text-center md:px-8 md:py-24">
+        <SectionBand variant="gold-wash" className="py-20 md:py-24">
+          <div className="mx-auto max-w-4xl text-center">
             {page.testimonials.map((t) => (
               <figure key={t._id}>
+                <Mark className="mx-auto mb-6 size-3 text-navy" />
                 <blockquote className="font-serif text-2xl leading-snug text-navy md:text-3xl">
                   “{t.quote}”
                 </blockquote>
@@ -218,11 +271,14 @@ export default async function HomePage() {
               </figure>
             ))}
           </div>
-        </section>
+        </SectionBand>
       ) : null}
 
       {/* Latest thinking */}
-      <Section className="py-20 md:py-28">
+      <SectionBand
+        variant={hasTestimonials ? "navy-wash" : "gold-wash"}
+        className="py-20 md:py-28"
+      >
         <EditorialGrid className="mb-10">
           <div className="md:col-span-5">
             <Mark className="mb-5 size-3 text-navy" />
@@ -243,8 +299,6 @@ export default async function HomePage() {
             </div>
           </div>
         </EditorialGrid>
-        {/* Guard the rule: with no items the bare 2px division reads as a
-            broken element rather than as the top of a list. */}
         <ul className={latest.length ? "border-t-2 border-navy" : undefined}>
           {latest.map((item) => {
             const isPost = item._type === "post";
@@ -269,7 +323,7 @@ export default async function HomePage() {
             );
           })}
         </ul>
-      </Section>
+      </SectionBand>
     </>
   );
 }
