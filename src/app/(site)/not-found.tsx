@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { THINKING_ENABLED } from "@/lib/feature-flags";
+
 export const metadata: Metadata = {
   title: "Page not found — Proxara Policy",
   robots: { index: false, follow: false },
@@ -28,12 +30,14 @@ export default function SiteNotFound() {
         >
           Home
         </Link>
-        <Link
-          href="/thinking"
-          className="font-serif text-lg text-navy underline decoration-gold underline-offset-4 hover:decoration-2"
-        >
-          Thinking
-        </Link>
+        {THINKING_ENABLED ? (
+          <Link
+            href="/thinking"
+            className="font-serif text-lg text-navy underline decoration-gold underline-offset-4 hover:decoration-2"
+          >
+            Thinking
+          </Link>
+        ) : null}
         <Link
           href="/what-we-do"
           className="font-serif text-lg text-navy underline decoration-gold underline-offset-4 hover:decoration-2"

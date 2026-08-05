@@ -16,6 +16,7 @@ import {
   relatedEssays,
   toEssayIndex,
 } from "@/lib/essay-index";
+import { THINKING_ENABLED } from "@/lib/feature-flags";
 import { formatDate, readingTime } from "@/lib/format";
 import { seoMetadata, siteUrl } from "@/lib/seo";
 import { sanityFetch } from "@/sanity/lib/client";
@@ -39,6 +40,8 @@ const getPost = (slug: string) =>
   });
 
 export async function generateStaticParams() {
+  if (!THINKING_ENABLED) return [];
+
   const slugs = await sanityFetch<POST_SLUGS_QUERY_RESULT>({
     query: POST_SLUGS_QUERY,
     tags: ["sanity", "post"],
@@ -64,11 +67,14 @@ export async function generateMetadata({
   });
 }
 
+// Temporarily disabled — flip THINKING_ENABLED in src/lib/feature-flags.ts to restore.
 export default async function EssayPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
+  if (!THINKING_ENABLED) notFound();
+
   const { slug } = await params;
 
   const [post, feed] = await Promise.all([

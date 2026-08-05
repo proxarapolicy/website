@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { SiteFooter } from "@/components/site/footer";
 import { SiteHeader } from "@/components/site/header";
+import { THINKING_ENABLED } from "@/lib/feature-flags";
 import { sanityFetch } from "@/sanity/lib/client";
 import { SITE_SETTINGS_QUERY } from "@/sanity/lib/queries";
 import type { SITE_SETTINGS_QUERY_RESULT } from "@/sanity/types";
@@ -48,12 +49,14 @@ export default async function NotFound() {
             >
               Home
             </Link>
-            <Link
-              href="/thinking"
-              className="font-serif text-lg text-navy underline decoration-gold underline-offset-4 hover:decoration-2"
-            >
-              Thinking
-            </Link>
+            {THINKING_ENABLED ? (
+              <Link
+                href="/thinking"
+                className="font-serif text-lg text-navy underline decoration-gold underline-offset-4 hover:decoration-2"
+              >
+                Thinking
+              </Link>
+            ) : null}
             <Link
               href="/what-we-do"
               className="font-serif text-lg text-navy underline decoration-gold underline-offset-4 hover:decoration-2"

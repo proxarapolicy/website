@@ -1,4 +1,5 @@
 import { siteUrl } from "@/lib/seo";
+import { THINKING_ENABLED } from "@/lib/feature-flags";
 import { sanityFetch } from "@/sanity/lib/client";
 import { LATEST_THINKING_QUERY } from "@/sanity/lib/queries";
 import type { LATEST_THINKING_QUERY_RESULT } from "@/sanity/types";
@@ -9,13 +10,15 @@ import type { LATEST_THINKING_QUERY_RESULT } from "@/sanity/types";
  */
 export async function GET() {
   let latest: LATEST_THINKING_QUERY_RESULT = [];
-  try {
-    latest = await sanityFetch<LATEST_THINKING_QUERY_RESULT>({
-      query: LATEST_THINKING_QUERY,
-      tags: ["sanity", "post", "externalArticle"],
-    });
-  } catch {
-    // CMS unreachable — serve the static guide without the latest-writing list
+  if (THINKING_ENABLED) {
+    try {
+      latest = await sanityFetch<LATEST_THINKING_QUERY_RESULT>({
+        query: LATEST_THINKING_QUERY,
+        tags: ["sanity", "post", "externalArticle"],
+      });
+    } catch {
+      // CMS unreachable — serve the static guide without the latest-writing list
+    }
   }
 
   const latestSection = latest.length
@@ -53,7 +56,11 @@ export async function GET() {
     `- [What We Do](${siteUrl}/what-we-do): the five service pillars and the firm's view on government and technology`,
     `- [Who We Work With](${siteUrl}/who-we-work-with): the three client types and how Proxara works with each`,
     `- [About](${siteUrl}/about): founder biography and how engagements are run`,
-    `- [Thinking](${siteUrl}/thinking): essays and published articles — the best source for Proxara's positions on AI governance and platform policy`,
+    ...(THINKING_ENABLED
+      ? [
+          `- [Thinking](${siteUrl}/thinking): essays and published articles — the best source for Proxara's positions on AI governance and platform policy`,
+        ]
+      : []),
     `- [Contact](${siteUrl}/contact): enquiry form, LinkedIn, and location`,
     "",
     "## Machine-readable resources",

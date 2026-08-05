@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { Mark } from "@/components/site/mark";
 import { Button } from "@/components/ui/button";
+import { filterNavItems } from "@/lib/feature-flags";
 import type { SITE_SETTINGS_QUERY_RESULT } from "@/sanity/types";
 
 export function SiteFooter({
@@ -11,9 +12,11 @@ export function SiteFooter({
 }) {
   const year = new Date().getFullYear();
   const wordmark = settings?.wordmark ?? "Proxara Policy";
-  const navItems = (settings?.navItems ?? []).filter(
-    (item): item is { label: string; href: string } =>
-      Boolean(item.href && item.label),
+  const navItems = filterNavItems(
+    (settings?.navItems ?? []).filter(
+      (item): item is { label: string; href: string } =>
+        Boolean(item.href && item.label),
+    ),
   );
 
   return (

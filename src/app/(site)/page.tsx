@@ -8,6 +8,7 @@ import { Mark } from "@/components/site/mark";
 import { EditorialGrid, SectionBand } from "@/components/site/section";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/format";
+import { THINKING_ENABLED } from "@/lib/feature-flags";
 import { seoMetadata } from "@/lib/seo";
 import { sanityFetch } from "@/sanity/lib/client";
 import {
@@ -32,10 +33,12 @@ async function getData() {
       query: PILLARS_QUERY,
       tags: ["sanity", "pillar"],
     }),
-    sanityFetch<LATEST_THINKING_QUERY_RESULT>({
-      query: LATEST_THINKING_QUERY,
-      tags: ["sanity", "post", "externalArticle"],
-    }),
+    THINKING_ENABLED
+      ? sanityFetch<LATEST_THINKING_QUERY_RESULT>({
+          query: LATEST_THINKING_QUERY,
+          tags: ["sanity", "post", "externalArticle"],
+        })
+      : Promise.resolve([] as LATEST_THINKING_QUERY_RESULT),
   ]);
   return { page, pillars, latest };
 }
@@ -54,7 +57,7 @@ export async function generateMetadata(): Promise<Metadata> {
 const HERO_LINKS = [
   { href: "/what-we-do", label: "What We Do" },
   { href: "/who-we-work-with", label: "Who We Work With" },
-  { href: "/thinking", label: "Thinking" },
+  ...(THINKING_ENABLED ? [{ href: "/thinking", label: "Thinking" as const }] : []),
 ] as const;
 
 export default async function HomePage() {
@@ -274,7 +277,8 @@ export default async function HomePage() {
         </SectionBand>
       ) : null}
 
-      {/* Latest thinking */}
+      {/* Latest thinking — hidden while THINKING_ENABLED is false */}
+      {THINKING_ENABLED ? (
       <SectionBand
         variant={hasTestimonials ? "navy-wash" : "gold-wash"}
         className="py-20 md:py-28"
@@ -324,6 +328,7 @@ export default async function HomePage() {
           })}
         </ul>
       </SectionBand>
+      ) : null}
     </>
   );
 }

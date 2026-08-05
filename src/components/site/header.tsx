@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { filterNavItems } from "@/lib/feature-flags";
 import { MobileNav } from "./mobile-nav";
 import { NavLinks } from "./nav-links";
 import type { SITE_SETTINGS_QUERY_RESULT } from "@/sanity/types";
@@ -12,8 +13,10 @@ export function SiteHeader({
   settings: SITE_SETTINGS_QUERY_RESULT;
 }) {
   const wordmark = settings?.wordmark ?? "Proxara Policy";
-  const navItems = (settings?.navItems ?? []).flatMap((i) =>
-    i.href && i.label ? [{ label: i.label, href: i.href }] : [],
+  const navItems = filterNavItems(
+    (settings?.navItems ?? []).flatMap((i) =>
+      i.href && i.label ? [{ label: i.label, href: i.href }] : [],
+    ),
   );
   const ctaLabel = settings?.ctaLabel;
 

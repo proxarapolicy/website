@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
 
 import { ViewTransition } from "react";
@@ -21,6 +22,7 @@ import type {
   THINKING_FEED_QUERY_RESULT,
   THINKING_PAGE_QUERY_RESULT,
 } from "@/sanity/types";
+import { THINKING_ENABLED } from "@/lib/feature-flags";
 import { cn } from "@/lib/utils";
 
 const getPage = () =>
@@ -37,11 +39,14 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
+// Temporarily disabled — flip THINKING_ENABLED in src/lib/feature-flags.ts to restore.
 export default async function ThinkingPage({
   searchParams,
 }: {
   searchParams: Promise<{ tag?: string }>;
 }) {
+  if (!THINKING_ENABLED) notFound();
+
   const { tag = "" } = await searchParams;
 
   const [page, items, tags] = await Promise.all([
