@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Reveal } from "@/components/motion/reveal";
 import { Mark } from "@/components/site/mark";
 import { SectionBand } from "@/components/site/section";
 import { Button } from "@/components/ui/button";
@@ -20,7 +21,7 @@ export function ClosingCta({
 
   return (
     <SectionBand variant="gold-wash" className="py-16 md:py-20">
-      <div className="mx-auto flex w-full max-w-5xl flex-col items-start gap-8 md:flex-row md:items-center md:justify-between md:gap-12">
+      <Reveal className="mx-auto flex w-full max-w-5xl flex-col items-start gap-8 md:flex-row md:items-center md:justify-between md:gap-12">
         <div className="max-w-2xl">
           <div className="mb-5 flex items-center gap-2.5">
             <Mark className="size-2.5 text-navy" />
@@ -38,7 +39,7 @@ export function ClosingCta({
         >
           {ctaLabel ?? "Get in touch"}
         </Button>
-      </div>
+      </Reveal>
     </SectionBand>
   );
 }

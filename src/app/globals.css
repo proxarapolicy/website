@@ -309,10 +309,52 @@
 }
 
 /* --- Motion -------------------------------------------------------------
-   Exactly one effect: an essay title on the /thinking index carries its
-   position and size into the article <h1>. Scroll-reveal is deliberately
-   absent — fade-up-on-scroll is the motion equivalent of a stock photo, and
-   it would fight the performance rules besides. */
+   Two systems, deliberately kept apart.
+
+   1. GSAP reveals (src/components/motion/reveal.tsx). The *from* state lives
+      here rather than in JS: elements marked `data-reveal` / `data-reveal-item`
+      in server-rendered HTML are hidden by the stylesheet, so the first paint
+      is already correct. Setting the from-state after hydration would flash the
+      content first — the one thing a reveal animation must never do.
+
+      Everything is gated on `.motion-ok`, a class the root layout's inline
+      script adds only when `prefers-reduced-motion` is *not* set. No class means
+      no rules match and the page renders plainly — which is also the no-JS path
+      and the path taken if GSAP fails to load. Content is never unreachable, and
+      it is always in the DOM either way, so /thinking's SEO is untouched.
+
+   2. An essay title on the /thinking index carrying its position and size into
+      the article <h1>, via React's <ViewTransition>. Unchanged. */
+.motion-ok [data-reveal],
+.motion-ok [data-reveal-item] {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+}
+
+/* Gold rules draw in from the left instead of rising. */
+.motion-ok [data-reveal="rule"],
+.motion-ok [data-reveal-item="rule"] {
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+/* Drawn ornament inside an SVG. A `translate` here would be measured in user
+   units and so would scale with the viewBox — these two presets fade and draw
+   instead, and both cancel the rise the base rule applies. */
+.motion-ok [data-reveal="fade"],
+.motion-ok [data-reveal-item="fade"] {
+  transform: none;
+}
+
+/* The path carries pathLength="1", so one dash length covers any path. */
+.motion-ok [data-reveal="draw"],
+.motion-ok [data-reveal-item="draw"] {
+  opacity: 1;
+  transform: none;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation-duration: 180ms;
@@ -339,6 +381,53 @@
   ::view-transition-old(*),
   ::view-transition-new(*) {
     animation: none !important;
+  }
+
+  /* Belt and braces: the inline gate should never have added `.motion-ok`
+     here, but if the preference changes mid-session, nothing stays hidden. */
+  .motion-ok [data-reveal],
+  .motion-ok [data-reveal-item] {
+    opacity: 1 !important;
+    transform: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+
+  /* Credibility rail: the marquee never starts, so the duplicate copies would
+     just repeat the names. Drop them and let the one real list wrap into a
+     static row. */
+  [data-marquee-track] {
+    flex-wrap: wrap;
+    width: 100% !important;
+  }
+  [data-marquee-copy]:not(:first-child) {
+    display: none;
+  }
+}
+
+/* --- Pillar rows ---------------------------------------------------------
+   The home page's five service rows reveal a line of detail on hover, so the
+   list reads as a designed contents page rather than as the nav repeated.
+
+   Interaction state is CSS; GSAP owns entrances only. `grid-template-rows`
+   animates between `0fr` and `1fr`, which collapses to the child's real height
+   without guessing a max-height.
+
+   Gated on `(hover: hover)`: on touch there is no hover to discover, so the
+   detail is simply always visible. The text is in the DOM either way — it is
+   never hidden from search or from a screen reader. */
+@media (hover: hover) {
+  [data-pillar-detail] {
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition:
+      grid-template-rows 280ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 200ms ease-out;
+  }
+
+  [data-pillar-row]:hover [data-pillar-detail],
+  [data-pillar-row]:focus-visible [data-pillar-detail] {
+    grid-template-rows: 1fr;
+    opacity: 1;
   }
 }
 

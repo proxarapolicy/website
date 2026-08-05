@@ -42,6 +42,23 @@ export const homePageType = defineType({
       initialValue: "Get in touch",
     }),
     defineField({
+      name: "heroMotifOrigin",
+      title: "Hero motif — origin",
+      type: "string",
+      group: "hero",
+      initialValue: "Nairobi",
+      description:
+        "Left-hand end of the span drawn beside the heading. Keep it to a single place name — it is set small, and it should echo the sub-line rather than restate it. Defaults to “Nairobi” if left empty.",
+    }),
+    defineField({
+      name: "heroMotifDestination",
+      title: "Hero motif — destination",
+      type: "string",
+      group: "hero",
+      initialValue: "Brussels",
+      description: "Right-hand end of the span. Defaults to “Brussels” if left empty.",
+    }),
+    defineField({
       name: "positioningHeading",
       title: "Positioning heading",
       type: "string",

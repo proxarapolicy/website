@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
 
+import { Reveal } from "@/components/motion/reveal";
 import { PortableText } from "@/components/portable-text";
 import { EssayAdjacentNav } from "@/components/site/essay-adjacent-nav";
 import { EssayRelated } from "@/components/site/essay-related";
@@ -194,13 +195,16 @@ export default async function EssayPage({
 
             <EndMark className="mt-12" />
 
-            <div className="mt-12 flex flex-col gap-8 border-t border-border pt-8">
+            {/* Only the apparatus below the essay reveals. The header and body
+                are deliberately left alone: the <h1> is mid-morph from the
+                index, and animating running text fights reading. */}
+            <Reveal className="mt-12 flex flex-col gap-8 border-t border-border pt-8">
               <EssayShare
                 title={post.title ?? "Proxara Policy"}
                 url={pageUrl}
               />
               <EssayAdjacentNav newer={newer} older={older} />
-            </div>
+            </Reveal>
           </article>
 
           <EssaySidebar essays={essayIndex} currentSlug={post.slug} />

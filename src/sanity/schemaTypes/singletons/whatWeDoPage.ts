@@ -43,6 +43,14 @@ export const whatWeDoPageType = defineType({
       description: "Engagement model: retainer, project-based, and advisory mandates. Leave empty to hide the section.",
     }),
     defineField({
+      name: "pullQuote",
+      title: "Pull quote",
+      type: "reference",
+      to: [{ type: "testimonial" }],
+      description:
+        "Breaks the reading rhythm between the pillar list and “How we work”. Leave empty to hide the band.",
+    }),
+    defineField({
       name: "closingBody",
       title: "Closing CTA body",
       type: "text",

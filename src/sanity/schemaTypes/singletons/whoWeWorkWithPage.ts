@@ -32,6 +32,14 @@ export const whoWeWorkWithPageType = defineType({
       description: "Renders as a full-width band after the audience grid.",
     }),
     defineField({
+      name: "pullQuote",
+      title: "Pull quote",
+      type: "reference",
+      to: [{ type: "testimonial" }],
+      description:
+        "Breaks the reading rhythm before the closing CTA. Leave empty to hide the band.",
+    }),
+    defineField({
       name: "closingBody",
       title: "Closing note",
       type: "text",

@@ -5,6 +5,7 @@ import { ArrowUpRight } from "lucide-react";
 
 import { ViewTransition } from "react";
 
+import { Reveal } from "@/components/motion/reveal";
 import { ClosingCta } from "@/components/site/closing-cta";
 import { Mark } from "@/components/site/mark";
 import { PageBanner } from "@/components/site/page-banner";
@@ -94,7 +95,7 @@ export default async function ThinkingPage({
 
       <SectionBand variant="default" className="pb-24 pt-4 md:pb-28">
         {feed.length === 0 ? (
-          <div className="mx-auto max-w-xl border border-border border-t-2 border-t-gold bg-surface-navy-wash px-8 py-16 text-center md:px-12 md:py-20">
+          <Reveal className="mx-auto max-w-xl border border-border border-t-2 border-t-gold bg-surface-navy-wash px-8 py-16 text-center md:px-12 md:py-20">
             <Mark className="mx-auto mb-6 size-3 text-navy" />
             <p className="font-serif text-xl leading-snug text-navy md:text-2xl">
               {page?.emptyState ??
@@ -116,7 +117,7 @@ export default async function ThinkingPage({
                 </Link>
               </p>
             ) : null}
-          </div>
+          </Reveal>
         ) : (
           groupByYear(feed).map(([year, group]) => (
             <section key={year} aria-label={year} className="mt-4 first:mt-0">
@@ -126,6 +127,10 @@ export default async function ThinkingPage({
                 <span>{year}</span>
                 <span className="h-px flex-1 bg-border" aria-hidden />
               </h2>
+              {/* The stagger wrapper sits on the list, not the <section>: the
+                  year head above is `sticky`, and an animated transform on a
+                  shared ancestor would break it. */}
+              <Reveal stagger>
               <ul className="mt-2 space-y-3">
                 {group.map((item) => {
                   const isPost = item._type === "post";
@@ -133,7 +138,7 @@ export default async function ThinkingPage({
                     ? `/thinking/${item.slug}`
                     : (item.url ?? "#");
                   return (
-                    <li key={item._id}>
+                    <li key={item._id} data-reveal-item="up">
                       <Link
                         href={href}
                         target={isPost ? undefined : "_blank"}
@@ -203,6 +208,7 @@ export default async function ThinkingPage({
                   );
                 })}
               </ul>
+              </Reveal>
             </section>
           ))
         )}

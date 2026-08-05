@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 
+import { Reveal } from "@/components/motion/reveal";
 import { LinkedProse, PortableText } from "@/components/portable-text";
 import { ClosingCta } from "@/components/site/closing-cta";
 import { Mark } from "@/components/site/mark";
@@ -56,8 +57,14 @@ export default async function AboutPage() {
       />
 
       <SectionBand variant="default" className="py-16 md:py-24">
-        <div className="grid gap-12 md:grid-cols-[1fr_20rem] md:gap-16 lg:grid-cols-[1fr_24rem]">
-          <div>
+        {/* `stagger` rather than a wrapping Reveal: the portrait column is
+            `md:sticky`, and an animated transform on an ancestor would make it
+            a containing block and silently kill the stickiness. */}
+        <Reveal
+          stagger
+          className="grid gap-12 md:grid-cols-[1fr_20rem] md:gap-16 lg:grid-cols-[1fr_24rem]"
+        >
+          <div data-reveal-item="up">
             <div className="mb-4 flex items-center gap-2.5">
               <Mark className="size-2.5 text-navy" />
               <span className="h-px w-12 bg-gold" aria-hidden />
@@ -90,11 +97,13 @@ export default async function AboutPage() {
                 priority
                 className="w-full max-w-sm"
                 sizes="(min-width: 768px) 24rem, 100vw"
+                data-reveal-item="up"
               />
             ) : (
               <div
                 aria-hidden
                 className="flex aspect-4/5 w-full max-w-sm items-center justify-center bg-muted"
+                data-reveal-item="up"
               >
                 <p className="px-8 text-center text-sm text-muted-foreground">
                   Professional headshot to be supplied by the client
@@ -102,12 +111,13 @@ export default async function AboutPage() {
               </div>
             )}
           </div>
-        </div>
+        </Reveal>
       </SectionBand>
 
       {page?.highlights?.length ? (
         <SectionBand variant="navy" className="py-16 md:py-24">
-          <h2 className="font-serif text-3xl">
+          <Reveal stagger>
+          <h2 className="font-serif text-3xl" data-reveal-item="up">
             {page.highlightsHeading ?? "Career highlights"}
           </h2>
           <ul className="mt-10 grid gap-x-12 gap-y-8 md:grid-cols-2">
@@ -115,6 +125,7 @@ export default async function AboutPage() {
               <li
                 key={i}
                 className="border-t border-on-navy-line pt-5"
+                data-reveal-item="up"
               >
                 <p className="eyebrow text-gold-on-navy">
                   {String(i + 1).padStart(2, "0")}
@@ -125,12 +136,13 @@ export default async function AboutPage() {
               </li>
             ))}
           </ul>
+          </Reveal>
         </SectionBand>
       ) : null}
 
       {page?.civicBody ? (
         <SectionBand variant="navy-wash" className="py-16 md:py-24">
-          <div className="max-w-2xl">
+          <Reveal className="max-w-2xl">
             <div className="mb-4 flex items-center gap-2.5">
               <Mark className="size-2.5 text-navy" />
               <span className="h-px w-12 bg-gold" aria-hidden />
@@ -141,7 +153,7 @@ export default async function AboutPage() {
             <LinkedProse className="mt-6 text-[1.0625rem] leading-[1.75] text-foreground/90">
               {page.civicBody}
             </LinkedProse>
-          </div>
+          </Reveal>
         </SectionBand>
       ) : null}
 

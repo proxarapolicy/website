@@ -113,17 +113,6 @@ export type Tag = {
   slug?: Slug;
 };
 
-export type Testimonial = {
-  _id: string;
-  _type: "testimonial";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  quote?: string;
-  attribution?: string;
-  source?: string;
-};
-
 export type Audience = {
   _id: string;
   _type: "audience";
@@ -226,6 +215,13 @@ export type SanityImageHotspot = {
   width?: number;
 };
 
+export type TestimonialReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "testimonial";
+};
+
 export type WhoWeWorkWithPage = {
   _id: string;
   _type: "whoWeWorkWithPage";
@@ -236,6 +232,7 @@ export type WhoWeWorkWithPage = {
   intro?: string;
   stagesHeading?: string;
   stagesBody?: string;
+  pullQuote?: TestimonialReference;
   closingBody?: string;
   closingCtaLabel?: string;
   seo?: Seo;
@@ -253,16 +250,21 @@ export type WhatWeDoPage = {
   viewpointBody?: BlockContent;
   howWeWorkHeading?: string;
   howWeWorkBody?: BlockContent;
+  pullQuote?: TestimonialReference;
   closingBody?: string;
   closingCtaLabel?: string;
   seo?: Seo;
 };
 
-export type TestimonialReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "testimonial";
+export type Testimonial = {
+  _id: string;
+  _type: "testimonial";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  quote?: string;
+  attribution?: string;
+  source?: string;
 };
 
 export type HomePage = {
@@ -275,6 +277,8 @@ export type HomePage = {
   heroKicker?: string;
   heroSubline?: string;
   heroCtaLabel?: string;
+  heroMotifOrigin?: string;
+  heroMotifDestination?: string;
   positioningHeading?: string;
   positioningBody?: BlockContent;
   credibilityHeading?: string;
@@ -428,7 +432,6 @@ export type AllSanitySchemaTypes =
   | BlockContent
   | Slug
   | Tag
-  | Testimonial
   | Audience
   | Pillar
   | ContactPage
@@ -436,9 +439,10 @@ export type AllSanitySchemaTypes =
   | AboutPage
   | SanityImageCrop
   | SanityImageHotspot
+  | TestimonialReference
   | WhoWeWorkWithPage
   | WhatWeDoPage
-  | TestimonialReference
+  | Testimonial
   | HomePage
   | SiteSettings
   | SanityImagePaletteSwatch
@@ -481,12 +485,14 @@ export type SITE_SETTINGS_QUERY_RESULT = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: HOME_PAGE_QUERY
-// Query: *[_type == "homePage"][0]{    heroKicker,    heroHeading,    heroSubline,    heroCtaLabel,    positioningHeading,    positioningBody,    credibilityHeading,    credibilityItems,    aboutHeading,    aboutTeaserBody,    aboutCtaLabel,    pillarsHeading,    pillarsIntro,    pillarsCtaLabel,    audienceHeading,    audienceBody,    audienceCtaLabel,    thinkingHeading,    thinkingIntro,    thinkingCtaLabel,    "testimonials": testimonials[]->{ _id, quote, attribution, source },      seo { metaTitle, metaDescription, ogImage }  }
+// Query: *[_type == "homePage"][0]{    heroKicker,    heroHeading,    heroSubline,    heroCtaLabel,    heroMotifOrigin,    heroMotifDestination,    positioningHeading,    positioningBody,    credibilityHeading,    credibilityItems,    aboutHeading,    aboutTeaserBody,    aboutCtaLabel,    pillarsHeading,    pillarsIntro,    pillarsCtaLabel,    audienceHeading,    audienceBody,    audienceCtaLabel,    thinkingHeading,    thinkingIntro,    thinkingCtaLabel,    "testimonials": testimonials[]->{ _id, quote, attribution, source },      seo { metaTitle, metaDescription, ogImage }  }
 export type HOME_PAGE_QUERY_RESULT = {
   heroKicker: string | null;
   heroHeading: string | null;
   heroSubline: string | null;
   heroCtaLabel: string | null;
+  heroMotifOrigin: string | null;
+  heroMotifDestination: string | null;
   positioningHeading: string | null;
   positioningBody: BlockContent | null;
   credibilityHeading: string | null;
@@ -548,7 +554,7 @@ export type AUDIENCES_QUERY_RESULT = Array<{
 
 // Source: src/sanity/lib/queries.ts
 // Variable: WHAT_WE_DO_QUERY
-// Query: *[_type == "whatWeDoPage"][0]{    title, intro,    viewpointHeading, viewpointBody,    howWeWorkHeading, howWeWorkBody,    closingBody, closingCtaLabel,      seo { metaTitle, metaDescription, ogImage }  }
+// Query: *[_type == "whatWeDoPage"][0]{    title, intro,    viewpointHeading, viewpointBody,    howWeWorkHeading, howWeWorkBody,    "pullQuote": pullQuote->{ _id, quote, attribution, source },    closingBody, closingCtaLabel,      seo { metaTitle, metaDescription, ogImage }  }
 export type WHAT_WE_DO_QUERY_RESULT = {
   title: string | null;
   intro: string | null;
@@ -556,6 +562,12 @@ export type WHAT_WE_DO_QUERY_RESULT = {
   viewpointBody: BlockContent | null;
   howWeWorkHeading: string | null;
   howWeWorkBody: BlockContent | null;
+  pullQuote: {
+    _id: string;
+    quote: string | null;
+    attribution: string | null;
+    source: string | null;
+  } | null;
   closingBody: string | null;
   closingCtaLabel: string | null;
   seo: {
@@ -573,12 +585,18 @@ export type WHAT_WE_DO_QUERY_RESULT = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: WHO_WE_WORK_WITH_QUERY
-// Query: *[_type == "whoWeWorkWithPage"][0]{    title, intro,    stagesHeading, stagesBody,    closingBody, closingCtaLabel,      seo { metaTitle, metaDescription, ogImage }  }
+// Query: *[_type == "whoWeWorkWithPage"][0]{    title, intro,    stagesHeading, stagesBody,    "pullQuote": pullQuote->{ _id, quote, attribution, source },    closingBody, closingCtaLabel,      seo { metaTitle, metaDescription, ogImage }  }
 export type WHO_WE_WORK_WITH_QUERY_RESULT = {
   title: string | null;
   intro: string | null;
   stagesHeading: string | null;
   stagesBody: string | null;
+  pullQuote: {
+    _id: string;
+    quote: string | null;
+    attribution: string | null;
+    source: string | null;
+  } | null;
   closingBody: string | null;
   closingCtaLabel: string | null;
   seo: {
@@ -786,11 +804,11 @@ import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     '\n  *[_type == "siteSettings"][0]{\n    wordmark,\n    contactEmail,\n    linkedinUrl,\n    location,\n    navItems[]{ label, href },\n    ctaLabel,\n    footerCta,\n    footerLegal,\n    ga4MeasurementId,\n    defaultSeo { metaTitle, metaDescription, ogImage }\n  }\n': SITE_SETTINGS_QUERY_RESULT;
-    '\n  *[_type == "homePage"][0]{\n    heroKicker,\n    heroHeading,\n    heroSubline,\n    heroCtaLabel,\n    positioningHeading,\n    positioningBody,\n    credibilityHeading,\n    credibilityItems,\n    aboutHeading,\n    aboutTeaserBody,\n    aboutCtaLabel,\n    pillarsHeading,\n    pillarsIntro,\n    pillarsCtaLabel,\n    audienceHeading,\n    audienceBody,\n    audienceCtaLabel,\n    thinkingHeading,\n    thinkingIntro,\n    thinkingCtaLabel,\n    "testimonials": testimonials[]->{ _id, quote, attribution, source },\n    \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': HOME_PAGE_QUERY_RESULT;
+    '\n  *[_type == "homePage"][0]{\n    heroKicker,\n    heroHeading,\n    heroSubline,\n    heroCtaLabel,\n    heroMotifOrigin,\n    heroMotifDestination,\n    positioningHeading,\n    positioningBody,\n    credibilityHeading,\n    credibilityItems,\n    aboutHeading,\n    aboutTeaserBody,\n    aboutCtaLabel,\n    pillarsHeading,\n    pillarsIntro,\n    pillarsCtaLabel,\n    audienceHeading,\n    audienceBody,\n    audienceCtaLabel,\n    thinkingHeading,\n    thinkingIntro,\n    thinkingCtaLabel,\n    "testimonials": testimonials[]->{ _id, quote, attribution, source },\n    \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': HOME_PAGE_QUERY_RESULT;
     '\n  *[_type == "pillar"] | order(order asc){\n    _id, title, "slug": slug.current, oneLiner, description, order\n  }\n': PILLARS_QUERY_RESULT;
     '\n  *[_type == "audience"] | order(order asc){\n    _id, name, body, challenge, offer, order\n  }\n': AUDIENCES_QUERY_RESULT;
-    '\n  *[_type == "whatWeDoPage"][0]{\n    title, intro,\n    viewpointHeading, viewpointBody,\n    howWeWorkHeading, howWeWorkBody,\n    closingBody, closingCtaLabel,\n    \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': WHAT_WE_DO_QUERY_RESULT;
-    '\n  *[_type == "whoWeWorkWithPage"][0]{\n    title, intro,\n    stagesHeading, stagesBody,\n    closingBody, closingCtaLabel,\n    \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': WHO_WE_WORK_WITH_QUERY_RESULT;
+    '\n  *[_type == "whatWeDoPage"][0]{\n    title, intro,\n    viewpointHeading, viewpointBody,\n    howWeWorkHeading, howWeWorkBody,\n    "pullQuote": pullQuote->{ _id, quote, attribution, source },\n    closingBody, closingCtaLabel,\n    \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': WHAT_WE_DO_QUERY_RESULT;
+    '\n  *[_type == "whoWeWorkWithPage"][0]{\n    title, intro,\n    stagesHeading, stagesBody,\n    "pullQuote": pullQuote->{ _id, quote, attribution, source },\n    closingBody, closingCtaLabel,\n    \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': WHO_WE_WORK_WITH_QUERY_RESULT;
     '\n  *[_type == "aboutPage"][0]{\n    title, intro, name, role,\n    headshot{ ..., "alt": alt },\n    story,\n    highlightsHeading, highlights,\n    civicHeading, civicBody,\n    closingBody, closingCtaLabel,\n    \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': ABOUT_PAGE_QUERY_RESULT;
     '\n  *[_type == "thinkingPage"][0]{\n    title, intro, emptyState, closingBody, closingCtaLabel, \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': THINKING_PAGE_QUERY_RESULT;
     '\n  *[_type == "contactPage"][0]{\n    title, intro, formHeading,\n    enquiryTypeLabel, enquiryTypes,\n    messageLabel, submitLabel,\n    successMessage, responseNote,\n    \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': CONTACT_PAGE_QUERY_RESULT;

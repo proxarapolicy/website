@@ -25,6 +25,8 @@ export const HOME_PAGE_QUERY = defineQuery(`
     heroHeading,
     heroSubline,
     heroCtaLabel,
+    heroMotifOrigin,
+    heroMotifDestination,
     positioningHeading,
     positioningBody,
     credibilityHeading,
@@ -63,6 +65,7 @@ export const WHAT_WE_DO_QUERY = defineQuery(`
     title, intro,
     viewpointHeading, viewpointBody,
     howWeWorkHeading, howWeWorkBody,
+    "pullQuote": pullQuote->{ _id, quote, attribution, source },
     closingBody, closingCtaLabel,
     ${SEO_FIELDS}
   }
@@ -72,6 +75,7 @@ export const WHO_WE_WORK_WITH_QUERY = defineQuery(`
   *[_type == "whoWeWorkWithPage"][0]{
     title, intro,
     stagesHeading, stagesBody,
+    "pullQuote": pullQuote->{ _id, quote, attribution, source },
     closingBody, closingCtaLabel,
     ${SEO_FIELDS}
   }

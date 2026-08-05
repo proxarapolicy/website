@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 
+import { MOTION_CLASS } from "@/lib/motion";
 import { defaultOgImage, siteUrl } from "@/lib/seo";
 
 const publicSans = localFont({
@@ -71,6 +72,20 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
+        {/* Motion gate. Runs before the rest of the body parses, so the very
+            first paint already has the reveal from-state applied via CSS —
+            hiding elements after hydration would flash the content first.
+            Opting *in* by class means reduced-motion users and no-JS clients
+            fall through to fully visible content with no extra rules. The
+            failsafe is the important half: if the GSAP chunk never arrives,
+            nothing would un-hide the page, so the class removes itself. The
+            chunk cancels it on evaluation (not on mount), so 4s only has to
+            cover delivery, never hydration. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches){var d=document.documentElement;d.classList.add('${MOTION_CLASS}');window.__motionFailsafe=setTimeout(function(){d.classList.remove('${MOTION_CLASS}')},4000)}}catch(e){}`,
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}

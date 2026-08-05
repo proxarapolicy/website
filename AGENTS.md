@@ -23,7 +23,13 @@ This is the website of Proxara Policy Limited, a senior technology & AI policy c
 
 ## Performance (client rule: "if in doubt, remove the element causing the slowdown")
 
-- No animation libraries, no client-side data fetching on public pages — everything is React Server Components except the contact form and mobile nav.
+- No client-side data fetching on public pages. Everything is a React Server Component except the contact form, the mobile nav, and the motion wrappers below.
+- **GSAP is the one sanctioned animation library.** Don't add a second (no motion/framer-motion, no Lenis, no AOS). All motion goes through `Reveal` / `PageEnter` in `src/components/motion/reveal.tsx`, using the tokens in `src/lib/motion.ts` — don't hand-roll tweens in a page. Those wrappers are client components that render server-rendered children untouched, so pages stay RSC.
+- The motion brief is restrained: a short fade with a small rise, staggered rows, gold rules drawing in. No parallax, no scroll-scrubbing, no pinning, no split-text, no page-transition choreography. Every reveal fires **once** (`MOTION.scrollTrigger.once`) — re-firing on scroll-up is what makes this read as a gimmick rather than as typesetting.
+- The credibility rail under the home masthead (`src/components/motion/credibility-marquee.tsx`) is the **single** exception: a continuous right-to-left loop. Don't add a second perpetual animation. Any continuous motion must pause on hover and focus and must stop dead under `prefers-reduced-motion`.
+- Mark what moves with `data-reveal-item="up"` (or `"rule"`) in the **server** JSX. The hidden from-state lives in `globals.css` behind `.motion-ok`, set pre-paint by an inline script in `src/app/layout.tsx`, so there is never a flash of visible-then-hidden content, and reduced-motion/no-JS/GSAP-failed-to-load all fall through to plain visible content.
+- Never wrap an element that has a `sticky` descendant in a plain `<Reveal>` — the animated transform makes it a containing block and kills the stickiness. Use `<Reveal stagger>` and mark the siblings instead (see `/about`, `/contact`, `/thinking`).
+- Never animate the essay body on `/thinking/[slug]`, and never animate its `<h1>` — that title is mid-morph from the index via `<ViewTransition>`.
 - All Sanity reads go through `sanityFetch` (`src/sanity/lib/client.ts`) with cache tags; the Sanity webhook hits `/api/revalidate` to bust them. Don't switch pages to dynamic rendering without a reason.
 - Mobile optimisation is non-negotiable; senior clients review the site on phones.
 <!-- END:nextjs-agent-rules -->

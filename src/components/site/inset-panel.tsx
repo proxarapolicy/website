@@ -8,16 +8,15 @@ import { cn } from "@/lib/utils";
 export function InsetPanel({
   children,
   className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
+  ...props
+}: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
         "border border-border border-t-2 border-t-gold px-6 py-8 md:px-8 md:py-10",
         className,
       )}
+      {...props}
     >
       {children}
     </div>

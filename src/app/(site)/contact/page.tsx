@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { Reveal } from "@/components/motion/reveal";
 import { ContactForm } from "@/components/site/contact-form";
 import { Mark } from "@/components/site/mark";
 import { PageBanner } from "@/components/site/page-banner";
@@ -62,8 +63,15 @@ export default async function ContactPage() {
       <PageBanner title={page?.title ?? "Contact"} intro={page?.intro} />
 
       <SectionBand variant="navy-wash" className="py-16 md:py-24">
-        <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-16 xl:grid-cols-[minmax(0,1fr)_20rem] xl:gap-20">
-          <div className="border border-border border-t-2 border-t-gold bg-background px-6 py-8 md:px-10 md:py-12">
+        {/* `stagger`, not a wrapping Reveal — the details rail is `lg:sticky`. */}
+        <Reveal
+          stagger
+          className="grid items-start gap-12 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-16 xl:grid-cols-[minmax(0,1fr)_20rem] xl:gap-20"
+        >
+          <div
+            className="border border-border border-t-2 border-t-gold bg-background px-6 py-8 md:px-10 md:py-12"
+            data-reveal-item="up"
+          >
             <div className="mb-8">
               <div className="mb-4 flex items-center gap-2.5">
                 <Mark className="size-2.5 text-navy" />
@@ -84,7 +92,7 @@ export default async function ContactPage() {
             />
           </div>
 
-          <aside className="space-y-8 lg:sticky lg:top-24">
+          <aside className="space-y-8 lg:sticky lg:top-24" data-reveal-item="up">
             <div className="mb-2 flex items-center gap-2.5 lg:mb-4">
               <Mark className="size-2.5 text-navy" />
               <span className="h-px w-12 bg-gold" aria-hidden />
@@ -125,7 +133,7 @@ export default async function ContactPage() {
               </ContactDetail>
             ) : null}
           </aside>
-        </div>
+        </Reveal>
       </SectionBand>
     </>
   );
