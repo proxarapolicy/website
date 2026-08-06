@@ -207,6 +207,10 @@ async function run() {
     footerCta:
       "Whether you are a government exploring an AI strategy, a company navigating a new market, or an institution building a governance framework, we would like to hear from you.",
     footerLegal: "Proxara Policy Limited — Nairobi, Kenya, with UK presence.",
+    cookieBannerMessage:
+      "We use analytics cookies to understand how the site is used. You can accept or reject.",
+    cookieAcceptLabel: "Accept all",
+    cookieRejectLabel: "Reject",
     defaultSeo: {
       _type: "seo",
       metaTitle: "Proxara Policy — Technology & AI Policy Advisory",

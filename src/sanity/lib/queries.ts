@@ -15,6 +15,9 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
     footerCta,
     footerLegal,
     ga4MeasurementId,
+    cookieBannerMessage,
+    cookieAcceptLabel,
+    cookieRejectLabel,
     defaultSeo { metaTitle, metaDescription, ogImage }
   }
 `);

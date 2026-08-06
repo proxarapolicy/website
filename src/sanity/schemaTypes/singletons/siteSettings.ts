@@ -75,6 +75,26 @@ export const siteSettingsType = defineType({
       description: "E.g. G-XXXXXXXXXX. Leave empty to disable analytics.",
     }),
     defineField({
+      name: "cookieBannerMessage",
+      title: "Cookie banner message",
+      type: "text",
+      rows: 3,
+      description:
+        "Short notice shown in the cookie bar. Leave empty to hide the banner.",
+    }),
+    defineField({
+      name: "cookieAcceptLabel",
+      title: "Cookie accept label",
+      type: "string",
+      initialValue: "Accept all",
+    }),
+    defineField({
+      name: "cookieRejectLabel",
+      title: "Cookie reject label",
+      type: "string",
+      initialValue: "Reject",
+    }),
+    defineField({
       name: "defaultSeo",
       title: "Default SEO",
       type: "seo",

@@ -323,6 +323,9 @@ export type SiteSettings = {
   footerCta?: string;
   footerLegal?: string;
   ga4MeasurementId?: string;
+  cookieBannerMessage?: string;
+  cookieAcceptLabel?: string;
+  cookieRejectLabel?: string;
   defaultSeo?: Seo;
 };
 
@@ -456,7 +459,7 @@ export type AllSanitySchemaTypes =
 
 // Source: src/sanity/lib/queries.ts
 // Variable: SITE_SETTINGS_QUERY
-// Query: *[_type == "siteSettings"][0]{    wordmark,    contactEmail,    linkedinUrl,    location,    navItems[]{ label, href },    ctaLabel,    footerCta,    footerLegal,    ga4MeasurementId,    defaultSeo { metaTitle, metaDescription, ogImage }  }
+// Query: *[_type == "siteSettings"][0]{    wordmark,    contactEmail,    linkedinUrl,    location,    navItems[]{ label, href },    ctaLabel,    footerCta,    footerLegal,    ga4MeasurementId,    cookieBannerMessage,    cookieAcceptLabel,    cookieRejectLabel,    defaultSeo { metaTitle, metaDescription, ogImage }  }
 export type SITE_SETTINGS_QUERY_RESULT = {
   wordmark: string | null;
   contactEmail: string | null;
@@ -470,6 +473,9 @@ export type SITE_SETTINGS_QUERY_RESULT = {
   footerCta: string | null;
   footerLegal: string | null;
   ga4MeasurementId: string | null;
+  cookieBannerMessage: string | null;
+  cookieAcceptLabel: string | null;
+  cookieRejectLabel: string | null;
   defaultSeo: {
     metaTitle: string | null;
     metaDescription: string | null;
@@ -803,7 +809,7 @@ export type POST_SLUGS_QUERY_RESULT = Array<{
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '\n  *[_type == "siteSettings"][0]{\n    wordmark,\n    contactEmail,\n    linkedinUrl,\n    location,\n    navItems[]{ label, href },\n    ctaLabel,\n    footerCta,\n    footerLegal,\n    ga4MeasurementId,\n    defaultSeo { metaTitle, metaDescription, ogImage }\n  }\n': SITE_SETTINGS_QUERY_RESULT;
+    '\n  *[_type == "siteSettings"][0]{\n    wordmark,\n    contactEmail,\n    linkedinUrl,\n    location,\n    navItems[]{ label, href },\n    ctaLabel,\n    footerCta,\n    footerLegal,\n    ga4MeasurementId,\n    cookieBannerMessage,\n    cookieAcceptLabel,\n    cookieRejectLabel,\n    defaultSeo { metaTitle, metaDescription, ogImage }\n  }\n': SITE_SETTINGS_QUERY_RESULT;
     '\n  *[_type == "homePage"][0]{\n    heroKicker,\n    heroHeading,\n    heroSubline,\n    heroCtaLabel,\n    heroMotifOrigin,\n    heroMotifDestination,\n    positioningHeading,\n    positioningBody,\n    credibilityHeading,\n    credibilityItems,\n    aboutHeading,\n    aboutTeaserBody,\n    aboutCtaLabel,\n    pillarsHeading,\n    pillarsIntro,\n    pillarsCtaLabel,\n    audienceHeading,\n    audienceBody,\n    audienceCtaLabel,\n    thinkingHeading,\n    thinkingIntro,\n    thinkingCtaLabel,\n    "testimonials": testimonials[]->{ _id, quote, attribution, source },\n    \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': HOME_PAGE_QUERY_RESULT;
     '\n  *[_type == "pillar"] | order(order asc){\n    _id, title, "slug": slug.current, oneLiner, description, order\n  }\n': PILLARS_QUERY_RESULT;
     '\n  *[_type == "audience"] | order(order asc){\n    _id, name, body, challenge, offer, order\n  }\n': AUDIENCES_QUERY_RESULT;

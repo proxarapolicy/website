@@ -1830,6 +1830,27 @@
         },
         "optional": true
       },
+      "cookieBannerMessage": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "cookieAcceptLabel": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
+      "cookieRejectLabel": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
       "defaultSeo": {
         "type": "objectAttribute",
         "value": {
