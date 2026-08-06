@@ -53,10 +53,13 @@ export const MOTION = {
   /**
    * Uniform ScrollTrigger config. `once` is non-negotiable — re-firing on
    * scroll-up is what makes reveal animations feel like a gimmick.
-   * Start at 90% so the element is clearly in view when it settles — the
-   * reader sees the reveal rather than catching its aftermath.
+   *
+   * `top 65%` = fire only once the element's top has reached the lower-middle
+   * of the viewport. A looser start (e.g. 90%) lets tall screens treat half
+   * the page as "already in view" on load, so everything animates at once
+   * instead of as you scroll.
    */
-  scrollTrigger: { start: "top 90%", once: true },
+  scrollTrigger: { start: "top 65%", once: true },
 } as const;
 
 /** Class set by the inline script in the root layout. Its absence means "no motion". */

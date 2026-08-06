@@ -112,8 +112,8 @@ function items(root: HTMLElement) {
 }
 
 /**
- * Scroll-triggered reveal. Fires once when the element crosses 85% of the
- * viewport and never again.
+ * Scroll-triggered reveal. Fires once when the element reaches the viewport
+ * reading line (`MOTION.scrollTrigger.start`) and never again.
  *
  * - Default: animates the wrapper itself as one block.
  * - `stagger`: leaves the wrapper alone and animates its `[data-reveal-item]`
