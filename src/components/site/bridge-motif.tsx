@@ -1,33 +1,38 @@
 /**
- * Hero anchor for the home page — the "bridge" in the positioning copy, drawn
- * rather than illustrated.
+ * Hero visual anchor — an abstract map, not a picture of a place.
  *
- * A curved horizon of hairline arcs, two Proxara diamonds set on it as piers,
- * and a gold span between them carrying the origin and destination names. No
- * photography, no gradient, no icon set: inline SVG built from the brand's own
- * mark, so it costs nothing to load and inherits the navy band's tokens.
+ * The client brief asked for a restrained cartographic cue that echoes
+ * "From Nairobi to Brussels." This is an orthographic globe: limb, a few
+ * meridians and parallels, two Proxara diamonds as plot points, and a gold
+ * great-circle span between them. No continent outlines (Africa is never a
+ * visual category on this site), no photography, no gradient.
  *
- * Geometrically abstract on purpose — it is a route, not a map, so it never
- * reduces the work to a region. The names come from Sanity and are optional;
- * with both cleared the motif renders unlabelled.
+ * Names come from Sanity (`heroMotifOrigin` / `heroMotifDestination`).
  *
  * Motion (absolute `data-reveal-delay` slots — see Reveal):
- *   1. Horizon arcs fade in from near to far
- *   2. Origin pier lands, then its label
- *   3. Gold span draws origin → destination
- *   4. Destination pier and label land as the span arrives
- *
- * Sized compact under the CTAs on small screens; full width in the desktop
- * right rail.
+ *   1. Globe field (limb + grid) builds
+ *   2. Origin node + label
+ *   3. Gold route draws origin → destination
+ *   4. Destination node + label land as the span arrives
  */
 
-const HORIZON = [
-  "M0 149.2A530 530 0 0 1 400 149.2",
-  "M0 203.6A480 480 0 0 1 400 203.6",
-  "M0 259.3A430 430 0 0 1 400 259.3",
-  "M0 316.9A380 380 0 0 1 400 316.9",
-  "M0 377.5A330 330 0 0 1 400 377.5",
+/** Parallels — horizontal ellipses inside the limb (abstract latitudes). */
+const PARALLELS = [
+  "M68 155 A132 38 0 0 0 332 155",
+  "M55 200 A145 52 0 0 0 345 200",
+  "M68 245 A132 38 0 0 0 332 245",
 ] as const;
+
+/** Meridians — vertical arcs suggesting longitude, not a real projection. */
+const MERIDIANS = [
+  "M200 48 A90 152 0 0 0 200 352",
+  "M200 48 A90 152 0 0 1 200 352",
+  "M128 62 Q95 200 128 338",
+  "M272 62 Q305 200 272 338",
+] as const;
+
+const ORIGIN = { x: 128, y: 248 };
+const DEST = { x: 278, y: 142 };
 
 export function BridgeMotif({
   origin,
@@ -44,85 +49,131 @@ export function BridgeMotif({
     <svg
       viewBox="0 0 400 400"
       fill="none"
-      // Labelled, the motif states a fact the sub-line already carries, so it
-      // is announced once and its inner text is skipped. Unlabelled it is pure
-      // ornament and drops out of the tree entirely.
       role={labelled ? "img" : undefined}
       aria-label={labelled ? `${origin} to ${destination}` : undefined}
       aria-hidden={labelled ? undefined : true}
       focusable="false"
       className={className}
     >
-      {/* Curved horizon — concentric arcs sharing one centre far below the
-          frame. Straight rules were tried first and read as chart gridlines;
-          the curvature is what stops this looking like a growth graph.
-          Each arc is its own reveal so the field builds rather than popping. */}
-      {HORIZON.map((d, i) => (
+      {/* Soft field — a large Mark watermark so the logo mark reads abstractly
+          at scale, as the brief suggested, without competing with the route. */}
+      <g
+        opacity="0.07"
+        stroke="var(--gold)"
+        strokeWidth="1.25"
+        data-reveal-item="fade"
+        data-reveal-delay="0"
+      >
+        <path d="M200 78 302 180 200 282 98 180Z" />
+        <path d="M200 128 252 180 200 232 148 180Z" fill="var(--gold)" stroke="none" />
+      </g>
+
+      {/* Globe limb */}
+      <circle
+        cx="200"
+        cy="200"
+        r="152"
+        stroke="var(--on-navy-line)"
+        strokeWidth="1"
+        data-reveal-item="fade"
+        data-reveal-delay="0.06"
+      />
+
+      {/* Latitude / longitude hairlines */}
+      {PARALLELS.map((d, i) => (
         <path
-          key={d}
+          key={`p-${d}`}
           d={d}
           stroke="var(--on-navy-line)"
-          strokeWidth="1"
+          strokeWidth="0.75"
           data-reveal-item="fade"
-          data-reveal-delay={String(i * 0.08)}
+          data-reveal-delay={String(0.12 + i * 0.05)}
+        />
+      ))}
+      {MERIDIANS.map((d, i) => (
+        <path
+          key={`m-${d}`}
+          d={d}
+          stroke="var(--on-navy-line)"
+          strokeWidth="0.75"
+          data-reveal-item="fade"
+          data-reveal-delay={String(0.28 + i * 0.05)}
         />
       ))}
 
-      {/* Origin pier — lands once the near horizon is in. */}
-      <g data-reveal-item="fade" data-reveal-delay="0.45">
+      {/* Origin plot */}
+      <g data-reveal-item="fade" data-reveal-delay="0.55">
+        <circle
+          cx={ORIGIN.x}
+          cy={ORIGIN.y}
+          r="14"
+          stroke="var(--on-navy-line)"
+          strokeWidth="0.75"
+        />
         <path
-          d="M70 218.5 81.5 230 70 241.5 58.5 230Z"
+          d={`M${ORIGIN.x} ${ORIGIN.y - 11.5} ${ORIGIN.x + 11.5} ${ORIGIN.y} ${ORIGIN.x} ${ORIGIN.y + 11.5} ${ORIGIN.x - 11.5} ${ORIGIN.y}Z`}
           stroke="var(--gold)"
           strokeWidth="1.5"
         />
-        <path d="M70 224 76 230 70 236 64 230Z" fill="var(--gold)" />
+        <path
+          d={`M${ORIGIN.x} ${ORIGIN.y - 5.5} ${ORIGIN.x + 5.5} ${ORIGIN.y} ${ORIGIN.x} ${ORIGIN.y + 5.5} ${ORIGIN.x - 5.5} ${ORIGIN.y}Z`}
+          fill="var(--gold)"
+        />
       </g>
 
       {origin ? (
         <text
-          x="70"
-          y="264"
+          x={ORIGIN.x}
+          y={ORIGIN.y + 32}
           textAnchor="middle"
           className="eyebrow"
           fill="var(--gold-on-navy)"
           data-reveal-item="fade"
-          data-reveal-delay="0.58"
+          data-reveal-delay="0.68"
         >
           {origin}
         </text>
       ) : null}
 
-      {/* The span. Gold appears once, and only here. pathLength normalises the
-          dash maths so the draw preset needs no per-path measurement. Starts
-          after the origin is named so the eye has a pier to leave from. */}
+      {/* Great-circle route — the only gold stroke in the field */}
       <path
-        d="M70 230Q185 120 300 222"
+        d={`M${ORIGIN.x} ${ORIGIN.y}Q200 95 ${DEST.x} ${DEST.y}`}
         stroke="var(--gold)"
         strokeWidth="1.75"
         pathLength="1"
         data-reveal-item="draw"
-        data-reveal-delay="0.72"
+        data-reveal-delay="0.82"
       />
 
-      {/* Destination pier — held until the span has almost arrived (~0.72+1.45). */}
-      <g data-reveal-item="fade" data-reveal-delay="1.95">
+      {/* Destination plot — lands as the span arrives */}
+      <g data-reveal-item="fade" data-reveal-delay="2.05">
+        <circle
+          cx={DEST.x}
+          cy={DEST.y}
+          r="14"
+          stroke="var(--on-navy-line)"
+          strokeWidth="0.75"
+        />
         <path
-          d="M300 210.5 311.5 222 300 233.5 288.5 222Z"
+          d={`M${DEST.x} ${DEST.y - 11.5} ${DEST.x + 11.5} ${DEST.y} ${DEST.x} ${DEST.y + 11.5} ${DEST.x - 11.5} ${DEST.y}Z`}
           stroke="var(--gold)"
           strokeWidth="1.5"
         />
-        <path d="M300 216 306 222 300 228 294 222Z" fill="var(--gold)" />
+        <path
+          d={`M${DEST.x} ${DEST.y - 5.5} ${DEST.x + 5.5} ${DEST.y} ${DEST.x} ${DEST.y + 5.5} ${DEST.x - 5.5} ${DEST.y}Z`}
+          fill="var(--gold)"
+        />
       </g>
 
       {destination ? (
         <text
-          x="300"
-          y="256"
+          x={DEST.x}
+          y={DEST.y - 24}
           textAnchor="middle"
           className="eyebrow"
           fill="var(--gold-on-navy)"
           data-reveal-item="fade"
-          data-reveal-delay="2.1"
+          data-reveal-delay="2.2"
         >
           {destination}
         </text>

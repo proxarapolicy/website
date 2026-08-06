@@ -93,9 +93,26 @@ export default async function HomePage() {
           nav and split attention away from the one statement that matters. */}
       <SectionBand
         variant="navy"
-        className="overflow-hidden py-20 md:py-28 lg:py-32"
+        className="relative overflow-hidden py-20 md:py-28 lg:py-32"
       >
-        <div className="grid items-center gap-y-12 lg:grid-cols-12 lg:gap-x-10 lg:gap-y-16">
+        {/* Subtle grain — the client's "textured navy" without a gradient or
+            photograph. SVG noise, opacity kept very low so type stays crisp. */}
+        <svg
+          className="pointer-events-none absolute inset-0 h-full w-full opacity-[0.04]"
+          aria-hidden
+        >
+          <filter id="hero-grain">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.85"
+              numOctaves="2"
+              stitchTiles="stitch"
+            />
+            <feColorMatrix type="saturate" values="0" />
+          </filter>
+          <rect width="100%" height="100%" filter="url(#hero-grain)" />
+        </svg>
+        <div className="relative grid items-center gap-y-12 lg:grid-cols-12 lg:gap-x-10 lg:gap-y-16">
           <PageEnter className="max-w-4xl lg:col-span-7">
             <div className="mb-7 flex items-center gap-3" data-reveal-item="up">
               <Mark className="size-3.5 text-primary-foreground" />
@@ -158,7 +175,7 @@ export default async function HomePage() {
           <Reveal
             stagger
             replay
-            className="mx-auto w-full max-w-[14rem] sm:max-w-xs lg:col-span-5 lg:col-start-8 lg:mx-0 lg:ml-auto lg:max-w-md"
+            className="mx-auto w-full max-w-[16rem] sm:max-w-sm lg:col-span-5 lg:col-start-8 lg:mx-0 lg:ml-auto lg:max-w-lg"
           >
             <BridgeMotif
               origin={page?.heroMotifOrigin ?? "Nairobi"}
