@@ -1,4 +1,4 @@
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 
 /**
@@ -6,7 +6,20 @@ import { NextResponse } from "next/server";
  *   URL:    https://proxarapolicy.com/api/revalidate?secret=<SANITY_REVALIDATE_SECRET>
  *   Events: create, update, delete
  * Content edits then go live within seconds without a rebuild.
+ *
+ * Tags alone (SWR "max") can leave a sticky Full Route Cache on Vercel.
+ * Also expire tags immediately and bust the shared site layout so banner
+ * copy / settings changes show on the next request.
  */
+const SITE_PATHS = [
+  "/",
+  "/what-we-do",
+  "/who-we-work-with",
+  "/about",
+  "/thinking",
+  "/contact",
+] as const;
+
 export async function POST(request: Request) {
   const secret = new URL(request.url).searchParams.get("secret");
   if (
@@ -24,9 +37,15 @@ export async function POST(request: Request) {
     // fall through — revalidate everything
   }
 
-  // Bust the specific document-type tag when known, and the catch-all tag always.
-  if (type) revalidateTag(type, "max");
-  revalidateTag("sanity", "max");
+  // Expire immediately (not SWR "max") so the next visit blocks on fresh data.
+  if (type) revalidateTag(type, { expire: 0 });
+  revalidateTag("sanity", { expire: 0 });
+
+  // Invalidate the (site) layout tree and each public path.
+  revalidatePath("/", "layout");
+  for (const path of SITE_PATHS) {
+    revalidatePath(path);
+  }
 
   return NextResponse.json({ revalidated: true, type: type ?? "all" });
 }
