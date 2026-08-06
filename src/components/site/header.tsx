@@ -24,7 +24,7 @@ export function SiteHeader({
     // Solid background with a hard navy rule. The blurred translucent header is
     // the most-copied treatment of the last three years; a firm rule reads as
     // institutional furniture and costs no compositing work on scroll.
-    <header className="sticky top-0 z-40 border-b border-navy bg-background">
+    <header className="sticky top-0 z-40 border-b border-navy bg-background [view-transition-name:site-header]">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 md:px-8">
         <Link href="/" aria-label={`${wordmark} — home`}>
           <Image

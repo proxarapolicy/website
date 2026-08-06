@@ -22,7 +22,10 @@ export function EssayAdjacentNav({ newer, older }: EssayAdjacentNavProps) {
           className="group flex flex-col gap-2 border border-border border-t-2 border-t-transparent bg-background p-5 transition-colors hover:border-t-gold hover:bg-surface-navy-wash"
         >
           <span className="inline-flex items-center gap-1.5 text-xs font-medium tracking-[0.06em] text-gold-deep uppercase">
-            <ArrowLeft className="size-3.5" aria-hidden />
+            <ArrowLeft
+              className="size-3.5 transition-transform duration-200 ease-out group-hover:-translate-x-1"
+              aria-hidden
+            />
             Newer
           </span>
           <span className="font-serif text-base leading-snug text-navy md:text-lg">
@@ -40,7 +43,10 @@ export function EssayAdjacentNav({ newer, older }: EssayAdjacentNavProps) {
         >
           <span className="inline-flex items-center gap-1.5 text-xs font-medium tracking-[0.06em] text-gold-deep uppercase">
             Older
-            <ArrowRight className="size-3.5" aria-hidden />
+            <ArrowRight
+              className="size-3.5 transition-transform duration-200 ease-out group-hover:translate-x-1"
+              aria-hidden
+            />
           </span>
           <span className="font-serif text-base leading-snug text-navy md:text-lg">
             {older.title}

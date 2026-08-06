@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 import { Reveal } from "@/components/motion/reveal";
 import { Mark } from "@/components/site/mark";
@@ -21,24 +22,37 @@ export function ClosingCta({
 
   return (
     <SectionBand variant="gold-wash" className="py-16 md:py-20">
-      <Reveal className="mx-auto flex w-full max-w-5xl flex-col items-start gap-8 md:flex-row md:items-center md:justify-between md:gap-12">
+      <Reveal
+        stagger
+        className="mx-auto flex w-full max-w-5xl flex-col items-start gap-8 md:flex-row md:items-center md:justify-between md:gap-12"
+      >
         <div className="max-w-2xl">
-          <div className="mb-5 flex items-center gap-2.5">
+          <div className="mb-5 flex items-center gap-2.5" data-reveal-item="up">
             <Mark className="size-2.5 text-navy" />
-            <span className="h-px w-12 bg-gold" aria-hidden />
           </div>
-          <p className="font-serif text-xl leading-snug text-navy md:text-2xl">
+          <span
+            className="mb-5 block h-0.5 w-14 bg-gold"
+            aria-hidden
+            data-reveal-item="rule"
+          />
+          <p
+            className="font-serif text-xl leading-snug text-navy md:text-2xl"
+            data-reveal-item="up"
+          >
             {body}
           </p>
         </div>
-        <Button
-          size="lg"
-          nativeButton={false}
-          render={<Link href="/contact" />}
-          className="shrink-0"
-        >
-          {ctaLabel ?? "Get in touch"}
-        </Button>
+        <div data-reveal-item="up">
+          <Button
+            size="lg"
+            nativeButton={false}
+            render={<Link href="/contact" />}
+            className="shrink-0"
+          >
+            {ctaLabel ?? "Get in touch"}
+            <ArrowRight className="size-4" />
+          </Button>
+        </div>
       </Reveal>
     </SectionBand>
   );

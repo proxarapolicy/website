@@ -6,9 +6,8 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     // Enables React's <ViewTransition> during route navigation. Native browser
-    // API — no animation library — and where unsupported the app simply does
-    // not animate. Used for exactly one effect: the /thinking index title
-    // morphing into the essay <h1>. See src/app/globals.css.
+    // API — no GSAP page exits. Used for: gentle (site) page crossfade via
+    // template.tsx, and the /thinking index title morphing into the essay <h1>.
     viewTransition: true,
   },
 };

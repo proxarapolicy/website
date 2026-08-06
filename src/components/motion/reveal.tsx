@@ -78,14 +78,18 @@ function varsFor(el: Element): RevealVars {
 }
 
 /**
- * Extra seconds to hold an item back, from `data-reveal-delay` in the server
- * JSX. The uniform step is right for reading order; a drawn graphic sometimes
- * needs a beat that the step cannot express — a pier that should land as the
- * span reaches it, not a sixteenth of a second after the span starts.
+ * Absolute timeline position from `data-reveal-delay`, or `null` when the
+ * attribute is absent (caller falls back to index stagger).
+ *
+ * When present — including `0` — the delay owns the slot. That lets the hero
+ * motif choreograph piers and the span without the list stagger stacking on
+ * top; lists omit the attribute and keep reading-order stagger.
  */
-function offsetFor(el: Element): number {
-  const raw = Number(el.getAttribute("data-reveal-delay"));
-  return Number.isFinite(raw) ? raw : 0;
+function absoluteAt(el: Element): number | null {
+  const raw = el.getAttribute("data-reveal-delay");
+  if (raw === null) return null;
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : 0;
 }
 
 /**
@@ -156,6 +160,10 @@ export function Reveal({
         : { trigger: root, ...MOTION.scrollTrigger },
     });
     targets.forEach((el, i) => {
+      const at =
+        absoluteAt(el) ??
+        // Capped so a long list never turns into a queue the reader waits on.
+        Math.min(i * MOTION.stagger.each, MOTION.stagger.amount);
       tl.to(
         el,
         {
@@ -164,9 +172,7 @@ export function Reveal({
           // what a replaying timeline must not do — it needs its from-state.
           onComplete: replay ? undefined : () => settle(el),
         },
-        // Capped so a long list never turns into a queue the reader waits on.
-        Math.min(i * MOTION.stagger.each, MOTION.stagger.amount) +
-          offsetFor(el),
+        at,
       );
     });
 
@@ -222,10 +228,11 @@ export function PageEnter({
 
     const tl = gsap.timeline({ delay });
     targets.forEach((el, i) => {
+      const at = absoluteAt(el) ?? i * MOTION.enterStep;
       tl.to(
         el,
         { ...varsFor(el), onComplete: () => settle(el) },
-        i * MOTION.enterStep + offsetFor(el),
+        at,
       );
     });
 

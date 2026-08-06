@@ -11,11 +11,24 @@
  * reduces the work to a region. The names come from Sanity and are optional;
  * with both cleared the motif renders unlabelled.
  *
- * Motion: the horizon fades, the span draws left to right, and each pier lands
- * with its label as the span reaches it — `data-reveal-delay` holds the far
- * pier back until then. Hidden below `lg`; on a phone the masthead is the
- * anchor on its own.
+ * Motion (absolute `data-reveal-delay` slots — see Reveal):
+ *   1. Horizon arcs fade in from near to far
+ *   2. Origin pier lands, then its label
+ *   3. Gold span draws origin → destination
+ *   4. Destination pier and label land as the span arrives
+ *
+ * Sized compact under the CTAs on small screens; full width in the desktop
+ * right rail.
  */
+
+const HORIZON = [
+  "M0 149.2A530 530 0 0 1 400 149.2",
+  "M0 203.6A480 480 0 0 1 400 203.6",
+  "M0 259.3A430 430 0 0 1 400 259.3",
+  "M0 316.9A380 380 0 0 1 400 316.9",
+  "M0 377.5A330 330 0 0 1 400 377.5",
+] as const;
+
 export function BridgeMotif({
   origin,
   destination,
@@ -42,71 +55,78 @@ export function BridgeMotif({
     >
       {/* Curved horizon — concentric arcs sharing one centre far below the
           frame. Straight rules were tried first and read as chart gridlines;
-          the curvature is what stops this looking like a growth graph. */}
-      <g
-        stroke="var(--on-navy-line)"
-        strokeWidth="1"
-        data-reveal-item="fade"
-      >
-        <path d="M0 149.2A530 530 0 0 1 400 149.2" />
-        <path d="M0 203.6A480 480 0 0 1 400 203.6" />
-        <path d="M0 259.3A430 430 0 0 1 400 259.3" />
-        <path d="M0 316.9A380 380 0 0 1 400 316.9" />
-        <path d="M0 377.5A330 330 0 0 1 400 377.5" />
-      </g>
+          the curvature is what stops this looking like a growth graph.
+          Each arc is its own reveal so the field builds rather than popping. */}
+      {HORIZON.map((d, i) => (
+        <path
+          key={d}
+          d={d}
+          stroke="var(--on-navy-line)"
+          strokeWidth="1"
+          data-reveal-item="fade"
+          data-reveal-delay={String(i * 0.08)}
+        />
+      ))}
 
-      {/* Origin pier — lands first, before the span leaves it. */}
-      <g data-reveal-item="fade" data-reveal-delay="0.12">
+      {/* Origin pier — lands once the near horizon is in. */}
+      <g data-reveal-item="fade" data-reveal-delay="0.45">
         <path
           d="M70 218.5 81.5 230 70 241.5 58.5 230Z"
           stroke="var(--gold)"
           strokeWidth="1.5"
         />
         <path d="M70 224 76 230 70 236 64 230Z" fill="var(--gold)" />
-        {origin ? (
-          <text
-            x="70"
-            y="264"
-            textAnchor="middle"
-            className="eyebrow"
-            fill="var(--gold-on-navy)"
-          >
-            {origin}
-          </text>
-        ) : null}
       </g>
 
+      {origin ? (
+        <text
+          x="70"
+          y="264"
+          textAnchor="middle"
+          className="eyebrow"
+          fill="var(--gold-on-navy)"
+          data-reveal-item="fade"
+          data-reveal-delay="0.58"
+        >
+          {origin}
+        </text>
+      ) : null}
+
       {/* The span. Gold appears once, and only here. pathLength normalises the
-          dash maths so the draw preset needs no per-path measurement. */}
+          dash maths so the draw preset needs no per-path measurement. Starts
+          after the origin is named so the eye has a pier to leave from. */}
       <path
         d="M70 230Q185 120 300 222"
         stroke="var(--gold)"
-        strokeWidth="1.5"
+        strokeWidth="1.75"
         pathLength="1"
         data-reveal-item="draw"
-        data-reveal-delay="0.3"
+        data-reveal-delay="0.72"
       />
 
-      {/* Destination pier — held until the span has almost arrived. */}
-      <g data-reveal-item="fade" data-reveal-delay="1.15">
+      {/* Destination pier — held until the span has almost arrived (~0.72+1.45). */}
+      <g data-reveal-item="fade" data-reveal-delay="1.95">
         <path
           d="M300 210.5 311.5 222 300 233.5 288.5 222Z"
           stroke="var(--gold)"
           strokeWidth="1.5"
         />
         <path d="M300 216 306 222 300 228 294 222Z" fill="var(--gold)" />
-        {destination ? (
-          <text
-            x="300"
-            y="256"
-            textAnchor="middle"
-            className="eyebrow"
-            fill="var(--gold-on-navy)"
-          >
-            {destination}
-          </text>
-        ) : null}
       </g>
+
+      {destination ? (
+        <text
+          x="300"
+          y="256"
+          textAnchor="middle"
+          className="eyebrow"
+          fill="var(--gold-on-navy)"
+          data-reveal-item="fade"
+          data-reveal-delay="2.1"
+        >
+          {destination}
+        </text>
+      ) : null}
     </svg>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Script from "next/script";
 import { ArrowRight } from "lucide-react";
 import { toast, Toaster } from "sonner";
 
@@ -14,6 +15,13 @@ import { cn } from "@/lib/utils";
 declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void;
+    grecaptcha?: {
+      ready: (cb: () => void) => void;
+      execute: (
+        siteKey: string,
+        options: { action: string },
+      ) => Promise<string>;
+    };
   }
 }
 
@@ -24,6 +32,8 @@ const fieldControlClassName = cn(
   "focus-visible:border-gold focus-visible:ring-2 focus-visible:ring-gold/35",
   "md:text-sm",
 );
+
+const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY?.trim() || null;
 
 function Field({
   id,
@@ -44,6 +54,31 @@ function Field({
       {children}
     </div>
   );
+}
+
+async function getRecaptchaToken(): Promise<string | undefined> {
+  if (!siteKey) return undefined;
+  const grecaptcha = window.grecaptcha;
+  if (!grecaptcha) {
+    throw new Error(
+      "Security check is still loading. Please wait a moment and try again.",
+    );
+  }
+  return new Promise((resolve, reject) => {
+    grecaptcha.ready(() => {
+      grecaptcha
+        // Must match RECAPTCHA_ACTION in src/lib/recaptcha.ts
+        .execute(siteKey, { action: "contact" })
+        .then(resolve)
+        .catch(() =>
+          reject(
+            new Error(
+              "Could not complete the security check. Please try again.",
+            ),
+          ),
+        );
+    });
+  });
 }
 
 export function ContactForm({
@@ -76,13 +111,16 @@ export function ContactForm({
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
-    const data = {
-      ...Object.fromEntries(new FormData(form).entries()),
-      startedAt: startedAt.current,
-    };
 
     setStatus("sending");
     try {
+      const recaptchaToken = await getRecaptchaToken();
+      const data = {
+        ...Object.fromEntries(new FormData(form).entries()),
+        startedAt: startedAt.current,
+        ...(recaptchaToken ? { recaptchaToken } : {}),
+      };
+
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -124,6 +162,12 @@ export function ContactForm({
 
   return (
     <>
+      {siteKey ? (
+        <Script
+          src={`https://www.google.com/recaptcha/api.js?render=${siteKey}`}
+          strategy="afterInteractive"
+        />
+      ) : null}
       <Toaster position="bottom-center" richColors />
       <form
         onSubmit={handleSubmit}
@@ -234,6 +278,30 @@ export function ContactForm({
             </p>
           ) : null}
         </div>
+
+        {siteKey ? (
+          <p className="text-xs leading-relaxed text-muted-foreground">
+            This form is protected by reCAPTCHA and the Google{" "}
+            <a
+              href="https://policies.google.com/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline decoration-border underline-offset-2 hover:text-navy"
+            >
+              Privacy Policy
+            </a>{" "}
+            and{" "}
+            <a
+              href="https://policies.google.com/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline decoration-border underline-offset-2 hover:text-navy"
+            >
+              Terms of Service
+            </a>{" "}
+            apply.
+          </p>
+        ) : null}
       </form>
     </>
   );

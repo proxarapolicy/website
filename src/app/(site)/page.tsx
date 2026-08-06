@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
+import { CountUpFigure } from "@/components/motion/count-up-figure";
 import { CredibilityMarquee } from "@/components/motion/credibility-marquee";
 import { PageEnter, Reveal } from "@/components/motion/reveal";
 import { PortableText } from "@/components/portable-text";
@@ -94,7 +95,7 @@ export default async function HomePage() {
         variant="navy"
         className="overflow-hidden py-20 md:py-28 lg:py-32"
       >
-        <div className="grid items-center gap-y-16 lg:grid-cols-12 lg:gap-x-10">
+        <div className="grid items-center gap-y-12 lg:grid-cols-12 lg:gap-x-10 lg:gap-y-16">
           <PageEnter className="max-w-4xl lg:col-span-7">
             <div className="mb-7 flex items-center gap-3" data-reveal-item="up">
               <Mark className="size-3.5 text-primary-foreground" />
@@ -149,20 +150,20 @@ export default async function HomePage() {
             </div>
           </PageEnter>
 
-          {/* Visual anchor. On its own timeline rather than inside PageEnter:
-              the span needs a longer, sequenced draw than the entrance step
-              allows, and `replay` re-runs it when the reader scrolls back up
-              to the top — the one place on the site that re-fires, and only
-              because it is drawn ornament rather than copy. */}
+          {/* Visual anchor — compact under the CTAs on small screens, right
+              rail from lg. Own timeline (not PageEnter): the span needs a
+              longer draw than the entrance step allows. `replay` re-runs when
+              the reader scrolls back to the top — the one site-wide re-fire,
+              and only because this is drawn ornament rather than copy. */}
           <Reveal
             stagger
             replay
-            className="hidden lg:col-span-5 lg:col-start-8 lg:block"
+            className="mx-auto w-full max-w-[14rem] sm:max-w-xs lg:col-span-5 lg:col-start-8 lg:mx-0 lg:ml-auto lg:max-w-md"
           >
             <BridgeMotif
               origin={page?.heroMotifOrigin ?? "Nairobi"}
               destination={page?.heroMotifDestination ?? "Brussels"}
-              className="ml-auto w-full max-w-md"
+              className="w-full"
             />
           </Reveal>
         </div>
@@ -186,16 +187,27 @@ export default async function HomePage() {
 
       {/* Service pillars — white band after navy-wash positioning */}
       <SectionBand variant="default" className="py-20 md:py-28">
-        <Reveal>
+        <Reveal stagger>
           <EditorialGrid className="mb-12">
             <div className="md:col-span-5">
-              <Mark className="mb-5 size-3 text-navy" />
-              <h2 className="font-serif text-h2 text-navy">
+              <Mark className="mb-5 size-3 text-navy" data-reveal-item="up" />
+              <h2
+                className="font-serif text-h2 text-navy"
+                data-reveal-item="up"
+              >
                 {page?.pillarsHeading ?? "What we do"}
               </h2>
+              <span
+                className="mt-5 block h-0.5 w-14 bg-gold"
+                aria-hidden
+                data-reveal-item="rule"
+              />
             </div>
             {page?.pillarsIntro ? (
-              <div className="md:col-span-6 md:col-start-7 md:self-end">
+              <div
+                className="md:col-span-6 md:col-start-7 md:self-end"
+                data-reveal-item="up"
+              >
                 <p className="text-muted-foreground">{page.pillarsIntro}</p>
               </div>
             ) : null}
@@ -221,9 +233,10 @@ export default async function HomePage() {
                     aria-hidden
                     className="pointer-events-none absolute inset-x-0 top-0 h-0.5 origin-left scale-x-0 bg-gold transition-transform duration-300 ease-out group-hover:scale-x-100"
                   />
-                  <span className="figures-oldstyle font-serif text-2xl leading-none text-muted-foreground transition-colors group-hover:text-gold-deep md:col-span-2 md:text-3xl">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
+                  <CountUpFigure
+                    value={i + 1}
+                    className="figures-oldstyle font-serif text-2xl leading-none text-muted-foreground transition-colors group-hover:text-gold-deep md:col-span-2 md:text-3xl"
+                  />
                   <h3 className="font-serif text-xl leading-snug text-navy underline-offset-4 group-hover:underline group-hover:decoration-gold md:col-span-4">
                     {pillar.title}
                   </h3>
@@ -311,15 +324,26 @@ export default async function HomePage() {
       {/* Latest thinking — hidden while THINKING_ENABLED is false */}
       {THINKING_ENABLED ? (
       <SectionBand variant={thinkingVariant} className="py-20 md:py-28">
-        <Reveal>
+        <Reveal stagger>
           <EditorialGrid className="mb-10">
             <div className="md:col-span-5">
-              <Mark className="mb-5 size-3 text-navy" />
-              <h2 className="font-serif text-h2 text-navy">
+              <Mark className="mb-5 size-3 text-navy" data-reveal-item="up" />
+              <h2
+                className="font-serif text-h2 text-navy"
+                data-reveal-item="up"
+              >
                 {page?.thinkingHeading ?? "Latest thinking"}
               </h2>
+              <span
+                className="mt-5 block h-0.5 w-14 bg-gold"
+                aria-hidden
+                data-reveal-item="rule"
+              />
             </div>
-            <div className="md:col-span-6 md:col-start-7 md:self-end">
+            <div
+              className="md:col-span-6 md:col-start-7 md:self-end"
+              data-reveal-item="up"
+            >
               {page?.thinkingIntro ? (
                 <p className="leading-relaxed text-muted-foreground">
                   {page.thinkingIntro}
@@ -383,7 +407,7 @@ function SectionLink({
       className="group inline-flex items-center gap-2 font-medium text-gold-deep transition-colors hover:text-navy"
     >
       {children}
-      <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+      <ArrowRight className="size-4 transition-transform duration-200 ease-out group-hover:translate-x-1.5" />
     </Link>
   );
 }

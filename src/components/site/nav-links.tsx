@@ -12,7 +12,7 @@ function isActivePath(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-/** Desktop nav — gold underline + navy type mark the current page. */
+/** Desktop nav — gold underline marks the current page; hover draws a hairline. */
 export function NavLinks({ items }: { items: NavItem[] }) {
   const pathname = usePathname();
 
@@ -26,10 +26,10 @@ export function NavLinks({ items }: { items: NavItem[] }) {
             href={item.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "relative py-1 text-sm transition-colors",
+              "relative py-1 text-sm transition-colors after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:origin-left after:bg-gold after:content-['']",
               active
-                ? "font-medium text-navy after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:bg-gold"
-                : "text-muted-foreground hover:text-navy",
+                ? "font-medium text-navy after:h-0.5"
+                : "text-muted-foreground after:h-0.5 after:scale-x-0 after:transition-transform after:duration-200 after:ease-out hover:text-navy hover:after:scale-x-100 focus-visible:after:scale-x-100",
             )}
           >
             {item.label}

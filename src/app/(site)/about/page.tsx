@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 
+import { CountUpFigure } from "@/components/motion/count-up-figure";
 import { Reveal } from "@/components/motion/reveal";
 import { LinkedProse, PortableText } from "@/components/portable-text";
 import { ClosingCta } from "@/components/site/closing-cta";
@@ -127,9 +128,10 @@ export default async function AboutPage() {
                 className="border-t border-on-navy-line pt-5"
                 data-reveal-item="up"
               >
-                <p className="eyebrow text-gold-on-navy">
-                  {String(i + 1).padStart(2, "0")}
-                </p>
+                <CountUpFigure
+                  value={i + 1}
+                  className="eyebrow text-gold-on-navy"
+                />
                 <p className="mt-2 leading-relaxed text-on-navy-muted">
                   {highlight}
                 </p>

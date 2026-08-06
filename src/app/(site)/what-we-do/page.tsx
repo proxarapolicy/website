@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { CountUpFigure } from "@/components/motion/count-up-figure";
 import { Reveal } from "@/components/motion/reveal";
 import { PortableText } from "@/components/portable-text";
 import { ClosingCta } from "@/components/site/closing-cta";
@@ -61,15 +62,23 @@ export default async function WhatWeDoPage() {
         <SectionBand variant="navy-wash" className="py-16 md:py-24">
           <Reveal stagger>
             <EditorialGrid className="gap-y-8">
-              <Margin data-reveal-item="up">
-                <div className="mb-4 flex items-center gap-2.5">
-                  <Mark className="size-2.5 text-navy" />
-                  <span className="h-px w-12 bg-gold" aria-hidden />
-                </div>
-                <h2 className="font-serif text-xl leading-snug tracking-display text-navy">
+              <Margin>
+                <Mark
+                  className="mb-4 size-2.5 text-navy"
+                  data-reveal-item="up"
+                />
+                <h2
+                  className="font-serif text-xl leading-snug tracking-display text-navy"
+                  data-reveal-item="up"
+                >
                   {page.viewpointHeading ??
                     "Our view on government and technology"}
                 </h2>
+                <span
+                  className="mt-4 block h-0.5 w-14 bg-gold"
+                  aria-hidden
+                  data-reveal-item="rule"
+                />
               </Margin>
               <Column data-reveal-item="up">
                 <div className="prose-measure">
@@ -86,10 +95,14 @@ export default async function WhatWeDoPage() {
       {/* Services — report contents list with numbered rows */}
       <SectionBand variant="default" className="py-16 md:py-24">
         <Reveal stagger>
-          <div className="mb-10 flex items-center gap-2.5" data-reveal-item="up">
+          <div className="mb-10" data-reveal-item="up">
             <Mark className="size-2.5 text-navy" />
-            <span className="h-px w-12 bg-gold" aria-hidden />
           </div>
+          <span
+            className="mb-10 block h-0.5 w-14 bg-gold"
+            aria-hidden
+            data-reveal-item="rule"
+          />
           <ol className={pillars.length ? "border-t-2 border-navy" : undefined}>
             {pillars.map((pillar, i) => (
               <li
@@ -100,9 +113,10 @@ export default async function WhatWeDoPage() {
                 {/* Numbers sit in the same margin column as the section running
                     heads above and below, so the whole page shares one axis. */}
                 <div className="grid gap-3 py-8 md:grid-cols-12 md:items-baseline md:gap-x-10 md:py-12">
-                  <p className="figures-oldstyle font-serif text-2xl text-gold-deep md:col-span-3 md:text-3xl">
-                    {String(i + 1).padStart(2, "0")}
-                  </p>
+                  <CountUpFigure
+                    value={i + 1}
+                    className="figures-oldstyle font-serif text-2xl text-gold-deep md:col-span-3 md:text-3xl"
+                  />
                   <div className="md:col-span-8 md:col-start-4">
                     <h3 className="font-serif text-xl text-navy md:text-2xl">
                       {pillar.title}
@@ -132,17 +146,22 @@ export default async function WhatWeDoPage() {
         <SectionBand variant="navy-wash" className="py-16 md:py-24">
           <Reveal stagger>
             <EditorialGrid className="gap-y-8">
-              <div
-                className="md:col-span-3 md:col-start-10 md:row-start-1"
-                data-reveal-item="up"
-              >
-                <div className="mb-4 flex items-center gap-2.5">
-                  <Mark className="size-2.5 text-navy" />
-                  <span className="h-px w-12 bg-gold" aria-hidden />
-                </div>
-                <h2 className="font-serif text-xl leading-snug tracking-display text-navy">
+              <div className="md:col-span-3 md:col-start-10 md:row-start-1">
+                <Mark
+                  className="mb-4 size-2.5 text-navy"
+                  data-reveal-item="up"
+                />
+                <h2
+                  className="font-serif text-xl leading-snug tracking-display text-navy"
+                  data-reveal-item="up"
+                >
                   {page?.howWeWorkHeading ?? "How we work"}
                 </h2>
+                <span
+                  className="mt-4 block h-0.5 w-14 bg-gold"
+                  aria-hidden
+                  data-reveal-item="rule"
+                />
               </div>
               <div
                 className="md:col-span-8 md:row-start-1"

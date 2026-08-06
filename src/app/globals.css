@@ -325,10 +325,15 @@
 
    2. An essay title on the /thinking index carrying its position and size into
       the article <h1>, via React's <ViewTransition>. Unchanged. */
+/* Must match MOTION.rise in src/lib/motion.ts — first paint and GSAP share one value. */
+:root {
+  --motion-rise: 28px;
+}
+
 .motion-ok [data-reveal],
 .motion-ok [data-reveal-item] {
   opacity: 0;
-  transform: translate3d(0, 14px, 0);
+  transform: translate3d(0, var(--motion-rise), 0);
 }
 
 /* Gold rules draw in from the left instead of rising. */
@@ -359,6 +364,31 @@
 ::view-transition-new(root) {
   animation-duration: 180ms;
   animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Route crossfade — opacity only, short. Applied by (site)/template.tsx. */
+@keyframes page-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+::view-transition-old(.page-fade) {
+  animation: 140ms ease-in both page-fade reverse;
+}
+
+::view-transition-new(.page-fade) {
+  animation: 180ms ease-out 100ms both page-fade;
+}
+
+/* Header and footer stay still while the main column crossfades. */
+::view-transition-group(site-header),
+::view-transition-group(site-footer) {
+  animation: none;
+  z-index: 100;
 }
 
 /* `share="morph"` on the <ViewTransition> assigns this class. The title is
@@ -402,6 +432,12 @@
   [data-marquee-copy]:not(:first-child) {
     display: none;
   }
+}
+
+/* reCAPTCHA v3 floating badge — hidden; the contact form carries the required
+   Google Privacy / Terms disclosure instead (Google's allowed alternative). */
+.grecaptcha-badge {
+  visibility: hidden;
 }
 
 /* --- Pillar rows ---------------------------------------------------------

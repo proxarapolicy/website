@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 import { Mark } from "@/components/site/mark";
 import { Button } from "@/components/ui/button";
@@ -20,7 +21,7 @@ export function SiteFooter({
   );
 
   return (
-    <footer className="mt-auto bg-navy-deep text-primary-foreground">
+    <footer className="mt-auto bg-navy-deep text-primary-foreground [view-transition-name:site-footer]">
       <div className="mx-auto max-w-6xl px-5 md:px-8">
         {settings?.footerCta ? (
           <div className="border-b border-on-navy-line py-14 md:py-16">
@@ -39,6 +40,7 @@ export function SiteFooter({
                 render={<Link href="/contact" />}
               >
                 {settings.ctaLabel ?? "Get in touch"}
+                <ArrowRight className="size-4" />
               </Button>
             </div>
           </div>

@@ -109,15 +109,23 @@ export default async function WhoWeWorkWithPage() {
         <SectionBand variant="default" className="py-16 md:py-24">
           <Reveal stagger>
             <EditorialGrid className="gap-y-8">
-              <Margin data-reveal-item="up">
-                <div className="mb-4 flex items-center gap-2.5">
-                  <Mark className="size-2.5 text-navy" />
-                  <span className="h-px w-12 bg-gold" aria-hidden />
-                </div>
-                <h2 className="font-serif text-xl leading-snug tracking-display text-navy">
+              <Margin>
+                <Mark
+                  className="mb-4 size-2.5 text-navy"
+                  data-reveal-item="up"
+                />
+                <h2
+                  className="font-serif text-xl leading-snug tracking-display text-navy"
+                  data-reveal-item="up"
+                >
                   {page.stagesHeading ??
                     "Working with companies at different stages"}
                 </h2>
+                <span
+                  className="mt-4 block h-0.5 w-14 bg-gold"
+                  aria-hidden
+                  data-reveal-item="rule"
+                />
               </Margin>
               <Column data-reveal-item="up">
                 <p className="prose-measure text-lg leading-relaxed text-foreground/90">

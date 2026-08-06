@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { verifyRecaptchaToken } from "@/lib/recaptcha";
 import { sanityFetch } from "@/sanity/lib/client";
 import { CONTACT_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/lib/queries";
 import type {
@@ -47,6 +48,7 @@ type Payload = {
   message?: string;
   website?: string; // honeypot
   startedAt?: number; // set by the browser when the form mounts
+  recaptchaToken?: string;
 };
 
 export async function POST(request: Request) {
@@ -82,6 +84,19 @@ export async function POST(request: Request) {
     );
   }
 
+  // 4. reCAPTCHA v3 — required when RECAPTCHA_SECRET_KEY is set. Low scores
+  //    and missing tokens get a clear error so a real person can retry or email.
+  const captcha = await verifyRecaptchaToken(body.recaptchaToken, ip);
+  if (captcha === "missing" || captcha === "failed") {
+    return NextResponse.json(
+      {
+        error:
+          "Could not verify this submission. Please try again, or email us directly.",
+      },
+      { status: 400 },
+    );
+  }
+
   const name = body.name?.trim();
   const organisation = body.organisation?.trim();
   const email = body.email?.trim();
@@ -98,7 +113,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid input." }, { status: 400 });
   }
 
-  // 4. Link spam. A genuine first enquiry rarely carries more than one link;
+  // 5. Link spam. A genuine first enquiry rarely carries more than one link;
   //    SEO and crypto spam is mostly links.
   if ((message.match(URL_COUNT_RE) ?? []).length > 2) return botOk();
   // Nobody legitimately puts a URL in their name or organisation.
