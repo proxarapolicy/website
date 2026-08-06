@@ -20,18 +20,17 @@ export default async function SiteLayout({
   const cookieMessage = settings?.cookieBannerMessage?.trim() || null;
   const acceptLabel = settings?.cookieAcceptLabel?.trim() || null;
   const rejectLabel = settings?.cookieRejectLabel?.trim() || null;
-  const showBanner = Boolean(cookieMessage && acceptLabel && rejectLabel);
 
   return (
     <>
       <SiteHeader settings={settings} />
       <main className="flex-1">{children}</main>
       <SiteFooter settings={settings} />
-      {showBanner ? (
+      {cookieMessage && acceptLabel && rejectLabel ? (
         <CookieBanner
-          message={cookieMessage!}
-          acceptLabel={acceptLabel!}
-          rejectLabel={rejectLabel!}
+          message={cookieMessage}
+          acceptLabel={acceptLabel}
+          rejectLabel={rejectLabel}
         />
       ) : null}
       {ga4Id ? <Analytics measurementId={ga4Id} /> : null}

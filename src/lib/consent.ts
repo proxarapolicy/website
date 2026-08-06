@@ -26,9 +26,15 @@ export function getConsent(): ConsentValue | null {
   return parseConsentCookie(document.cookie);
 }
 
+export function subscribeConsent(onStoreChange: () => void): () => void {
+  window.addEventListener(CONSENT_EVENT, onStoreChange);
+  return () => window.removeEventListener(CONSENT_EVENT, onStoreChange);
+}
+
 export function setConsent(value: ConsentValue): void {
   if (typeof document === "undefined") return;
-  document.cookie = `${CONSENT_COOKIE}=${value}; Max-Age=${CONSENT_MAX_AGE}; Path=/; SameSite=Lax`;
+  const secure = window.isSecureContext ? "; Secure" : "";
+  document.cookie = `${CONSENT_COOKIE}=${value}; Max-Age=${CONSENT_MAX_AGE}; Path=/; SameSite=Lax${secure}`;
   window.dispatchEvent(
     new CustomEvent(CONSENT_EVENT, { detail: value satisfies ConsentValue }),
   );
