@@ -5,11 +5,10 @@ import { NextResponse } from "next/server";
  * Sanity webhook target. Configure in sanity.io/manage → API → Webhooks:
  *   URL:    https://proxarapolicy.com/api/revalidate?secret=<SANITY_REVALIDATE_SECRET>
  *   Events: create, update, delete
- * Content edits then go live within seconds without a rebuild.
+ * Content edits then go live on the next request without a rebuild.
  *
- * Tags alone (SWR "max") can leave a sticky Full Route Cache on Vercel.
- * Also expire tags immediately and bust the shared site layout so banner
- * copy / settings changes show on the next request.
+ * Expire tags immediately (not SWR "max") and bust the (site) layout plus
+ * each public path — including nested `/thinking/[slug]` via layout scope.
  */
 const SITE_PATHS = [
   "/",
@@ -37,14 +36,13 @@ export async function POST(request: Request) {
     // fall through — revalidate everything
   }
 
-  // Expire immediately (not SWR "max") so the next visit blocks on fresh data.
   if (type) revalidateTag(type, { expire: 0 });
   revalidateTag("sanity", { expire: 0 });
 
-  // Invalidate the (site) layout tree and each public path.
   revalidatePath("/", "layout");
   for (const path of SITE_PATHS) {
-    revalidatePath(path);
+    revalidatePath(path, "page");
+    revalidatePath(path, "layout");
   }
 
   return NextResponse.json({ revalidated: true, type: type ?? "all" });
