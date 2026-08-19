@@ -99,10 +99,7 @@ export default async function ContactPage() {
             </div>
 
             {settings?.linkedinUrl ? (
-              <ContactDetail
-                label="LinkedIn"
-                note="Verify the profile before reaching out — we would."
-              >
+              <ContactDetail label="LinkedIn">
                 <a
                   href={settings.linkedinUrl}
                   target="_blank"
