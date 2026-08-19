@@ -6,6 +6,11 @@ import { sanityFetch } from "@/sanity/lib/client";
 import { SITE_SETTINGS_QUERY } from "@/sanity/lib/queries";
 import type { SITE_SETTINGS_QUERY_RESULT } from "@/sanity/types";
 
+// Prerendered HTML is what stuck after Sanity publishes: the webhook returned
+// 200, then Vercel kept serving `X-Vercel-Cache: HIT` (5-minute stale window).
+// Render on request; `sanityFetch` still caches Sanity data until tags bust.
+export const dynamic = "force-dynamic";
+
 export default async function SiteLayout({
   children,
 }: {
