@@ -6,7 +6,7 @@ import { CountUpFigure } from "@/components/motion/count-up-figure";
 import { CredibilityMarquee } from "@/components/motion/credibility-marquee";
 import { PageEnter, Reveal } from "@/components/motion/reveal";
 import { PortableText } from "@/components/portable-text";
-import { BridgeMotif } from "@/components/site/bridge-motif";
+import { EmeaMapHero } from "@/components/site/emea-map-interactive";
 import { InsetPanel, PanelHead } from "@/components/site/inset-panel";
 import { Mark } from "@/components/site/mark";
 import { PullQuote } from "@/components/site/pull-quote";
@@ -167,22 +167,20 @@ export default async function HomePage() {
             </div>
           </PageEnter>
 
-          {/* Visual anchor — compact under the CTAs on small screens, right
-              rail from lg. Own timeline (not PageEnter): the span needs a
-              longer draw than the entrance step allows. `replay` re-runs when
-              the reader scrolls back to the top — the one site-wide re-fire,
-              and only because this is drawn ornament rather than copy. */}
-          <Reveal
-            stagger
-            replay
-            className="mx-auto w-full max-w-[16rem] sm:max-w-sm lg:col-span-5 lg:col-start-8 lg:mx-0 lg:ml-auto lg:max-w-lg"
-          >
-            <BridgeMotif
-              origin={page?.heroMotifOrigin ?? "Nairobi"}
-              destination={page?.heroMotifDestination ?? "Brussels"}
-              className="w-full"
-            />
-          </Reveal>
+          {/* Interactive EMEA map — replaces the abstract globe. Compact under
+              the CTAs on small screens; right rail from lg. Tap keeps a region
+              selected so the caption stays readable on phones.
+              No Reveal wrapper: scroll-reveal would hide the map behind
+              opacity:0 until ScrollTrigger fires, and a nested data-reveal-item
+              previously left it invisible forever. */}
+          {page?.mapRegions && page.mapRegions.length > 0 ? (
+            <div className="mx-auto w-full max-w-[17.5rem] sm:max-w-sm md:max-w-md lg:col-span-5 lg:col-start-8 lg:mx-0 lg:ml-auto lg:max-w-none">
+              <EmeaMapHero
+                regions={page.mapRegions}
+                idleHint={page.mapIntro}
+              />
+            </div>
+          ) : null}
         </div>
       </SectionBand>
 

@@ -7,6 +7,7 @@ export const homePageType = defineType({
   groups: [
     { name: "hero", title: "Hero" },
     { name: "sections", title: "Sections" },
+    { name: "map", title: "Map" },
     { name: "seo", title: "SEO" },
   ],
   fields: [
@@ -131,6 +132,97 @@ export const homePageType = defineType({
       group: "sections",
       initialValue: "Learn more",
       description: "Links to /who-we-work-with.",
+    }),
+    defineField({
+      name: "mapKicker",
+      title: "Map kicker",
+      type: "string",
+      group: "map",
+      initialValue: "Geographic reach",
+      description: "Small line above the map heading.",
+    }),
+    defineField({
+      name: "mapHeading",
+      title: "Map heading",
+      type: "string",
+      group: "map",
+      initialValue: "Where we advise",
+      description: "Heading for the EMEA coverage section on the home page.",
+    }),
+    defineField({
+      name: "mapIntro",
+      title: "Map intro",
+      type: "text",
+      rows: 3,
+      group: "map",
+      description:
+        "One or two sentences framing EMEA as the working theatre. Shown beside the map.",
+    }),
+    defineField({
+      name: "mapRegions",
+      title: "Map regions",
+      type: "array",
+      group: "map",
+      description:
+        "Hover notes for each active region on the EMEA map. Region IDs must match the SVG groups — do not invent new ones.",
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "mapRegion",
+          fields: [
+            defineField({
+              name: "regionId",
+              title: "Region",
+              type: "string",
+              options: {
+                list: [
+                  { title: "East Africa", value: "east-africa" },
+                  { title: "Southern Africa", value: "southern-africa" },
+                  { title: "West Africa", value: "west-africa" },
+                  { title: "North Africa", value: "north-africa" },
+                  { title: "Gulf & Levant", value: "gulf" },
+                  { title: "European Union & neighbours", value: "eu" },
+                  { title: "United Kingdom & Ireland", value: "uk" },
+                ],
+                layout: "dropdown",
+              },
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "label",
+              title: "Label",
+              type: "string",
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "note",
+              title: "Note",
+              type: "text",
+              rows: 2,
+              description: "Short sentence shown on hover or focus.",
+              validation: (rule) => rule.required(),
+            }),
+          ],
+          preview: {
+            select: { title: "label", subtitle: "regionId" },
+          },
+        }),
+      ],
+      validation: (rule) =>
+        rule.custom((regions) => {
+          if (!regions?.length) return true;
+          const ids = regions
+            .map((r) =>
+              r && typeof r === "object" && "regionId" in r
+                ? (r as { regionId?: string }).regionId
+                : undefined,
+            )
+            .filter(Boolean);
+          if (new Set(ids).size !== ids.length) {
+            return "Each region can only appear once.";
+          }
+          return true;
+        }),
     }),
     defineField({
       name: "aboutHeading",

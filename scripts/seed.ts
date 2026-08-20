@@ -247,6 +247,61 @@ async function run() {
     audienceBody:
       "We work with governments and regulators building technology policy, technology companies engaging with public institutions, and multilateral organisations developing cross-border frameworks. Our clients span Africa, Europe, and beyond.",
     audienceCtaLabel: "Learn more",
+    mapKicker: "Geographic reach",
+    mapHeading: "Where we advise",
+    mapIntro:
+      "Our work sits across Europe, the Middle East, and Africa — one theatre of policy, not three separate markets. Hover a region for how we engage there.",
+    mapRegions: [
+      {
+        _key: key(),
+        _type: "mapRegion",
+        regionId: "east-africa",
+        label: "East Africa",
+        note: "Government advisory and platform engagement from Nairobi across the region.",
+      },
+      {
+        _key: key(),
+        _type: "mapRegion",
+        regionId: "southern-africa",
+        label: "Southern Africa",
+        note: "Regulatory mapping and capacity building with public institutions and operators.",
+      },
+      {
+        _key: key(),
+        _type: "mapRegion",
+        regionId: "west-africa",
+        label: "West Africa",
+        note: "Policy briefings and market-entry counsel for governments and technology companies.",
+      },
+      {
+        _key: key(),
+        _type: "mapRegion",
+        regionId: "north-africa",
+        label: "North Africa",
+        note: "Cross-border digital policy bridging Mediterranean and African frameworks.",
+      },
+      {
+        _key: key(),
+        _type: "mapRegion",
+        regionId: "gulf",
+        label: "Gulf & Levant",
+        note: "AI governance and platform policy for institutions shaping regional standards.",
+      },
+      {
+        _key: key(),
+        _type: "mapRegion",
+        regionId: "eu",
+        label: "European Union & neighbours",
+        note: "Brussels-facing counsel on AI Act, platform rules, and multilateral engagement.",
+      },
+      {
+        _key: key(),
+        _type: "mapRegion",
+        regionId: "uk",
+        label: "United Kingdom & Ireland",
+        note: "UK presence supporting European and African mandates with London-facing work.",
+      },
+    ],
     thinkingHeading: "Latest thinking",
     thinkingIntro:
       "Mwenda writes regularly on AI governance, platform policy, and the digital economy for outlets including Rest of World, Daily Nation, and Tech Policy Press.",

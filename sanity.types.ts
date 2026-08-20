@@ -289,6 +289,23 @@ export type HomePage = {
   audienceHeading?: string;
   audienceBody?: string;
   audienceCtaLabel?: string;
+  mapKicker?: string;
+  mapHeading?: string;
+  mapIntro?: string;
+  mapRegions?: Array<{
+    regionId?:
+      | "east-africa"
+      | "southern-africa"
+      | "west-africa"
+      | "north-africa"
+      | "gulf"
+      | "eu"
+      | "uk";
+    label?: string;
+    note?: string;
+    _type: "mapRegion";
+    _key: string;
+  }>;
   aboutHeading?: string;
   aboutTeaserBody?: string;
   aboutCtaLabel?: string;
@@ -491,7 +508,7 @@ export type SITE_SETTINGS_QUERY_RESULT = {
 
 // Source: src/sanity/lib/queries.ts
 // Variable: HOME_PAGE_QUERY
-// Query: *[_type == "homePage"][0]{    heroKicker,    heroHeading,    heroSubline,    heroCtaLabel,    heroMotifOrigin,    heroMotifDestination,    positioningHeading,    positioningBody,    credibilityHeading,    credibilityItems,    aboutHeading,    aboutTeaserBody,    aboutCtaLabel,    pillarsHeading,    pillarsIntro,    pillarsCtaLabel,    audienceHeading,    audienceBody,    audienceCtaLabel,    thinkingHeading,    thinkingIntro,    thinkingCtaLabel,    "testimonials": testimonials[]->{ _id, quote, attribution, source },      seo { metaTitle, metaDescription, ogImage }  }
+// Query: *[_type == "homePage"][0]{    heroKicker,    heroHeading,    heroSubline,    heroCtaLabel,    heroMotifOrigin,    heroMotifDestination,    positioningHeading,    positioningBody,    credibilityHeading,    credibilityItems,    aboutHeading,    aboutTeaserBody,    aboutCtaLabel,    pillarsHeading,    pillarsIntro,    pillarsCtaLabel,    audienceHeading,    audienceBody,    audienceCtaLabel,    mapKicker,    mapHeading,    mapIntro,    mapRegions[]{ regionId, label, note },    thinkingHeading,    thinkingIntro,    thinkingCtaLabel,    "testimonials": testimonials[]->{ _id, quote, attribution, source },      seo { metaTitle, metaDescription, ogImage }  }
 export type HOME_PAGE_QUERY_RESULT = {
   heroKicker: string | null;
   heroHeading: string | null;
@@ -512,6 +529,22 @@ export type HOME_PAGE_QUERY_RESULT = {
   audienceHeading: string | null;
   audienceBody: string | null;
   audienceCtaLabel: string | null;
+  mapKicker: string | null;
+  mapHeading: string | null;
+  mapIntro: string | null;
+  mapRegions: Array<{
+    regionId:
+      | "east-africa"
+      | "eu"
+      | "gulf"
+      | "north-africa"
+      | "southern-africa"
+      | "uk"
+      | "west-africa"
+      | null;
+    label: string | null;
+    note: string | null;
+  }> | null;
   thinkingHeading: string | null;
   thinkingIntro: string | null;
   thinkingCtaLabel: string | null;
@@ -810,7 +843,7 @@ import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
     '\n  *[_type == "siteSettings"][0]{\n    wordmark,\n    contactEmail,\n    linkedinUrl,\n    location,\n    navItems[]{ label, href },\n    ctaLabel,\n    footerCta,\n    footerLegal,\n    ga4MeasurementId,\n    cookieBannerMessage,\n    cookieAcceptLabel,\n    cookieRejectLabel,\n    defaultSeo { metaTitle, metaDescription, ogImage }\n  }\n': SITE_SETTINGS_QUERY_RESULT;
-    '\n  *[_type == "homePage"][0]{\n    heroKicker,\n    heroHeading,\n    heroSubline,\n    heroCtaLabel,\n    heroMotifOrigin,\n    heroMotifDestination,\n    positioningHeading,\n    positioningBody,\n    credibilityHeading,\n    credibilityItems,\n    aboutHeading,\n    aboutTeaserBody,\n    aboutCtaLabel,\n    pillarsHeading,\n    pillarsIntro,\n    pillarsCtaLabel,\n    audienceHeading,\n    audienceBody,\n    audienceCtaLabel,\n    thinkingHeading,\n    thinkingIntro,\n    thinkingCtaLabel,\n    "testimonials": testimonials[]->{ _id, quote, attribution, source },\n    \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': HOME_PAGE_QUERY_RESULT;
+    '\n  *[_type == "homePage"][0]{\n    heroKicker,\n    heroHeading,\n    heroSubline,\n    heroCtaLabel,\n    heroMotifOrigin,\n    heroMotifDestination,\n    positioningHeading,\n    positioningBody,\n    credibilityHeading,\n    credibilityItems,\n    aboutHeading,\n    aboutTeaserBody,\n    aboutCtaLabel,\n    pillarsHeading,\n    pillarsIntro,\n    pillarsCtaLabel,\n    audienceHeading,\n    audienceBody,\n    audienceCtaLabel,\n    mapKicker,\n    mapHeading,\n    mapIntro,\n    mapRegions[]{ regionId, label, note },\n    thinkingHeading,\n    thinkingIntro,\n    thinkingCtaLabel,\n    "testimonials": testimonials[]->{ _id, quote, attribution, source },\n    \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': HOME_PAGE_QUERY_RESULT;
     '\n  *[_type == "pillar"] | order(order asc){\n    _id, title, "slug": slug.current, oneLiner, description, order\n  }\n': PILLARS_QUERY_RESULT;
     '\n  *[_type == "audience"] | order(order asc){\n    _id, name, body, challenge, offer, order\n  }\n': AUDIENCES_QUERY_RESULT;
     '\n  *[_type == "whatWeDoPage"][0]{\n    title, intro,\n    viewpointHeading, viewpointBody,\n    howWeWorkHeading, howWeWorkBody,\n    "pullQuote": pullQuote->{ _id, quote, attribution, source },\n    closingBody, closingCtaLabel,\n    \n  seo { metaTitle, metaDescription, ogImage }\n\n  }\n': WHAT_WE_DO_QUERY_RESULT;

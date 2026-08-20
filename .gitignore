@@ -46,3 +46,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# one-shot map geometry scratch (Natural Earth downloads)
+/scripts/tmp
