@@ -250,7 +250,8 @@ async function run() {
     mapKicker: "Geographic reach",
     mapHeading: "Where we advise",
     mapIntro:
-      "Our work sits across Europe, the Middle East, and Africa — one theatre of policy, not three separate markets. Hover a region for how we engage there.",
+      "Our work sits across Europe, the Middle East, and Africa — one theatre of policy, not three separate markets.",
+    mapHoverHint: "Hover to see other regions",
     mapRegions: [
       {
         _key: key(),
@@ -272,6 +273,13 @@ async function run() {
         regionId: "west-africa",
         label: "West Africa",
         note: "Policy briefings and market-entry counsel for governments and technology companies.",
+      },
+      {
+        _key: key(),
+        _type: "mapRegion",
+        regionId: "central-africa",
+        label: "Central Africa",
+        note: "Advisory support where regional frameworks and national digital agendas meet.",
       },
       {
         _key: key(),

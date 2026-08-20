@@ -40,6 +40,7 @@ const REGION_ISO = {
     "CV",
     "MR",
   ],
+  "central-africa": ["CD", "CG", "CF", "CM", "TD", "GA", "GQ", "ST"],
   "north-africa": ["EG", "LY", "TN", "DZ", "MA", "EH", "SD"],
   gulf: [
     "SA",
@@ -220,21 +221,23 @@ for (const f of geo.features) {
   byRegion[region].push(...paths);
 }
 
-// Also include African / European countries not listed as inactive context if they fall in frame
+// Leftover land in-frame: Africa joins coverage; Europe/W. Asia stay context.
 const allActive = new Set([...isoToRegion.keys()]);
 for (const f of geo.features) {
   const iso = isoOf(f);
   if (allActive.has(iso)) continue;
   const cont = f.properties.CONTINENT;
   const regionUn = f.properties.REGION_UN;
-  if (
-    cont === "Africa" ||
+  const paths = geometryToPaths(f.geometry, 2.4);
+  if (!paths.length) continue;
+  if (cont === "Africa") {
+    byRegion["central-africa"].push(...paths);
+  } else if (
     cont === "Europe" ||
     regionUn === "Western Asia" ||
     f.properties.SUBREGION === "Western Asia"
   ) {
-    const paths = geometryToPaths(f.geometry, 2.4);
-    if (paths.length) byRegion.context.push(...paths);
+    byRegion.context.push(...paths);
   }
 }
 

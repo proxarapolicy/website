@@ -46,6 +46,7 @@ export const HOME_PAGE_QUERY = defineQuery(`
     mapKicker,
     mapHeading,
     mapIntro,
+    mapHoverHint,
     mapRegions[]{ regionId, label, note },
     thinkingHeading,
     thinkingIntro,

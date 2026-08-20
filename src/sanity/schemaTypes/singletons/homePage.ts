@@ -159,12 +159,21 @@ export const homePageType = defineType({
         "One or two sentences framing EMEA as the working theatre. Shown beside the map.",
     }),
     defineField({
+      name: "mapHoverHint",
+      title: "Map hover hint",
+      type: "string",
+      group: "map",
+      initialValue: "Hover to see other regions",
+      description:
+        "Small line under the region caption. East Africa is highlighted by default; this invites exploration of the rest.",
+    }),
+    defineField({
       name: "mapRegions",
       title: "Map regions",
       type: "array",
       group: "map",
       description:
-        "Hover notes for each active region on the EMEA map. Region IDs must match the SVG groups — do not invent new ones.",
+        "Hover notes for each active region on the EMEA map. Region IDs must match the SVG groups — do not invent new ones. East Africa is the default highlight; other regions highlight on hover only.",
       of: [
         defineArrayMember({
           type: "object",
@@ -179,6 +188,7 @@ export const homePageType = defineType({
                   { title: "East Africa", value: "east-africa" },
                   { title: "Southern Africa", value: "southern-africa" },
                   { title: "West Africa", value: "west-africa" },
+                  { title: "Central Africa", value: "central-africa" },
                   { title: "North Africa", value: "north-africa" },
                   { title: "Gulf & Levant", value: "gulf" },
                   { title: "European Union & neighbours", value: "eu" },

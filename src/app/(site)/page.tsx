@@ -177,7 +177,7 @@ export default async function HomePage() {
             <div className="mx-auto w-full max-w-[17.5rem] sm:max-w-sm md:max-w-md lg:col-span-5 lg:col-start-8 lg:mx-0 lg:ml-auto lg:max-w-none">
               <EmeaMapHero
                 regions={page.mapRegions}
-                idleHint={page.mapIntro}
+                hoverHint={page.mapHoverHint}
               />
             </div>
           ) : null}

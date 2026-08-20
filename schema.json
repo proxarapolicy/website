@@ -1642,6 +1642,13 @@
         },
         "optional": true
       },
+      "mapHoverHint": {
+        "type": "objectAttribute",
+        "value": {
+          "type": "string"
+        },
+        "optional": true
+      },
       "mapRegions": {
         "type": "objectAttribute",
         "value": {
@@ -1665,6 +1672,10 @@
                     {
                       "type": "string",
                       "value": "west-africa"
+                    },
+                    {
+                      "type": "string",
+                      "value": "central-africa"
                     },
                     {
                       "type": "string",

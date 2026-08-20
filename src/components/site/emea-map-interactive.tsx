@@ -37,23 +37,33 @@ function useRegionLookup(regions: EmeaMapRegion[]) {
   return { byId, interactiveIds, labels };
 }
 
+const DEFAULT_HERO_REGION: EmeaRegionId = "east-africa";
+
 /**
  * Hero visual: interactive EMEA map + live caption under it.
- * Tuned for the navy masthead and for thumb-friendly taps on small screens.
+ * East Africa is the default highlight; other regions match base land until hover.
  */
 export function EmeaMapHero({
   regions,
-  idleHint,
+  hoverHint,
   className,
 }: {
   regions: EmeaMapRegion[];
-  /** Optional Sanity intro shown until a region is selected. */
-  idleHint?: string | null;
+  /** Sanity line inviting exploration of other regions. */
+  hoverHint?: string | null;
   className?: string;
 }) {
   const { byId, interactiveIds, labels } = useRegionLookup(regions);
-  const [activeId, setActiveId] = useState<EmeaRegionId | null>(null);
-  const active = activeId ? (byId.get(activeId) ?? null) : null;
+
+  const defaultId = useMemo((): EmeaRegionId | null => {
+    if (byId.has(DEFAULT_HERO_REGION)) return DEFAULT_HERO_REGION;
+    const first = byId.keys().next();
+    return first.done ? null : first.value;
+  }, [byId]);
+
+  const [activeId, setActiveId] = useState<EmeaRegionId | null>(defaultId);
+  const resolvedId = activeId && byId.has(activeId) ? activeId : defaultId;
+  const active = resolvedId ? (byId.get(resolvedId) ?? null) : null;
 
   if (interactiveIds.size === 0) return null;
 
@@ -61,11 +71,11 @@ export function EmeaMapHero({
     <div className={cn("flex w-full flex-col gap-4 sm:gap-5", className)}>
       <EmeaMapSvg
         surface="navy"
-        activeId={activeId}
+        activeId={resolvedId}
         interactiveIds={interactiveIds}
         labels={labels}
         onActivate={setActiveId}
-        onClear={() => setActiveId(null)}
+        onClear={() => setActiveId(defaultId)}
         className="mx-auto w-full max-w-[17.5rem] sm:max-w-sm md:max-w-md lg:max-w-none"
       />
 
@@ -81,14 +91,15 @@ export function EmeaMapHero({
             <p className="truncate font-serif text-base leading-snug text-gold-on-navy sm:text-lg">
               {active.label}
             </p>
-            <p className="mt-1.5 line-clamp-3 text-sm leading-relaxed text-on-navy-muted sm:text-[0.9375rem]">
+            <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-on-navy-muted sm:text-[0.9375rem]">
               {active.note}
             </p>
+            {hoverHint ? (
+              <p className="mt-2 text-xs leading-snug text-on-navy-faint">
+                {hoverHint}
+              </p>
+            ) : null}
           </>
-        ) : idleHint ? (
-          <p className="line-clamp-4 text-sm leading-relaxed text-on-navy-faint sm:text-[0.9375rem]">
-            {idleHint}
-          </p>
         ) : null}
       </div>
     </div>

@@ -10,9 +10,9 @@ import { cn } from "@/lib/utils";
 /**
  * Static EMEA land drawing — geometry only.
  *
- * Interactive behaviour (hover, focus, caption) lives in
- * `emea-map-interactive.tsx`. Paths are Natural Earth 110m, cropped to EMEA
- * and grouped into seven regions; Africa is never filled as a single category.
+ * Interactive behaviour lives in `emea-map-interactive.tsx`. Paths are Natural
+ * Earth 110m, cropped to EMEA and grouped into sub-regions (Africa stays
+ * multiple regions, not one filled continent).
  */
 
 export type EmeaMapSurface = "light" | "navy";
@@ -20,15 +20,19 @@ export type EmeaMapSurface = "light" | "navy";
 const SURFACE = {
   light: {
     land: "fill-[color-mix(in_oklch,var(--navy)_6%,transparent)] stroke-navy/25 stroke-[0.7]",
+    covered:
+      "fill-[color-mix(in_oklch,var(--gold)_12%,transparent)] stroke-navy/30 stroke-[0.85] transition-[fill,stroke] duration-150 ease-out hover:fill-[color-mix(in_oklch,var(--gold)_20%,transparent)] hover:stroke-gold focus-visible:fill-[color-mix(in_oklch,var(--gold)_20%,transparent)] focus-visible:stroke-gold focus-visible:outline-none motion-reduce:transition-none",
     active:
-      "fill-[color-mix(in_oklch,var(--navy)_9%,transparent)] stroke-navy/35 stroke-[0.85] transition-[fill,stroke] duration-150 ease-out hover:fill-[color-mix(in_oklch,var(--gold)_14%,transparent)] hover:stroke-gold focus-visible:fill-[color-mix(in_oklch,var(--gold)_14%,transparent)] focus-visible:stroke-gold focus-visible:outline-none data-[active=true]:fill-[color-mix(in_oklch,var(--gold)_14%,transparent)] data-[active=true]:stroke-gold motion-reduce:transition-none",
+      "fill-[color-mix(in_oklch,var(--gold)_22%,transparent)] stroke-gold stroke-[0.95] transition-[fill,stroke] duration-150 ease-out focus-visible:outline-none motion-reduce:transition-none",
     context:
       "fill-[color-mix(in_oklch,var(--navy)_4%,transparent)] stroke-navy/15 stroke-[0.6] pointer-events-none",
   },
   navy: {
-    land: "fill-[oklch(1_0_0_/_0.1)] stroke-[oklch(1_0_0_/_0.28)] stroke-[1]",
+    land: "fill-[oklch(1_0_0_/_0.1)] stroke-[oklch(1_0_0_/_0.28)] stroke-[1] transition-[fill,stroke] duration-150 ease-out hover:fill-[color-mix(in_oklch,var(--gold)_28%,transparent)] hover:stroke-[var(--gold)] focus-visible:fill-[color-mix(in_oklch,var(--gold)_28%,transparent)] focus-visible:stroke-[var(--gold)] focus-visible:outline-none motion-reduce:transition-none",
+    covered:
+      "fill-[color-mix(in_oklch,var(--gold)_20%,transparent)] stroke-[oklch(0.86_0.08_84_/_0.5)] stroke-[1] transition-[fill,stroke] duration-150 ease-out hover:fill-[color-mix(in_oklch,var(--gold)_30%,transparent)] hover:stroke-[var(--gold)] focus-visible:fill-[color-mix(in_oklch,var(--gold)_30%,transparent)] focus-visible:stroke-[var(--gold)] focus-visible:outline-none motion-reduce:transition-none",
     active:
-      "fill-[oklch(1_0_0_/_0.14)] stroke-[oklch(0.86_0.08_84_/_0.65)] stroke-[1.15] transition-[fill,stroke] duration-150 ease-out hover:fill-[color-mix(in_oklch,var(--gold)_30%,transparent)] hover:stroke-[var(--gold)] focus-visible:fill-[color-mix(in_oklch,var(--gold)_30%,transparent)] focus-visible:stroke-[var(--gold)] focus-visible:outline-none data-[active=true]:fill-[color-mix(in_oklch,var(--gold)_30%,transparent)] data-[active=true]:stroke-[var(--gold)] motion-reduce:transition-none",
+      "fill-[color-mix(in_oklch,var(--gold)_34%,transparent)] stroke-[var(--gold)] stroke-[1.2] transition-[fill,stroke] duration-150 ease-out focus-visible:outline-none motion-reduce:transition-none",
     context:
       "fill-[oklch(1_0_0_/_0.045)] stroke-[oklch(1_0_0_/_0.14)] stroke-[0.75] pointer-events-none",
   },
@@ -36,6 +40,7 @@ const SURFACE = {
 
 export function EmeaMapSvg({
   activeId,
+  coveredIds,
   interactiveIds,
   labels,
   onActivate,
@@ -44,6 +49,8 @@ export function EmeaMapSvg({
   className,
 }: {
   activeId: EmeaRegionId | null;
+  /** Regions shown as coverage (e.g. all of Africa) when not focused. */
+  coveredIds?: ReadonlySet<string>;
   /** Region IDs that have Sanity notes — only these are focusable. */
   interactiveIds: ReadonlySet<string>;
   labels: ReadonlyMap<EmeaRegionId, string>;
@@ -53,6 +60,7 @@ export function EmeaMapSvg({
   className?: string;
 }) {
   const tones = SURFACE[surface];
+  const covered = coveredIds ?? new Set<string>();
 
   return (
     <svg
@@ -71,30 +79,41 @@ export function EmeaMapSvg({
       {EMEA_REGION_IDS.map((id) => {
         const paths = EMEA_REGION_PATHS[id];
         const interactive = interactiveIds.has(id);
+        const isActive = activeId === id;
+        const isCovered = covered.has(id);
 
         if (!interactive) {
           return (
             <g key={id} aria-hidden="true">
               {paths.map((d, i) => (
-                <path key={i} d={d} className={tones.land} />
+                <path
+                  key={i}
+                  d={d}
+                  className={isCovered ? tones.covered : tones.land}
+                />
               ))}
             </g>
           );
         }
 
         const label = labels.get(id) ?? id;
+        const toneClass = isActive
+          ? tones.active
+          : isCovered
+            ? tones.covered
+            : tones.land;
 
         return (
           <g
             key={id}
             role="button"
             tabIndex={0}
-            data-active={activeId === id ? "true" : undefined}
+            data-active={isActive ? "true" : undefined}
+            data-covered={isCovered && !isActive ? "true" : undefined}
             aria-label={label}
-            className={cn(tones.active, "cursor-pointer")}
+            className={cn(toneClass, "cursor-pointer")}
             onPointerEnter={() => onActivate(id)}
             onPointerLeave={(event) => {
-              // Touch: keep the selection until another region is chosen.
               if (event.pointerType === "mouse" || event.pointerType === "pen") {
                 onClear();
               }
